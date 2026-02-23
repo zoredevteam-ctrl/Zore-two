@@ -1,7 +1,7 @@
 {
   "name": "Zore-two",
   "version": "1.0.0",
-  "description": "WhatsApp Bot Multi Device",
+  "description": "WhatsApp Bot Multi Device - Fixed Version",
   "main": "index.js",
   "type": "module",
   "directories": {
@@ -14,20 +14,13 @@
     "qr": "node index.js qr",
     "code": "node index.js code",
     "test": "node test.js",
-    "test2": "nodemon index.js",
-    "eslint": "eslint .",
-    "eslintfix": "eslint --fix ."
+    "test2": "nodemon index.js"
   },
   "homepage": "https://github.com/zoredevteam-ctrl/Zore-two",
-  "author": {
-    "name": "zoredevteam-ctrl"
-  },
+  "author": "zoredevteam-ctrl",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zoredevteam-ctrl/Zore-two.git"
-  },
-  "bugs": {
-    "url": "https://github.com/zoredevteam-ctrl/Zore-two/issues"
   },
   "license": "MIT",
   "dependencies": {
@@ -68,6 +61,8 @@
     "performance-now": "^2.1.0",
     "pino": "^8.6.1",
     "qrcode": "^1.5.1",
+    "qrcode-terminal": "^0.12.0",
+    "readline-sync": "^1.4.10",
     "ruhend-scraper": "^7.0.4",
     "similarity": "^1.2.1",
     "syntax-error": "^1.4.0",
