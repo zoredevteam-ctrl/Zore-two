@@ -1,5 +1,4 @@
 import { useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, Browsers, makeWASocket } from '@whiskeysockets/baileys'
-import qrcode from 'qrcode'
 import NodeCache from 'node-cache'
 import fs from 'fs'
 import path from 'path'
@@ -47,25 +46,13 @@ const msgCodigo = (nombre) =>
     `> ꕦ *6.* Ingresa el código\n\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
 
-const msgQR = (nombre) =>
-    `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
-    `ꕥ *CONEXIÓN SUBBOT* ꕥ\n` +
-    `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n\n` +
-    `ꙮ Hola *${nombre}*, sigue los pasos:\n\n` +
-    `> ꕦ *1.* Toca los *tres puntos* (⋮)\n` +
-    `> ꕦ *2.* Toca *Dispositivos vinculados*\n` +
-    `> ꕦ *3.* Selecciona *Vincular un dispositivo*\n` +
-    `> ꕦ *4.* Escanea el *código QR*\n\n` +
-    `ꙮ _¡Este código expira en 45 segundos!_\n\n` +
-    `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
-
-const msgExito = (nombre, metodo) =>
+const msgExito = (nombre) =>
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
     `ꕥ *CONEXIÓN EXITOSA* ꕥ\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n\n` +
     `ꙮ *¡${nombre} conectado!*\n\n` +
     `> ꕦ Usuario: *${nombre}*\n` +
-    `> ꕦ Método: *${metodo}*\n` +
+    `> ꕦ Método: *Código*\n` +
     `> ꕦ Bot: *${global.botName}*\n\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
 
@@ -128,7 +115,6 @@ setInterval(() => {
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     const userId = m.sender
     const now = Date.now()
-    const useCode = command === 'code' || command === 'serbot'
 
     // Cooldown
     const lastUse = database.data.users?.[userId]?.lastSubbot || 0
@@ -173,21 +159,20 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     database.data.users[userId].lastSubbot = now
     await database.save()
 
-    await startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode })
+    await startSubBot({ m, conn, args, usedPrefix, sessionPath })
 }
 
-handler.help = ['code', 'serbot', 'qrbot']
+handler.help = ['code', 'serbot']
 handler.tags = ['serbot']
-handler.command = ['code', 'serbot', 'qrbot']
+handler.command = ['code', 'serbot']
 
 export default handler
 
 // ========== INICIAR SUBBOT ==========
-async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode }) {
+async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
     const sessionId = path.basename(sessionPath)
     let sock = null
-    const metodo = useCode ? 'Código' : 'QR'
-    let txtCode, codeBot, txtQR
+    let txtCode, codeBot
 
     try {
         const { state, saveCreds } = await useMultiFileAuthState(sessionPath)
@@ -202,7 +187,7 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode }) 
                 keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' }))
             },
             msgRetryCache,
-            browser: useCode ? Browsers.macOS('Chrome') : Browsers.macOS('Safari'),
+            browser: Browsers.macOS('Chrome'),
             version,
             generateHighQualityLinkPreview: true,
             getMessage: async () => ''
@@ -218,22 +203,8 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode }) 
 
             let nombre = m.pushName || 'Usuario'
 
-            // QR
-            if (qr && !useCode) {
-                if (m?.chat) {
-                    txtQR = await conn.sendMessage(m.chat, {
-                        image: await qrcode.toBuffer(qr, { scale: 8 }),
-                        caption: msgQR(nombre)
-                    }, { quoted: m })
-                }
-                if (txtQR?.key) {
-                    setTimeout(() => conn.sendMessage(m.chat, { delete: txtQR.key }), 45000)
-                }
-                return
-            }
-
-            // Código
-            if (qr && useCode) {
+            // Código de 8 dígitos
+            if (qr) {
                 const pairKey = getRandomCode()
                 let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
                 secret = secret?.match(/.{1,4}/g)?.join('-') || secret
@@ -269,14 +240,14 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode }) 
                 console.log(chalk.hex('#ff1493')(
                     `\nꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
                     `ꕥ ${nombre} (+${sessionId}) conectado\n` +
-                    `ꕦ Método: ${metodo}\n` +
+                    `ꕦ Método: Código\n` +
                     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
                 ))
                 sock.isInit = true
                 global.conns.push(sock)
                 if (m?.chat) {
                     await conn.sendMessage(m.chat, {
-                        text: msgExito(nombre, metodo)
+                        text: msgExito(nombre)
                     }, { quoted: m })
                 }
             }
@@ -288,7 +259,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode }) 
 
         let handlerModule = await import('../handler.js')
 
-        // ✅ FIX: Verificar que los listeners existen antes de hacer .off()
         let creloadHandler = async function (restatConn) {
             try {
                 const newHandler = await import(`../handler.js?update=${Date.now()}`).catch(console.error)
@@ -305,7 +275,7 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode }) 
                 sock.isInit = true
             }
 
-            // ✅ FIX AQUÍ: solo hace .off() si el listener ya fue asignado
+            // ✅ FIX: solo hace .off() si el listener ya fue asignado
             if (!sock.isInit) {
                 if (typeof sock.handler === 'function') sock.ev.off('messages.upsert', sock.handler)
                 if (typeof sock.connectionUpdate === 'function') sock.ev.off('connection.update', sock.connectionUpdate)
