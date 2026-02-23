@@ -288,6 +288,7 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode }) 
 
         let handlerModule = await import('../handler.js')
 
+        // ✅ FIX: Verificar que los listeners existen antes de hacer .off()
         let creloadHandler = async function (restatConn) {
             try {
                 const newHandler = await import(`../handler.js?update=${Date.now()}`).catch(console.error)
@@ -304,10 +305,11 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode }) 
                 sock.isInit = true
             }
 
+            // ✅ FIX AQUÍ: solo hace .off() si el listener ya fue asignado
             if (!sock.isInit) {
-                sock.ev.off('messages.upsert', sock.handler)
-                sock.ev.off('connection.update', sock.connectionUpdate)
-                sock.ev.off('creds.update', sock.credsUpdate)
+                if (typeof sock.handler === 'function') sock.ev.off('messages.upsert', sock.handler)
+                if (typeof sock.connectionUpdate === 'function') sock.ev.off('connection.update', sock.connectionUpdate)
+                if (typeof sock.credsUpdate === 'function') sock.ev.off('creds.update', sock.credsUpdate)
             }
 
             const subPlugins = new Map()
