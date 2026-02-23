@@ -16,7 +16,6 @@ if (!Array.isArray(global.conns)) global.conns = []
 // ========== CONFIGURACIÓN ==========
 const MAX_SUBBOTS = 10
 const MAX_PER_USER = 2
-const RECONNECT_MAX = 10
 const COOLDOWN_MS = 120000
 
 const JADIBOT_CODES = [
@@ -195,16 +194,18 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
 
         sock = makeWASocket(connectionOptions)
         sock.isInit = false
+        sock.codeSent = false
         sock.sessionPath = sessionPath
 
         async function connectionUpdate(update) {
             const { connection, lastDisconnect, isNewLogin, qr } = update
             if (isNewLogin) sock.isInit = false
 
-            let nombre = m.pushName || 'Usuario'
+            const nombre = m.pushName || 'Usuario'
 
-            // Código de 8 dígitos
-            if (qr) {
+            // Código de 8 dígitos - solo una vez
+            if (qr && !sock.codeSent) {
+                sock.codeSent = true
                 const pairKey = getRandomCode()
                 let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
                 secret = secret?.match(/.{1,4}/g)?.join('-') || secret
@@ -246,9 +247,7 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
                 sock.isInit = true
                 global.conns.push(sock)
                 if (m?.chat) {
-                    await conn.sendMessage(m.chat, {
-                        text: msgExito(nombre)
-                    }, { quoted: m })
+                    await conn.sendMessage(m.chat, { text: msgExito(nombre) }, { quoted: m })
                 }
             }
         }
@@ -273,6 +272,7 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
                 sock.ev.removeAllListeners()
                 sock = makeWASocket(connectionOptions, { chats: oldChats })
                 sock.isInit = true
+                sock.codeSent = false
             }
 
             // ✅ FIX: solo hace .off() si el listener ya fue asignado
@@ -314,8 +314,7 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
             return true
         }
 
-        sock.ev.on('connection.update', connectionUpdate)
-        sock.ev.on('creds.update', saveCreds)
+        // ✅ FIX: eliminados los listeners directos, solo usamos creloadHandler
         creloadHandler(false)
 
     } catch (e) {
