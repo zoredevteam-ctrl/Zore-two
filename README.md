@@ -60,7 +60,7 @@ Escanea el QR o usa el código de emparejamiento para vincular.
 - 👨‍💻 Power by **Aarom**
 - 🌸 Inspirado en **Zero Two** – *Darling in the FranXX*
 - 📚 Librería: **Baileys Multi Device**
-- <img src="https://cdn3.emoji.gg/emojis/4045-crown.gif" width="40"/> Colaborador principal: <a href="https://github.com/danielalejandrobasado-glitch"><img src="https://github.com/danielalejandrobasado-glitch.png" width="120"/></a>
+- <img src="https://cdn3.emoji.gg/emojis/4045-crown.gif" width="40"/> Colaborador principal: <a href="https://github.com/danielalejandrobasado-glitch"><img src="https://github.com/danielalejandrobasado-glitch.png" width="200"/></a>
 
 ---
 
