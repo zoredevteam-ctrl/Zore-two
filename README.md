@@ -5,7 +5,7 @@
 
 ## Descripción
 
-Zore Two Bot es un bot multi-dispositivo para WhatsApp, construido desde cero con Baileys, inspirado en **Zero Two** de Darling in the Franxx. Trae comandos para economía, gacha de waifus, descargas rápidas, perfiles, sockets, utilidades, grupos, NSFW y reacciones anime. ¡Darling, únete y no me dejes sola, o muerdo~ 🔥
+Zore Two Bot es un bot multi-dispositivo para WhatsApp, construido desde cero con Baileys, inspirado en **Zero Two** de Darling in the Franxx. Trae comandos para descargas rápidas,sockets. ¡Darling, únete y no me dejes sola, o muerdo~ 🔥
 
 ### Características Principales
 - Prefijo: `#` (cámbialo cuando quieras con #setprefix)
