@@ -8,7 +8,6 @@
 
 [![Canal](https://img.shields.io/badge/WhatsApp-Canal-25D366?style=for-the-badge&logo=whatsapp)](https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y)
 [![GitHub](https://img.shields.io/badge/GitHub-Repo-181717?style=for-the-badge&logo=github)](https://github.com/zoredevteam-ctrl/Zore-two.git)
-[![Creador](https://img.shields.io/badge/GitHub-Danielalejandrobasado--glitch-181717?style=for-the-badge&logo=github)](https://github.com/danielalejandrobasado-glitch)
 
 </div>
 
@@ -56,12 +55,12 @@ Escanea el QR o usa el código de emparejamiento para vincular.
 
 ---
 
-## <img src="https://cdn3.emoji.gg/emojis/4045-crown.gif" width="30"/> Créditos
+## <img src="https://cdn3.emoji.gg/emojis/4045-crown.gif" width="50"/> Créditos
 
 - 👨‍💻 Power by **Aarom**
 - 🌸 Inspirado en **Zero Two** – *Darling in the FranXX*
 - 📚 Librería: **Baileys Multi Device**
-- <img src="https://cdn3.emoji.gg/emojis/4045-crown.gif" width="20"/> Creador: <a href="https://github.com/danielalejandrobasado-glitch"><img src="https://github.com/danielalejandrobasado-glitch.png" width="80"/></a>
+- <img src="https://cdn3.emoji.gg/emojis/4045-crown.gif" width="40"/> Colaborador principal: <a href="https://github.com/danielalejandrobasado-glitch"><img src="https://github.com/danielalejandrobasado-glitch.png" width="120"/></a>
 
 ---
 
