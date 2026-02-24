@@ -13,7 +13,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
 
     return conn.sendMessage(
       msg.chat,
-      { text: `✳️ Usa:\n${usedPrefix}${command} <nombre del audio>` },
+      { text: `✳️ Usa:\n${usedPrefix} play <nombre del audio>` },
       { quoted: msg }
     )
   }
