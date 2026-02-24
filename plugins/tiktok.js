@@ -1,17 +1,20 @@
-import fetch from "node-fetch"
+import fetch from 'node-fetch'
 
 export default {
-  command: ["tiktok", "tt", "tiktoksearch", "ttsearch", "tts"],
-  category: "downloader",
-
+  command: ['tiktok', 'tt', 'tiktoksearch', 'ttsearch', 'tts'],
+  category: 'downloader',
   run: async (client, m, args, usedPrefix, command) => {
 
     if (!args.length) {
-      return m.reply("💗 Darling… envíame un enlace o nombre de TikTok para descargarlo~")
+      return m.reply(`𓆩♡𓆪 𝟬𝟬𝟮 — 𝚉𝚎𝚛𝚘 𝚃𝚠𝚘 𓆩♡𓆪
+
+Hey darling~ 💗
+Necesito un enlace o algo para buscar en TikTok~
+No me dejes esperando, ¿sí? ✦`)
     }
 
     const text = args.join(" ")
-    const isUrl = /(?:https?:\/\/)?(?:www\.|vm\.|vt\.|t\.)?tiktok\.com\/[^\s]+/i.test(text)
+    const isUrl = /(?:https?:\/\/)?(?:www\.|vm\.|vt\.)?tiktok\.com\/([^\s&]+)/gi.test(text)
 
     try {
 
@@ -21,32 +24,36 @@ export default {
         const res = await fetch(api)
         const json = await res.json()
 
-        if (!json?.data) {
-          return m.reply("💗 No pude obtener ese TikTok… intenta con otro enlace~")
+        if (!json || !json.data) {
+          return m.reply(`𓆩♡𓆪 𝟬𝟬𝟮 — 𝚉𝚎𝚛𝚘 𝚃𝚠𝚘 𓆩♡𓆪
+
+Mmm~ no pude obtener el contenido del enlace...
+¿Seguro que está bien, darling? 💔`)
         }
 
         const info = json.data
-        const title = info.title || "Sin título"
+        const title = info.title || 'Sin título'
         const video = info.play || info.wmplay
         const images = info.images || null
         const audio = info.music || null
 
-        const caption = `
-✦ ──『 💗 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 𝐓𝐈𝐊𝐓𝐎𝐊 💗 』── ✦
+        const caption = `𓆩♡𓆪 𝟬𝟬𝟮 — 𝚉𝚎𝚛𝚘 𝚃𝚠𝚘 𓆩♡𓆪
+⌬ 𝙳𝚊𝚛𝚕𝚒𝚗𝚐... aquí está tu TikTok 💕
 
-❀ Título: ${title}
-❀ Autor: ${info.author?.nickname || "Desconocido"}
-❀ Likes: ${(info.digg_count || 0).toLocaleString()}
-❀ Vistas: ${(info.play_count || 0).toLocaleString()}
-❀ Comentarios: ${(info.comment_count || 0).toLocaleString()}
+✦ *Título:* ${title}
+✦ *Autor:* ${info.author?.nickname || 'Desconocido'}
+✦ *Duración:* ${info.duration || 'N/A'}
+✦ *Likes:* ${info.digg_count?.toLocaleString() || 0}
+✦ *Comentarios:* ${info.comment_count?.toLocaleString() || 0}
+✦ *Vistas:* ${info.play_count?.toLocaleString() || 0}
+✦ *Compartidos:* ${info.share_count?.toLocaleString() || 0}
 
-꒰ა 💌 Descargado con amor por Zero Two ꒱
-`.trim()
+𓂃♡ Disfrútalo conmigo, ¿sí?`.trim()
 
-        if (images && Array.isArray(images) && images.length > 0) {
+        if (images && Array.isArray(images)) {
 
           const medias = images.map(url => ({
-            type: "image",
+            type: 'image',
             data: { url },
             caption
           }))
@@ -54,80 +61,78 @@ export default {
           await client.sendAlbumMessage(m.chat, medias, { quoted: m })
 
           if (audio?.play_url) {
-            await client.sendMessage(
-              m.chat,
-              {
-                audio: { url: audio.play_url },
-                mimetype: "audio/mp4",
-                fileName: "tiktok_audio.mp4"
-              },
-              { quoted: m }
-            )
+            await client.sendMessage(m.chat, {
+              audio: { url: audio.play_url },
+              mimetype: 'audio/mp4',
+              fileName: 'zerotwo_theme.mp4'
+            }, { quoted: m })
           }
 
-          return
-        }
+        } else {
 
-        if (!video) {
-          return m.reply("💗 No pude obtener el video… qué raro~")
-        }
+          if (!video) {
+            return m.reply(`𓆩♡𓆪 𝟬𝟬𝟮 — 𝚉𝚎𝚛𝚘 𝚃𝚠𝚘 𓆩♡𓆪
 
-        await client.sendMessage(
-          m.chat,
-          {
+No encontré un video descargable...
+Qué cruel eres conmigo, darling~ 💢`)
+          }
+
+          await client.sendMessage(m.chat, {
             video: { url: video },
             caption,
-            mimetype: "video/mp4"
-          },
-          { quoted: m }
-        )
+            mimetype: 'video/mp4'
+          }, { quoted: m })
+        }
 
-        return
-      }
+      } else {
 
-      const api = `https://www.tikwm.com/api/feed/search/?keywords=${encodeURIComponent(text)}`
-      const res = await fetch(api)
-      const json = await res.json()
+        const api = `https://www.tikwm.com/api/feed/search/?keywords=${encodeURIComponent(text)}`
+        const res = await fetch(api)
+        const json = await res.json()
 
-      if (!json?.data?.videos?.length) {
-        return m.reply("💗 No encontré nada interesante… intenta otro nombre~")
-      }
+        if (!json || !json.data || !json.data.videos) {
+          return m.reply(`𓆩♡𓆪 𝟬𝟬𝟮 — 𝚉𝚎𝚛𝚘 𝚃𝚠𝚘 𓆩♡𓆪
 
-      const results = json.data.videos.slice(0, 10)
+No encontré resultados...
+Tal vez intenta algo más interesante para mí, darling~ 💋`)
+        }
 
-      const medias = results
-        .filter(v => v.play)
-        .map(v => {
+        const results = json.data.videos.slice(0, 10)
 
-          const caption = `
-✦ ──『 💗 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 𝐒𝐄𝐀𝐑𝐂𝐇 💗 』── ✦
+        const medias = results.map(v => {
 
-❀ Título: ${v.title || "Sin título"}
-❀ Autor: ${v.author?.nickname || "Desconocido"}
-❀ Likes: ${(v.digg_count || 0).toLocaleString()}
-❀ Vistas: ${(v.play_count || 0).toLocaleString()}
+          const caption = `𓆩♡𓆪 𝟬𝟬𝟮 — 𝚉𝚎𝚛𝚘 𝚃𝚠𝚘 𓆩♡𓆪
+⌬ 𝚃𝚒𝚔𝚃𝚘𝚔 𝚙𝚊𝚛𝚊 𝚖𝚒 𝚍𝚊𝚛𝚕𝚒𝚗𝚐 💞
 
-꒰ა 💌 Resultado encontrado por Zero Two ꒱
-`.trim()
+✦ *Título:* ${v.title || 'Sin título'}
+✦ *Autor:* ${v.author?.nickname || 'Desconocido'}
+✦ *Duración:* ${v.duration || 'N/A'}
+✦ *Likes:* ${v.digg_count?.toLocaleString() || 0}
+✦ *Comentarios:* ${v.comment_count?.toLocaleString() || 0}
+✦ *Vistas:* ${v.play_count?.toLocaleString() || 0}
+✦ *Compartidos:* ${v.share_count?.toLocaleString() || 0}
+
+𓂃♡ ¿Te gustó? Entonces sonríe para mí~`.trim()
 
           return {
-            type: "video",
+            type: 'video',
             data: { url: v.play },
             caption
           }
         })
 
-      if (!medias.length) {
-        return m.reply("💗 No encontré resultados válidos… intenta otro término~")
+        await client.sendAlbumMessage(m.chat, medias, { quoted: m })
       }
-
-      await client.sendAlbumMessage(m.chat, medias, { quoted: m })
 
     } catch (e) {
 
       await m.reply(
-        `> Ocurrió un error inesperado al ejecutar *${usedPrefix + command}*.\n> [Error: *${e.message}*]`
+        `𓆩♡𓆪 𝟬𝟬𝟮 — 𝚉𝚎𝚛𝚘 𝚃𝚠𝚘 𓆩♡𓆪
+
+Ups~ algo salió mal al ejecutar *${usedPrefix + command}*...
+No me mires así, darling 💔
+[Error: ${e.message}]`
       )
     }
-  }
+  },
           }
