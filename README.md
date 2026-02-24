@@ -10,17 +10,8 @@ Zore Two Bot es un bot multi-dispositivo para WhatsApp, construido desde cero co
 ### Características Principales
 - Prefijo: `#` (cámbialo cuando quieras con #setprefix)
 - Comandos por categorías:
-  - **Utilidades**: menú, ping, stickers, IA, traductor, HD imagen
-  - **Grupos**: admin, kick, warn, bienvenida, antienlaces
-  - **Economía**: trabajar, apostar, robar coins, minas, ruleta, casino
-  - **Gacha**: reclamar waifus, intercambiar, tienda, top favoritos
-  - **Anime**: +50 reacciones (abrazar, besar, matar, bailar, llorar...)
-  - **Descargas**: YouTube, TikTok, Instagram, Facebook, Pinterest, APKs
-  - **NSFW**: contenido adulto (rule34, xnxx, acciones – con discreción)
-  - **Perfil**: nivel, descripción, matrimonio, hobby, género, cumpleaños
-  - **Sockets**: crear sub-bots, cambiar nombre, banner, icono
-- Versión: ^2.0 - Latest
-- APIs: StellarWA, Xyro, Yupra, Vreden, Delirius, Siputzx y más
+  - **Utilidades**: menú, ping, stickers, IA,
+- Versión: ^1.0 - Latest
 - Dueños: 573135180876, 524444854390, 59175850453, 584242773183, 5493863447787, 573107400303
 - Banner/Icono: cámbialos con #setbanner / #seticon
 - Sesión: persistente con MultiFileAuthState
