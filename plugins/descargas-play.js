@@ -1,20 +1,22 @@
 import yts from 'yt-search'
 import axios from 'axios'
 
-const BASE_HEADERS = {
-  'User-Agent': 'Mozilla/5.0',
-  'Content-Type': 'application/json'
-}
-
 const handler = async (msg, { conn, args, usedPrefix, command }) => {
   const query = args.join(' ').trim()
 
-  if (!query)
-    return conn.sendMessage(
+  if (!query) {
+    await conn.sendMessage(
       msg.chat,
-      { text: `✳️ Usa:\n${usedPrefix}${command} <nombre del video>` },
+      { text: `❌ Error:\nDebes escribir el nombre del video.` },
       { quoted: msg }
     )
+
+    return conn.sendMessage(
+      msg.chat,
+      { text: `✳️ Usa:\n${usedPrefix}${command} <nombre del audio>` },
+      { quoted: msg }
+    )
+  }
 
   await conn.sendMessage(
     msg.chat,
@@ -27,21 +29,23 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
     if (!search.videos?.length)
       throw new Error('No se encontró el audio.')
 
-    const videoId = search.videos[0].videoId
-    const title = search.videos[0].title
-    const url = `https://nexevo-api.vercel.app/download/y?url=https%3A%2F%2Fyoutu.be%2F${videoId}`
+    const url = search.videos[0].url
 
-    const response = await axios.get(url, { headers: BASE_HEADERS })
-    
-    if (!response.data?.status || !response.data?.result?.url)
-      throw new Error('Error en la descarga.')
+    const api = `https://nexevo-api.vercel.app/download/y?url=${encodeURIComponent(url)}`
+    const { data } = await axios.get(api)
 
-    const result = response.data.result
+    if (!data?.status || !data?.result?.status || !data?.result?.url)
+      throw new Error('Error en descarga.')
+
+    const title =
+      data.result.info?.title ||
+      search.videos[0]?.title ||
+      'audio'
 
     await conn.sendMessage(
       msg.chat,
       {
-        audio: { url: result.url },
+        audio: { url: data.result.url },
         mimetype: 'audio/mpeg',
         fileName: `${sanitizeFilename(title)}.mp3`
       },
