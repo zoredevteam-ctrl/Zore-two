@@ -76,8 +76,16 @@ ${seccionesTexto}
             fileLength: 2199023255552,
             pageCount: 2026,
             caption: menuTexto,
-            jpegThumbnail: base64,
-            mentions: [m.sender]
+            mentions: [m.sender],
+            contextInfo: {
+                externalAdReply: {
+                    title: '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎',
+                    body: 'darling~ 💗',
+                    mediaType: 1,
+                    thumbnail: base64,
+                    renderLargerThumbnail: true
+                }
+            }
         }, { quoted: m })
 
     } catch (e) {
