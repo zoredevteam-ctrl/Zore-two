@@ -3,6 +3,9 @@ import fetch from 'node-fetch'
 
 let handler = async (m, { conn }) => {
     try {
+        const prefix = Array.isArray(global.prefix) ? global.prefix[0] : global.prefix
+        const botname = global.botname || global.botName || 'Zero Two'
+
         const pluginFiles = fs.readdirSync('./plugins').filter(file => file.endsWith('.js'))
 
         const grouped = {}
@@ -22,9 +25,11 @@ let handler = async (m, { conn }) => {
             }
         }
 
+        const totalCmds = Object.values(grouped).flat().length
+
         let seccionesTexto = Object.entries(grouped).map(([tag, cmds]) =>
 `𖤐 *${tag.toUpperCase()}*
-${cmds.map(c => `  💗 ${global.prefix}${c}`).join('\n')}
+${cmds.map(c => `  💗 ${prefix}${c}`).join('\n')}
 `
         ).join('\n')
 
@@ -42,20 +47,17 @@ ${cmds.map(c => `  💗 ${global.prefix}${c}`).join('\n')}
             hour12: true
         })
 
-        const totalCmds = Object.values(grouped).flat().length
-
         let menuTexto = `𖤐 ❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎'𝐒 𝐌𝐄𝐍𝐔 ❖ 𖤐
 
 💗 *Darling:* @${m.sender.split('@')[0]}
 📅 *Fecha:* ${fechaCol}
 ⏰ *Hora:* ${horaCol} (CO)
-🍬 *Prefijo:* ${global.prefix}
-🌸 *Bot:* ${global.botname}
+🍬 *Prefijo:* ${prefix}
+🌸 *Bot:* ${botname}
 💢 *Comandos:* ${totalCmds} disponibles
 
-❝ Hmph... 𝘀𝗲𝗺𝗽𝗮𝗶𝗶 𝗿𝗲𝗰𝘂𝗲𝗿𝗱𝗮,
-𝘂́𝘀𝗮𝗿𝗺𝗲 𝗯𝗶𝗲𝗻 𝗼 𝗻𝗼 𝘁𝗲 𝗹𝗼 𝗽𝗲𝗿𝗱𝗼𝗻𝗮𝗿𝗲 (ʘᴗʘ✿), darling~ 💗 ❞
-
+❝ Hmph... más te vale usarlos bien,
+o no te lo perdonaré, darling~ 💗 ❞
 
 ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦
 
