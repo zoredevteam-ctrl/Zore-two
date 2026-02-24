@@ -1,6 +1,6 @@
 # Zore Two Bot
 
-![Zero Two Banner](https://images.alphacoders.com/111/1110886.png)  
+![Zero Two Banner](https://causas-files.vercel.app/fl/9vs2.jpg)  
 *(La waifu rosa con cuernos más peligrosa y cute – power by Aarom 💗)*
 
 ## Descripción
