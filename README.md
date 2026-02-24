@@ -4,7 +4,7 @@
 *(La waifu rosa con cuernos más peligrosa y cute – power by Aarom 💗)*
 
 > [!IMPORTANT]
-> **Este proyecto está en constante evolución. Estamos comprometidos en ofrecer a nuestra comunidad un Bot increíble. [¡Únete a nuestro nuevo canal!](https://)**
+> **Este proyecto está en constante evolución. Estamos comprometidos en ofrecer a nuestra comunidad un Bot increíble. [¡Únete a nuestro nuevo canal!](https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y)**
 
 
 
