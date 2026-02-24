@@ -38,6 +38,6 @@ export default async function (client, m, args) {
 
   } catch (e) {
     console.log(e)
-    m.reply('❌ Error al ejecutar el comando.')
+    m.reply('Dame pene mi Darling hermoso.')
   }
 }
