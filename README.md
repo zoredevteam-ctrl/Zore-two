@@ -48,18 +48,13 @@ Zore Two Bot es un bot multi-dispositivo para WhatsApp, construido desde cero co
 5. Prueba rápido:
    - #menu → ve todo
    - #ping → velocidad
-   - #work → gana coins
-   - #claim → reclama waifu
+   
 
 ## Comandos Destacados
 
 Usa #menu para ver todo. Ejemplos rápidos:
-- #work → gana coins trabajando
-- #claim <waifu> → reclama tu personaje favorito
 - #play <canción> → descarga música de YouTube
-- #profile → ve tu perfil
 - #qr → crea sub-bot
-- #hug @user → reacción anime de abrazo
 
 ## Créditos
 - Power by Aarom
@@ -67,6 +62,6 @@ Usa #menu para ver todo. Ejemplos rápidos:
 - Librería: Baileys Multi Device
 - GitHub: [Repo](https://github.com/zoredevteam-ctrl/Zore-two.git)
 
-¡Únete al [Canal](https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y) para updates y más darling vibes! ❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 ❖ – No me dejes sola, ¿eh? 💗
+¡Únete al [Canal](https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y) para updates y más darling vibes!  𝐙𝐄𝐑𝐎 𝐓𝐖𝐎  – No me dejes sola, ¿eh? 💗
 ```
 
