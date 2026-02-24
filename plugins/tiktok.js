@@ -1,10 +1,11 @@
 import fetch from "node-fetch"
 
 export default {
-  command: ["tiktok", "tt"],
+  command: ["tiktok", "tt", "tiktoksearch", "ttsearch", "tts"],
   category: "downloader",
 
   run: async (client, m, args, usedPrefix, command) => {
+
     if (!args.length) {
       return m.reply("💗 Darling… envíame un enlace o nombre de TikTok para descargarlo~")
     }
@@ -13,7 +14,9 @@ export default {
     const isUrl = /(?:https?:\/\/)?(?:www\.|vm\.|vt\.|t\.)?tiktok\.com\/[^\s]+/i.test(text)
 
     try {
+
       if (isUrl) {
+
         const api = `https://www.tikwm.com/api/?url=${encodeURIComponent(text)}&hd=1`
         const res = await fetch(api)
         const json = await res.json()
@@ -22,23 +25,26 @@ export default {
           return m.reply("💗 No pude obtener ese TikTok… intenta con otro enlace~")
         }
 
-        const data = json.data
-        const videoUrl = data.play || data.wmplay
-        const images = data.images || null
+        const info = json.data
+        const title = info.title || "Sin título"
+        const video = info.play || info.wmplay
+        const images = info.images || null
+        const audio = info.music || null
 
         const caption = `
 ✦ ──『 💗 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 𝐓𝐈𝐊𝐓𝐎𝐊 💗 』── ✦
 
-❀ Título: ${data.title || "Sin título"}
-❀ Autor: ${data.author?.nickname || "Desconocido"}
-❀ Likes: ${(data.digg_count || 0).toLocaleString()}
-❀ Vistas: ${(data.play_count || 0).toLocaleString()}
-❀ Comentarios: ${(data.comment_count || 0).toLocaleString()}
+❀ Título: ${title}
+❀ Autor: ${info.author?.nickname || "Desconocido"}
+❀ Likes: ${(info.digg_count || 0).toLocaleString()}
+❀ Vistas: ${(info.play_count || 0).toLocaleString()}
+❀ Comentarios: ${(info.comment_count || 0).toLocaleString()}
 
 ꒰ა 💌 Descargado con amor por Zero Two ꒱
 `.trim()
 
-        if (images && Array.isArray(images)) {
+        if (images && Array.isArray(images) && images.length > 0) {
+
           const medias = images.map(url => ({
             type: "image",
             data: { url },
@@ -46,18 +52,32 @@ export default {
           }))
 
           await client.sendAlbumMessage(m.chat, medias, { quoted: m })
+
+          if (audio?.play_url) {
+            await client.sendMessage(
+              m.chat,
+              {
+                audio: { url: audio.play_url },
+                mimetype: "audio/mp4",
+                fileName: "tiktok_audio.mp4"
+              },
+              { quoted: m }
+            )
+          }
+
           return
         }
 
-        if (!videoUrl) {
+        if (!video) {
           return m.reply("💗 No pude obtener el video… qué raro~")
         }
 
         await client.sendMessage(
           m.chat,
           {
-            video: { url: videoUrl },
-            caption
+            video: { url: video },
+            caption,
+            mimetype: "video/mp4"
           },
           { quoted: m }
         )
@@ -65,40 +85,49 @@ export default {
         return
       }
 
-      const searchApi = `https://www.tikwm.com/api/feed/search/?keywords=${encodeURIComponent(text)}`
-      const res = await fetch(searchApi)
+      const api = `https://www.tikwm.com/api/feed/search/?keywords=${encodeURIComponent(text)}`
+      const res = await fetch(api)
       const json = await res.json()
 
       if (!json?.data?.videos?.length) {
         return m.reply("💗 No encontré nada interesante… intenta otro nombre~")
       }
 
-      const first = json.data.videos[0]
-      const videoUrl = first.play
+      const results = json.data.videos.slice(0, 10)
 
-      const caption = `
+      const medias = results
+        .filter(v => v.play)
+        .map(v => {
+
+          const caption = `
 ✦ ──『 💗 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 𝐒𝐄𝐀𝐑𝐂𝐇 💗 』── ✦
 
-❀ Título: ${first.title || "Sin título"}
-❀ Autor: ${first.author?.nickname || "Desconocido"}
-❀ Likes: ${(first.digg_count || 0).toLocaleString()}
-❀ Vistas: ${(first.play_count || 0).toLocaleString()}
+❀ Título: ${v.title || "Sin título"}
+❀ Autor: ${v.author?.nickname || "Desconocido"}
+❀ Likes: ${(v.digg_count || 0).toLocaleString()}
+❀ Vistas: ${(v.play_count || 0).toLocaleString()}
 
 ꒰ა 💌 Resultado encontrado por Zero Two ꒱
 `.trim()
 
-      await client.sendMessage(
-        m.chat,
-        {
-          video: { url: videoUrl },
-          caption
-        },
-        { quoted: m }
-      )
+          return {
+            type: "video",
+            data: { url: v.play },
+            caption
+          }
+        })
+
+      if (!medias.length) {
+        return m.reply("💗 No encontré resultados válidos… intenta otro término~")
+      }
+
+      await client.sendAlbumMessage(m.chat, medias, { quoted: m })
 
     } catch (e) {
-      console.log("[TT ERROR]", e)
-      m.reply(`🥺 Ocurrió un error al ejecutar *${usedPrefix + command}*.`)
+
+      await m.reply(
+        `> Ocurrió un error inesperado al ejecutar *${usedPrefix + command}*.\n> [Error: *${e.message}*]`
+      )
     }
   }
           }
