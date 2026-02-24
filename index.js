@@ -209,10 +209,30 @@ async function startBot() {
         }
 
         if (connection === 'open') {
-            console.log(zeroBanner);
-            log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`);
-            log.info(`Plugins cargados: ${plugins.size}`);
+    console.log(zeroBanner);
+    log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`);
+    log.info(`Plugins cargados: ${plugins.size}`);
+
+    // NOTIFICAR REINICIO 
+    const file = "./lastRestarter.json";
+    if (fs.existsSync(file)) {
+        try {
+            const data = JSON.parse(fs.readFileSync(file, "utf-8"));
+            if (data?.chatId && data?.key) {
+                await conn.sendMessage(
+                    data.chatId,
+                    {
+                        text: `✅ *${global.namebot} está en línea nuevamente* 🚀`,
+                        edit: data.key
+                    }
+                );
+            }
+            fs.unlinkSync(file);
+        } catch (e) {
+            log.error(`Error leyendo lastRestarter: ${e.message}`);
         }
+    }
+}
 
         if (connection === 'close') {
             const reason = lastDisconnect?.error?.output?.statusCode;
