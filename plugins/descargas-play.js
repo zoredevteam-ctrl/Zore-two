@@ -7,7 +7,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   if (!query) {
     await conn.sendMessage(
       msg.chat,
-      { text: `❌ Error:\nDebes escribir el nombre del video.` },
+      { text: `❌ *Error:*\n> Debes escribir el nombre del video.` },
       { quoted: msg }
     )
 
