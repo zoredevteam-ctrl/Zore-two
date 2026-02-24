@@ -1,20 +1,22 @@
-import { exec } from 'child_process';
+import speed from 'performance-now'
+import { exec } from 'child_process'
 
 let handler = async (m, { conn }) => {
-    let old = Date.now();
-    let sent = await m.reply('🌸 *Hmph... a ver qué tan rápido soy, darling~*');
-    let speed = (Date.now() - old).toFixed(4);
+    let timestamp = speed()
+    let sentMsg = await m.reply('🌸 *Hmph... calculando mi poder, darling~*')
+    let latency = speed() - timestamp
 
-    exec('echo pong', (err, stdout, stderr) => {
-        if (err) return;
-        if (stderr) console.warn(stderr);
+    exec('neofetch --stdout', (error, stdout, stderr) => {
+        let child = stdout.toString('utf-8')
+        let ssd = child.replace(/Memory:/, 'Ram:')
 
-        conn.editMsg(m.chat, sent.key.id, `🍬 *¡PONG, darling~!* 🏓\n\n🌸 *Velocidad:* ${speed} ms\n💢 ¡Más rápida que cualquier otro estampi, hmph~!`);
-    });
+        let result = `🍬 *¡PONG, darling~!* 🏓🌸\n💢 Velocidad ⴵ ${latency.toFixed(4).split('.')[0]}ms\n${ssd}`
+        conn.sendMessage(m.chat, { text: result, edit: sentMsg.key }, { quoted: m })
+    })
 }
 
-handler.help = ['ping'];
-handler.tags = ['main'];
-handler.command = ['ping'];
+handler.help = ['ping']
+handler.tags = ['main']
+handler.command = ['ping']
 
-export default handler;
+export default handler
