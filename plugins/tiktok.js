@@ -1,75 +1,85 @@
-import fetch from 'node-fetch'
-import { safeFilename } from './_utils.js'
+import fetch from 'node-fetch';
+import chalk from 'chalk';
 
-async function tiktokdl(url) {
-  const api = `https://www.tikwm.com/api/?url=${encodeURIComponent(url)}&hd=1`
-  return await (await fetch(api)).json()
-}
+const HEADER = `𖤐 ❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎'𝐒 𝐓𝐈𝐊𝐓𝐎𝐊 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 💗`;
 
-export default async function (m, { conn, args, usedPrefix, command }) {
+const buildCaption = (data) => `${HEADER}
 
-  if (!args[0]) {
-    return conn.sendMessage(m.chat, { 
-      text: `🩷✨ *Hey Darling~* ✨🩷\n\n` +
-            `Necesito un enlace de TikTok para poder cazar el video~ 🦴\n\n` +
-            `✧ Uso correcto:\n` +
-            `➤ ${usedPrefix + command} <enlace>\n\n` +
-            `Ejemplo:\n${usedPrefix + command} https://vm.tiktok.com/ZMkcmTCa6/`
-    }, { quoted: m })
-  }
+✦ *Título:* ${data.title || 'Sin título, darling~'}
+✦ *Autor:* ${data.author?.nickname || data.author?.unique_id || 'Un fantasma como yo'} ${data.author?.unique_id ? `(@${data.author.unique_id})` : ''}
+✦ *Duración:* ${data.duration || 'Eterno, como mi amor por ti'}
+✦ *Likes:* ${(data.stats?.likes || 0).toLocaleString()} 💗
+✦ *Comentarios:* ${(data.stats?.comments || 0).toLocaleString()}
+✦ *Vistas:* ${(data.stats?.views || data.stats?.plays || 0).toLocaleString()}
+✦ *Compartidos:* ${(data.stats?.shares || 0).toLocaleString()}
+✦ *Fecha:* ${data.created_at || 'Del pasado, darling'}`.trim();
 
-  if (!/(tiktok\.com)/i.test(args[0])) {
-    return conn.sendMessage(m.chat, { 
-      text: `❤️‍🔥 Darling… eso no es un enlace válido de TikTok.\n` +
-            `No juegues conmigo~`
-    }, { quoted: m })
-  }
+const buildSearchCaption = (v) => `${HEADER}
 
-  const data = await tiktokdl(args[0]).catch(() => null)
-  if (!data || !data.data) {
-    return conn.sendMessage(m.chat, { 
-      text: `💔 Mmm… algo salió mal Darling.\n` +
-            `No pude obtener el video… intenta con otro enlace.`
-    }, { quoted: m })
-  }
+✦ *Título:* ${v.title || 'Sin título, darling~'}
+✦ *Autor:* ${v.author?.nickname || 'Un darling desconocido'} ${v.author?.unique_id ? `(@${v.author.unique_id})` : ''}
+✦ *Duración:* ${v.duration || 'Eterno, como mi amor por ti'}
+✦ *Likes:* ${(v.stats?.likes || 0).toLocaleString()} 💗
+✦ *Comentarios:* ${(v.stats?.comments || 0).toLocaleString()}
+✦ *Vistas:* ${(v.stats?.views || 0).toLocaleString()}
+✦ *Compartidos:* ${(v.stats?.shares || 0).toLocaleString()}`.trim();
 
-  const info = data.data
-  const title = info.title || 'Video de TikTok'
-  const videoURL = info.play || info.wmplay
-  const thumbnail = info.cover || info.origin_cover || null
+export default {
+  command: ['tiktok', 'tt', 'tiktoksearch', 'ttsearch', 'tts'],
+  category: 'downloader',
+  run: async (client, m, args) => {
+    if (!args.length) {
+      return m.reply(`💗 Darling, dame un enlace o algo pa buscar en TikTok...`);
+    }
 
-  if (!videoURL) {
-    return conn.sendMessage(m.chat, { 
-      text: `⚠️ No encontré un enlace de descarga disponible…\n` +
-            `Qué extraño~`
-    }, { quoted: m })
-  }
+    const text = args.join(" ");
+    const isUrl = /tiktok\.com/.test(text);
 
-  const details = 
-`╭─〔 💗 ZERO TWO DOWNLOADER 💗 〕─╮
-│
-│ 🏷️ *Título:* ${title}
-│ ⏳ *Duración:* ${info.duration || 'Desconocida'}
-│ 🎞️ *Formato:* MP4
-│
-╰───────────────╯
-❤️‍🔥 Aquí tienes tu video, Darling~`
+    const endpoint = isUrl
+      ? `${global.apiConfigs.stellar.baseUrl}/dl/tiktok?url=${encodeURIComponent(text)}&key=${global.apiConfigs.stellar.key}`
+      : `${global.apiConfigs.stellar.baseUrl}/search/tiktok?query=${encodeURIComponent(text)}&key=${global.apiConfigs.stellar.key}`;
 
-  if (thumbnail) {
-    await conn.sendMessage(m.chat, { 
-      image: { url: thumbnail }, 
-      caption: details 
-    }, { quoted: m })
-  } else {
-    await conn.sendMessage(m.chat, { 
-      text: details 
-    }, { quoted: m })
-  }
+    try {
+      console.log(chalk.yellow(`[TT] Fetching: ${endpoint}`));
 
-  await conn.sendMessage(m.chat, { 
-    video: { url: videoURL }, 
-    mimetype: 'video/mp4', 
-    fileName: `${safeFilename(title)}.mp4`, 
-    caption: `🩷 Disfrútalo Darling~`
-  }, { quoted: m })
+      const res = await fetch(endpoint);
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+
+      const json = await res.json();
+      if (!json.status) return m.reply('💗 No encontré nada, darling.');
+
+      if (isUrl) {
+        const { title, duration, dl, author, stats, created_at } = json.data;
+        if (!dl) return m.reply('💗 No hay descarga disponible.');
+
+        const caption = buildCaption({ title, duration, author, stats, created_at });
+
+        const videoUrl = Array.isArray(dl) ? dl[0] : dl;
+
+        await client.sendMessage(
+          m.chat,
+          { video: { url: videoUrl }, caption },
+          { quoted: m }
+        );
+      } else {
+        const results = json.data?.filter(v => v.dl);
+        if (!results?.length) return m.reply('💗 No encontré resultados.');
+
+        const first = results[0];
+
+        await client.sendMessage(
+          m.chat,
+          {
+            video: { url: first.dl },
+            caption: buildSearchCaption(first)
+          },
+          { quoted: m }
+        );
       }
+
+    } catch (e) {
+      console.error(chalk.red(`[TT ERROR] ${e.message}`));
+      await m.reply(`💗 Algo salió mal... Error: ${e.message}`);
+    }
+  },
+};
