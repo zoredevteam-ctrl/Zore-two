@@ -1,17 +1,15 @@
 import fs from 'fs'
 import path from 'path'
 
-var handler = async (m, { usedPrefix, command }) => {
+let handler = async (m, { conn }) => {
     try {
-        await m.react('🔍') 
-        conn.sendPresenceUpdate('composing', m.chat)
+        await m.react('🔍')
 
         const pluginsDir = './plugins'
-
         const files = fs.readdirSync(pluginsDir).filter(file => file.endsWith('.js'))
 
-        let response = `✨ *Detección de Errores - María Kujou* ✨\n\n`
-        response += `🎀 Revisando ${files.length} archivos...\n`
+        let response = `✨ *Detección de Errores - Zero Two* ✨\n\n`
+        response += `🌸 Revisando ${files.length} archivos, darling...\n`
         response += `━━━━━━━━━━━━━━━━━━━\n\n`
 
         let hasErrors = false
@@ -24,11 +22,10 @@ var handler = async (m, { usedPrefix, command }) => {
                 hasErrors = true
                 errorCount++
                 const stackLines = error.stack.split('\n')
-
-                const errorLineMatch = stackLines[0].match(/:(\d+):\d+/) 
+                const errorLineMatch = stackLines[0].match(/:(\d+):\d+/)
                 const errorLine = errorLineMatch ? errorLineMatch[1] : 'Desconocido'
 
-                response += `💔 *Error encontrado* (◕︿◕✿)\n\n`
+                response += `💔 *Error encontrado*\n\n`
                 response += `📁 *Archivo:* ${file}\n`
                 response += `📝 *Mensaje:* ${error.message}\n`
                 response += `📍 *Línea:* ${errorLine}\n`
@@ -37,23 +34,21 @@ var handler = async (m, { usedPrefix, command }) => {
         }
 
         if (!hasErrors) {
-            response += `🌸 *¡Todo perfecto, onii-chan!* (｡♥‿♥｡)\n\n`
+            response += `🌸 *¡Todo perfecto, darling!*\n\n`
             response += `✨ No se detectaron errores de sintaxis\n`
-            response += `💖 Todos los ${files.length} archivos están funcionando correctamente\n`
-            response += `🎀 ¡Arigatou gozaimasu! ヾ(≧▽≦*)o`
+            response += `💗 Todos los ${files.length} archivos están funcionando correctamente~`
         } else {
-            response += `😢 *Resumen de errores:*\n\n`
+            response += `💢 *Resumen de errores:*\n\n`
             response += `❌ Total de errores: ${errorCount}\n`
             response += `📂 Archivos revisados: ${files.length}\n`
-            response += `💭 Por favor, revisa los archivos mencionados (つω\`･)\n`
-            response += `✨ ¡Ganbatte kudasai! ｡◕‿◕｡`
+            response += `💗 Revisa los archivos mencionados, darling~`
         }
 
-        await conn.reply(m.chat, response, m)
-        await m.react(hasErrors ? '💔' : '💖')
+        await m.reply(response)
+        await m.react(hasErrors ? '💔' : '💗')
     } catch (err) {
-        await m.react('😭') 
-        await conn.reply(m.chat, `😢 *¡Oh no!* (´；ω；\｀)\n\n❌ Ocurrió un error inesperado:\n\n📝 *Error:* ${err.message}\n\n💭 *Gomen nasai, onii-chan...*`, m)
+        await m.react('💔')
+        await m.reply(`💔 Darling, algo salió mal...\n\n📝 *Error:* ${err.message}`)
     }
 }
 
