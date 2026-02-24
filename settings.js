@@ -6,12 +6,13 @@ const scriptPath = fileURLToPath(import.meta.url);
 
 // ========== OWNERS ==========
 global.owner = [
-  ['573135180876', 'Jose', true],   // Root Owner
+  ['573135180876', 'Dev1', true],   // Root Owner
   ['524444854390', 'Dev2', true],
   ['59175850453', 'Dev3', true],
   ['584242773183', 'Dev4', true],
   ['5493863447787', 'Dev5', true],
   ['573107400303', 'Dev6', true],
+  ['573229506110','Duarte',true],
 ];
 
 global.prems = [];
