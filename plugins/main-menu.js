@@ -53,8 +53,9 @@ ${cmds.map(c => `  💗 ${global.prefix}${c}`).join('\n')}
 🌸 *Bot:* ${global.botname}
 💢 *Comandos:* ${totalCmds} disponibles
 
-❝ Hmph... más te vale usarlos bien,
-o no te lo perdonaré, darling~ 💗 ❞
+❝ Hmph... 𝘀𝗲𝗺𝗽𝗮𝗶𝗶 𝗿𝗲𝗰𝘂𝗲𝗿𝗱𝗮,
+𝘂́𝘀𝗮𝗿𝗺𝗲 𝗯𝗶𝗲𝗻 𝗼 𝗻𝗼 𝘁𝗲 𝗹𝗼 𝗽𝗲𝗿𝗱𝗼𝗻𝗮𝗿𝗲 (ʘᴗʘ✿), darling~ 💗 ❞
+
 
 ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦
 
