@@ -3,6 +3,11 @@
 ![Zero Two Banner](https://causas-files.vercel.app/fl/9vs2.jpg)  
 *(La waifu rosa con cuernos más peligrosa y cute – power by Aarom 💗)*
 
+> [!IMPORTANT]
+> **Este proyecto está en constante evolución. Estamos comprometidos en ofrecer a nuestra comunidad un Bot increíble. [¡Únete a nuestro nuevo canal!](https://)**
+
+
+
 ## Descripción
 
 Zore Two Bot es un bot multi-dispositivo para WhatsApp, construido desde cero con Baileys, inspirado en **Zero Two** de Darling in the Franxx. Trae comandos para descargas rápidas,sockets. ¡Darling, únete y no me dejes sola, o muerdo~ 🔥
