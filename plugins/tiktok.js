@@ -24,9 +24,7 @@ const buildSearchCaption = (v) => `${HEADER}
 ✦ *Compartidos:* ${(v.stats?.shares || 0).toLocaleString()}
 ✦ *Audio:* ${v.music?.title || `[${v.author?.nickname || 'No disponible'}] original sound - ${v.author?.unique_id || 'unknown'}`}`.trim();
 
-let handler = async (m, { conn }) => {
-    const text = m.text?.trim();
-
+let handler = async (m, { conn, text }) => {
     if (!text)
         return m.reply('💗 Darling, dame un enlace o algo pa buscar en TikTok... No muerdas el aire~');
 
