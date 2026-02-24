@@ -1,4 +1,4 @@
-```markdown
+markdown
 # 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 🌸
 
 <div align="center">
@@ -72,4 +72,3 @@ Escanea el QR o usa el código de emparejamiento para vincular.
 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 💗 — *No me dejes sola, ¿eh?*
 
 </div>
-```
