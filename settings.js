@@ -1,4 +1,4 @@
-```js
+js
 import { watchFile, unwatchFile } from 'fs';
 import chalk from 'chalk';
 import { fileURLToPath } from 'url';
@@ -74,4 +74,3 @@ function watchSettings() {
 
 loadSettings();
 watchFile(scriptPath, { interval: 1000 }, watchSettings);
-```
