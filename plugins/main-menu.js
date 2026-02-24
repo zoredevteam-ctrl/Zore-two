@@ -1,9 +1,8 @@
 import fs from 'fs'
 import fetch from 'node-fetch'
 
-let handler = async (m, { conn }) => {
+let handler = async (m, { conn, prefix }) => {
     try {
-        const prefix = Array.isArray(global.prefix) ? global.prefix[0] : global.prefix
         const botname = global.botname || global.botName || 'Zero Two'
 
         const pluginFiles = fs.readdirSync('./plugins').filter(file => file.endsWith('.js'))
@@ -29,7 +28,7 @@ let handler = async (m, { conn }) => {
 
         let seccionesTexto = Object.entries(grouped).map(([tag, cmds]) =>
 `𖤐 *${tag.toUpperCase()}*
-${cmds.map(c => `  💗 ${prefix}${c}`).join('\n')}
+${cmds.map(c => `  💗 ${c}`).join('\n')}
 `
         ).join('\n')
 
