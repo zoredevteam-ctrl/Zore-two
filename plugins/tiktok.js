@@ -1,16 +1,17 @@
 import fetch from 'node-fetch'
 
-export const command = ['tiktok','tt']
-export const category = ['downloader']
+export default async function tiktok(client, m, args) {
 
-export default async function (client, m, args) {
+  if (!m.text.startsWith('.tt') && !m.text.startsWith('/tt') && !m.text.startsWith('#tt')) {
+    return
+  }
 
   if (!args[0]) {
     return m.reply('💗 Envíame un enlace de TikTok.')
   }
 
-  const url = args[0]
   const api = global.apiConfigs.stellar
+  const url = args[0]
 
   try {
 
@@ -33,11 +34,11 @@ export default async function (client, m, args) {
 
     await client.sendMessage(m.chat, {
       video: { url: video },
-      caption: `💗 *${data.title || 'TikTok descargado'}*`
+      caption: `💗 ${data.title || 'TikTok descargado'}`
     }, { quoted: m })
 
-  } catch (e) {
-    console.log(e)
-    m.reply('Dame pene mi Darling hermoso.')
+  } catch (err) {
+    console.log(err)
+    m.reply('💗 Darling Dame pene por fis error.')
   }
 }
