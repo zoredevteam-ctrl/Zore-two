@@ -13,7 +13,6 @@ const __dirname = path.dirname(__filename)
 
 if (!Array.isArray(global.conns)) global.conns = []
 
-// ========== CONFIGURACIÓN ==========
 const MAX_SUBBOTS = 10
 const MAX_PER_USER = 2
 const COOLDOWN_MS = 120000
@@ -31,7 +30,6 @@ const JADIBOT_CODES = [
 
 const getRandomCode = () => JADIBOT_CODES[Math.floor(Math.random() * JADIBOT_CODES.length)]
 
-// ========== MENSAJES ==========
 const msgCodigo = (nombre) =>
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
     `ꕥ *CONEXIÓN SUBBOT* ꕥ\n` +
@@ -55,7 +53,6 @@ const msgExito = (nombre) =>
     `> ꕦ Bot: *${global.botName}*\n\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
 
-// ========== UTILS ==========
 function cleanPhone(phone) {
     if (!phone) return null
     const cleaned = phone.replace(/[^0-9]/g, '')
@@ -88,7 +85,6 @@ function removeFromPool(sock) {
     }
 }
 
-// ========== LIMPIEZA AUTOMÁTICA ==========
 setInterval(() => {
     try {
         if (!global.conns.length) return
@@ -110,12 +106,10 @@ setInterval(() => {
     }
 }, 60000)
 
-// ========== HANDLER PRINCIPAL ==========
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     const userId = m.sender
     const now = Date.now()
 
-    // Cooldown
     const lastUse = database.data.users?.[userId]?.lastSubbot || 0
     if (now - lastUse < COOLDOWN_MS) {
         const remaining = msToTime(COOLDOWN_MS - (now - lastUse))
@@ -125,7 +119,6 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         )
     }
 
-    // Límite global
     const activeCount = global.conns.filter(c => isSocketReady(c)).length
     if (activeCount >= MAX_SUBBOTS) {
         return m.reply(
@@ -135,7 +128,6 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         )
     }
 
-    // Límite por usuario
     const userPhone = cleanPhone(m.sender)
     if (userPhone) {
         const userCount = global.conns.filter(c =>
@@ -167,7 +159,6 @@ handler.command = ['code', 'serbot']
 
 export default handler
 
-// ========== INICIAR SUBBOT ==========
 async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
     const sessionId = path.basename(sessionPath)
     let sock = null
@@ -203,21 +194,19 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
 
             const nombre = m.pushName || 'Usuario'
 
-            // Código de 8 dígitos - solo una vez
             if (qr && !sock.codeSent) {
                 sock.codeSent = true
                 const pairKey = getRandomCode()
                 let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
                 secret = secret?.match(/.{1,4}/g)?.join('-') || secret
                 txtCode = await conn.sendMessage(m.chat, { text: msgCodigo(nombre) }, { quoted: m })
-                codeBot = await conn.sendMessage(m.chat, { text: `*${secret}*` }, { quoted: m })
+                codeBot = await conn.sendMessage(m.chat, { text: secret }, { quoted: m })
                 console.log(chalk.hex('#ff1493')(`\nꕤ Código generado para ${nombre}: ${secret} (${pairKey})\n`))
 
                 if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }), 60000)
                 if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }), 60000)
             }
 
-            // Desconexión
             if (connection === 'close') {
                 const reason = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
                 const reconnectReasons = [428, 408, 500, 515]
@@ -236,7 +225,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
                 }
             }
 
-            // Conectado
             if (connection === 'open') {
                 console.log(chalk.hex('#ff1493')(
                     `\nꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
@@ -275,7 +263,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
                 sock.codeSent = false
             }
 
-            // ✅ FIX: solo hace .off() si el listener ya fue asignado
             if (!sock.isInit) {
                 if (typeof sock.handler === 'function') sock.ev.off('messages.upsert', sock.handler)
                 if (typeof sock.connectionUpdate === 'function') sock.ev.off('connection.update', sock.connectionUpdate)
@@ -314,7 +301,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
             return true
         }
 
-        // ✅ FIX: eliminados los listeners directos, solo usamos creloadHandler
         creloadHandler(false)
 
     } catch (e) {
