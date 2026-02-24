@@ -1,4 +1,3 @@
-
 # 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 🌸
 
 <div align="center">
@@ -9,6 +8,7 @@
 
 [![Canal](https://img.shields.io/badge/WhatsApp-Canal-25D366?style=for-the-badge&logo=whatsapp)](https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y)
 [![GitHub](https://img.shields.io/badge/GitHub-Repo-181717?style=for-the-badge&logo=github)](https://github.com/zoredevteam-ctrl/Zore-two.git)
+[![Creador](https://img.shields.io/badge/GitHub-Danielalejandrobasado--glitch-181717?style=for-the-badge&logo=github)](https://github.com/danielalejandrobasado-glitch)
 
 </div>
 
@@ -30,7 +30,6 @@
 - 🍬 **Prefijo:** `.` `#` `/`
 - 📦 **Comandos por categorías:** menú, ping, stickers, descargas y más
 - 🔖 **Versión:** ^1.0 Latest
-- 👑 **Dueños:** 573135180876, 524444854390, 59175850453, 584242773183, 5493863447787, 573107400303
 - 🖼️ **Banner/Icono:** cámbialos con `.setbanner` / `.seticon`
 - 💾 **Sesión:** persistente con MultiFileAuthState
 
@@ -57,7 +56,7 @@ Escanea el QR o usa el código de emparejamiento para vincular.
 
 ---
 
-## 💗 Créditos
+## <img src="https://cdn3.emoji.gg/emojis/4045-crown.gif" width="30"/> Créditos
 
 - 👨‍💻 Power by **Aarom**
 - 🌸 Inspirado en **Zero Two** – *Darling in the FranXX*
