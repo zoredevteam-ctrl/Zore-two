@@ -1,62 +1,42 @@
-import fs from 'fs'
-import { exec } from 'child_process'
+import { exec } from 'child_process';
 
 let handler = async (m, { conn }) => {
-  const restarterFile = './lastRestarter.json'
+  const emoji = '🌸';
+  const emoji2 = '💢';
+  const emoji4 = '🍬';
+  const msm = '💔';
 
-  await conn.sendMessage(m.chat, {
-    react: { text: '🔄', key: m.key }
-  })
+  m.reply(`${emoji2} Actualizando para mi darling... espera un momento~ 🌸`);
 
-  exec('git pull', async (err, stdout, stderr) => {
+  exec('git pull', (err, stdout, stderr) => {
     if (err) {
-      return conn.sendMessage(
-        m.chat,
-        { text: `❌ Error al actualizar:\n${err.message}` },
-        { quoted: m }
-      )
+      conn.reply(m.chat, `${msm} Hmph... algo salió mal, darling. Déjame intentarlo a la fuerza~ 💢`, m);
+      exec('git reset --hard origin/main && git pull', (err2, stdout2, stderr2) => {
+        if (err2) {
+          conn.reply(m.chat, `${msm} Ni siquiera yo pude lograrlo, darling...\nRazón: ${err2.message} 💔`, m);
+          return;
+        }
+
+        if (stderr2) console.warn(stderr2);
+
+        conn.reply(m.chat, `🌸 Lo hice a mi manera y funcionó, darling~\n\n${stdout2}`, m);
+      });
+      return;
     }
 
-    const output = (stdout || stderr || '').trim()
+    if (stderr) console.warn(stderr);
 
-    if (/Already up to date/i.test(output)) {
-      return conn.sendMessage(
-        m.chat,
-        { text: `✅ *${global.namebot} ya está en la última versión.*` },
-        { quoted: m }
-      )
+    if (stdout.includes('Already up to date.')) {
+      conn.reply(m.chat, `${emoji4} Todo ya estaba en orden, darling~ No había nada que actualizar. 🍬`, m);
+    } else {
+      conn.reply(m.chat, `${emoji} Actualización completada con éxito, darling~! 🌸\n\n${stdout}`, m);
     }
+  });
+};
 
-    const msg = await conn.sendMessage(
-      m.chat,
-      {
-        text:
-          `✅ *Actualización completada*\n\n` +
-          `${output}\n\n` +
-          `♻️ Reiniciando ${global.namebot}...`
-      },
-      { quoted: m }
-    )
+handler.help = ['update'];
+handler.tags = ['owner'];
+handler.command = ['update'];
+handler.rowner = true;
 
-    fs.writeFileSync(
-      restarterFile,
-      JSON.stringify(
-        {
-          chatId: m.chat,
-          key: msg.key
-        },
-        null,
-        2
-      )
-    )
-
-    setTimeout(() => process.exit(1), 3000)
-  })
-}
-
-handler.command = ['carga', 'update']
-handler.help = ['Update']
-handler.tags = ['OWNER']
-handler.owner = false
-
-export default handler
+export default handler;
