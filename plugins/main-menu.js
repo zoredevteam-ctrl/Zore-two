@@ -54,7 +54,7 @@ ${cmds.map(c => `  💗 ${global.prefix}${c}`).join('\n')}
 💢 *Comandos:* ${totalCmds} disponibles
 
 ❝ Hmph... más te vale usarlos bien,
-úsalos bien o no te lo perdonaré, darling~ 💗 ❞
+o no te lo perdonaré, darling~ 💗 ❞
 
 ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦
 
@@ -64,6 +64,7 @@ ${seccionesTexto}
 
         const response = await fetch('https://causas-files.vercel.app/fl/9vs2.jpg')
         const buffer = await response.buffer()
+        const base64 = buffer.toString('base64')
 
         await conn.sendMessage(m.chat, {
             document: buffer,
@@ -72,7 +73,7 @@ ${seccionesTexto}
             fileLength: 2199023255552,
             pageCount: 2026,
             caption: menuTexto,
-            jpegThumbnail: buffer,
+            jpegThumbnail: base64,
             mentions: [m.sender]
         }, { quoted: m })
 
