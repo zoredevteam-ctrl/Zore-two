@@ -11,8 +11,8 @@ let handler = async (m, { conn }) => {
             who = m.sender
         }
 
-        let name = conn.getName(who)
-        let name2 = conn.getName(m.sender)
+        let name = who.split('@')[0]
+        let name2 = m.pushName || m.sender.split('@')[0]
 
         let str
         if (m.mentionedJid?.length > 0) {
@@ -55,6 +55,7 @@ let handler = async (m, { conn }) => {
 
         await m.react('💋')
     } catch (e) {
+        console.error(e)
         await m.react('💔')
         m.reply('💔 Darling, algo salió mal enviando el beso~')
     }
