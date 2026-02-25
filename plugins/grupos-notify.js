@@ -1,6 +1,4 @@
-import { generateWAMessageFromContent } from '@whiskeysockets/baileys'
-
-let handler = async (m, { conn, args }) => {
+const handler = async (m, { conn, args }) => {
     const text = args.join(' ')
 
     if (!m.quoted && !text) return m.reply('💗 Darling, escribe un mensaje para notificar a todos~')
@@ -12,7 +10,7 @@ let handler = async (m, { conn, args }) => {
         await conn.sendMessage(m.chat, {
             text: text || m.quoted?.text || m.quoted?.caption || '💗',
             mentions: users
-        }, { quoted: null })
+        })
 
     } catch (e) {
         console.error(e)
