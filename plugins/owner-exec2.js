@@ -3,22 +3,20 @@ import { promisify } from 'util'
 
 const exec = promisify(_exec).bind(cp)
 
-let handler = async (m, { conn, args }) => {
+let handler = async (m, { conn, command, args }) => {
     const text = args.join(' ')
-    if (!text) return m.reply('💗 Darling, ingresa un comando a ejecutar~')
 
-    await m.react('⏳')
+    await m.reply('💗 *Ejecutando, darling~*')
 
     let o
     try {
-        o = await exec(text)
+        o = await exec(command.trimStart() + ' ' + text.trimEnd())
     } catch (e) {
         o = e
     } finally {
         const { stdout, stderr } = o
         if (stdout?.trim()) await m.reply(stdout.trim())
         if (stderr?.trim()) await m.reply(stderr.trim())
-        await m.react('✅')
     }
 }
 
@@ -26,6 +24,6 @@ handler.help = ['$']
 handler.tags = ['owner']
 handler.customPrefix = ['$']
 handler.command = new RegExp
-handler.rowner = true
+handler.owner = true
 
 export default handler
