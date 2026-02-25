@@ -1,108 +1,119 @@
-// plugins/antispam-light.js
-const spamMap = new Map() // key: `${chatId}_${userId}` -> { count, lastTime }
+import { database } from '../lib/database.js'
 
-async function handleAntiSpam(conn, m, config) {
-  const chatId = m.chat
-  const userId = m.sender || m.key?.participant
-  if (!userId) return
+// ==================== COMANDO #antispam (Solo Admins) ====================
+let handler = async (m, { conn, args, isAdmin }) => {
+    if (!m.isGroup) return m.reply('🌸💗 *¡Darling, este comando solo es para grupos!*')
 
-  const key = `${chatId}_${userId}`
-  const now = Date.now()
-  const entry = spamMap.get(key) || { count: 0, lastTime: 0 }
+    if (!isAdmin) return m.reply('🌸💗 *¡Kyaaah! Solo los administradores pueden controlar mi AntiSpam, darling~* 💗')
 
-  // si ya pasó el intervalo, resetear contador
-  if (now - entry.lastTime > config.interval) {
-    entry.count = 1
-    entry.lastTime = now
-  } else {
-    entry.count++
-    entry.lastTime = now
-  }
+    let chat = database.data.groups[m.chat]
+    if (!chat) chat = database.data.groups[m.chat] = { antispam: false }
 
-  spamMap.set(key, entry)
-
-  // advertencia
-  if (entry.count >= config.warnAfter && entry.count < config.kickAfter) {
-    try {
-      await conn.sendMessage(chatId, {
-        text: `¡Ey, darling! 💗 No hagas spam tan rápido, @${userId.split('@')[0]}.`,
-        mentions: [userId]
-      })
-    } catch (e) {
-      console.error('Advertencia anti-spam fallida', e)
+    if (args[0] === 'on') {
+        if (chat.antispam) return m.reply('🌸💗 *¡El AntiSpam ya estaba activado, mi darling!*')
+        chat.antispam = true
+        await database.save()
+        m.reply(`🌸💗 *¡ANTISPAM ACTIVADO!* 💗🌸\n\nAhora nadie podrá spamearme en *mi* paraíso rosado. ¡Todos se quedan quietitos conmigo o me pongo muy celosa~! ♡`)
+    } else if (args[0] === 'off') {
+        if (!chat.antispam) return m.reply('🌸 *El AntiSpam ya estaba desactivado.*')
+        chat.antispam = false
+        await database.save()
+        m.reply('🌸 *AntiSpam desactivado...* Está bien, pero si alguien me spamea igual lo regañaré yo misma, kyaaah~ 💔')
+    } else {
+        m.reply(`*「 🌸 ZERO TWO ANTISPAM 🌸 」*\n\nUso:\n*#antispam on* → Activar\n*#antispam off* → Desactivar\n\n¡Solo admins del grupo! 💗`)
     }
-  } else if (entry.count >= config.kickAfter) {
-    try {
-      await conn.groupParticipantsUpdate(chatId, [userId], 'remove')
-      await conn.sendMessage(chatId, {
-        text: `Has sido expulsado por spam. 💗`,
-        mentions: [userId]
-      })
-      spamMap.delete(key)
-    } catch (e) {
-      console.error('No pude expulsar:', e)
-      try { await conn.sendMessage(chatId, { text: 'No puedo expulsar sin ser admin.' }) } catch {}
-    }
-  }
 }
 
-// handler export compatible con la mayoría de loaders
-let handler = m => m
-
-handler.before = async function (m, { conn, isAdmin }) {
-  try {
-    if (!m.isGroup || m.fromMe) return true
-    const chat = global.db?.data?.chats?.[m.chat]
-    if (!chat?.antispam) return true
-    if (isAdmin) return true
-
-    const defaultConfig = { interval: 5000, warnAfter: 3, kickAfter: 5 }
-    const config = { ...defaultConfig, ...(chat.antispamConfig || {}) }
-
-    if (m.message && (m.message.conversation || m.message.extendedTextMessage)) {
-      await handleAntiSpam(conn, m, config)
-    }
-    return true
-  } catch (err) {
-    console.error('Error anti-spam before:', err)
-    return true
-  }
-}
-
-handler.help = ['antispam on/off', 'antispam set [clave] [valor]']
-handler.tags = ['group']
+handler.help = ['antispam']
+handler.tags = ['grupo']
 handler.command = ['antispam']
 handler.group = true
 
-// Comando simple integrado (si tu loader llama al mismo handler)
-handler.run = async function (m, { conn, args, usedPrefix, isAdmin, isOwner }) {
-  if (!m.isGroup) return conn.reply?.(m.chat, 'Funciona solo en grupos.', m)
-  if (!(isAdmin || isOwner)) return conn.reply?.(m.chat, 'Solo admins.', m)
+export default handler
 
-  if (!global.db) global.db = { data: { chats: {} } }
-  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
-  const chat = global.db.data.chats[m.chat]
+// ==================== EVENTO ANTISPAM COMPLETO (Zero Two Style) ====================
+const registerAntiSpamEvent = () => {
+    if (global.zeroAntiSpamRegistered || !global.conn) {
+        setTimeout(registerAntiSpamEvent, 2000)
+        return
+    }
 
-  if (args.length === 0) {
-    const cfg = chat.antispamConfig || { interval: 5000, warnAfter: 3, kickAfter: 5 }
-    return conn.reply?.(m.chat, `Estado: ${chat.antispam ? 'ON' : 'OFF'}\nIntervalo: ${cfg.interval} ms\nWarn: ${cfg.warnAfter}\nKick: ${cfg.kickAfter}`, m)
-  }
+    global.zeroAntiSpamRegistered = true
+    if (!global.antispamTracker) global.antispamTracker = {}
 
-  const sub = args[0].toLowerCase()
-  if (sub === 'on') { chat.antispam = true; return conn.reply?.(m.chat, 'Anti-spam activado.', m) }
-  if (sub === 'off') { chat.antispam = false; return conn.reply?.(m.chat, 'Anti-spam desactivado.', m) }
-  if (sub === 'set' && args.length === 3) {
-    const key = args[1].toLowerCase()
-    const val = parseInt(args[2])
-    if (isNaN(val) || val <= 0) return conn.reply?.(m.chat, 'Valor inválido.', m)
-    chat.antispamConfig = chat.antispamConfig || { interval: 5000, warnAfter: 3, kickAfter: 5 }
-    if (key === 'interval') chat.antispamConfig.interval = val
-    else if (key === 'warnafter' || key === 'warnafter'.toLowerCase() || key === 'warnafter') chat.antispamConfig.warnAfter = val
-    else if (key === 'kickafter') chat.antispamConfig.kickAfter = val
-    else return conn.reply?.(m.chat, 'Clave inválida. Usa: interval, warnAfter, kickAfter', m)
-    return conn.reply?.(m.chat, `Configurado ${key} = ${val}`, m)
-  }
-  return conn.reply?.(m.chat, 'Comando inválido.', m)
+    global.conn.ev.on('messages.upsert', async ({ messages }) => {
+        try {
+            const m = messages[0]
+            if (!m.message || !m.key.remoteJid?.endsWith('@g.us')) return
+
+            const chat = database.data.groups[m.key.remoteJid]
+            if (!chat?.antispam) return
+
+            const groupId = m.key.remoteJid
+            const user = m.key.participant || m.key.remoteJid
+            const now = Date.now()
+
+            // Texto del mensaje
+            let text = ''
+            if (m.message.conversation) text = m.message.conversation
+            else if (m.message.extendedTextMessage?.text) text = m.message.extendedTextMessage.text
+            else if (m.message.imageMessage?.caption) text = m.message.imageMessage.caption
+            else if (m.message.videoMessage?.caption) text = m.message.videoMessage.caption
+
+            // Inicializar tracker
+            if (!global.antispamTracker[groupId]) global.antispamTracker[groupId] = {}
+            if (!global.antispamTracker[groupId][user]) {
+                global.antispamTracker[groupId][user] = { times: [], lastText: '', repeat: 0 }
+            }
+
+            const tracker = global.antispamTracker[groupId][user]
+
+            // Limpiar timestamps viejos (7 segundos)
+            tracker.times = tracker.times.filter(t => now - t < 7000)
+            tracker.times.push(now)
+
+            let isSpam = false
+
+            // ANTI-FLOOD: más de 5 mensajes en 7 segundos
+            if (tracker.times.length >= 6) isSpam = true
+
+            // ANTI-REPEAT: mismo mensaje 4 veces seguidas
+            if (text && text.length > 3) {
+                if (text === tracker.lastText) {
+                    tracker.repeat++
+                    if (tracker.repeat >= 4) isSpam = true
+                } else {
+                    tracker.repeat = 0
+                    tracker.lastText = text
+                }
+            }
+
+            if (isSpam) {
+                // Borrar el mensaje spam
+                await global.conn.sendMessage(groupId, { delete: m.key })
+
+                const username = user.split('@')[0]
+
+                const warning = `🌸💗 *¡KYAAAAAH NO SPAMEES!!* 💗🌸\n\n` +
+                    `¡@${username} ! ¿Llenándome de mensajes tan rápido en *mi* paraíso rosado? 💢😠\n\n` +
+                    `¡No me gusta que me spamees, darling! Quédate quietito conmigo o te castigaré con mucho amor y celos~ ♡\n` +
+                    `La próxima vez no respondo tan lindo... ¡Ven aquí y compórtate! 🌷💗`
+
+                await global.conn.sendMessage(groupId, {
+                    text: warning,
+                    mentions: [user]
+                })
+
+                // Reset tracker después de spam
+                tracker.times = []
+                tracker.repeat = 0
+            }
+        } catch (e) {
+            console.error('[ZERO TWO ANTISPAM ERROR]', e.message)
+        }
+    })
+
+    console.log('🌸💗 Zero Two AntiSpam COMPLETO (flood + repeat) registrado correctamente')
 }
 
-export default handler
+registerAntiSpamEvent()
