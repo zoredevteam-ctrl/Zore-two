@@ -50,7 +50,7 @@ const msgExito = (nombre) =>
     `ꙮ *¡${nombre} conectado!*\n\n` +
     `> ꕦ Usuario: *${nombre}*\n` +
     `> ꕦ Método: *Código*\n` +
-    `> ꕦ Bot: *${global.botname}*\n\n` +
+    `> ꕦ Bot: *${global.botName || global.botname}*\n\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
 
 function cleanPhone(phone) {
@@ -106,7 +106,7 @@ setInterval(() => {
     }
 }, 60000)
 
-const handler = async (m, { conn, args, usedPrefix, command }) => {
+const handler = async (m, { conn, args, prefix }) => {
     const userId = m.sender
     const now = Date.now()
 
@@ -137,7 +137,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply(
                 `ꕤ *LÍMITE POR USUARIO* ꕤ\n\n` +
                 `> ꕦ Ya tienes *${userCount}/${MAX_PER_USER}* SubBots activos\n` +
-                `> ꕦ Usa *${usedPrefix}stop* para desconectar uno`
+                `> ꕦ Usa *${prefix}stop* para desconectar uno`
             )
         }
     }
@@ -150,7 +150,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     database.data.users[userId].lastSubbot = now
     await database.save()
 
-    await startSubBot({ m, conn, args, usedPrefix, sessionPath })
+    await startSubBot({ m, conn, args, prefix, sessionPath })
 }
 
 handler.help = ['code', 'serbot']
@@ -159,7 +159,7 @@ handler.command = ['code', 'serbot']
 
 export default handler
 
-async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
+async function startSubBot({ m, conn, args, prefix, sessionPath }) {
     const sessionId = path.basename(sessionPath)
     let sock = null
     let txtCode, codeBot
@@ -187,62 +187,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
         sock.isInit = false
         sock.codeSent = false
         sock.sessionPath = sessionPath
-
-        async function connectionUpdate(update) {
-            const { connection, lastDisconnect, isNewLogin, qr } = update
-            if (isNewLogin) sock.isInit = false
-
-            const nombre = m.pushName || 'Usuario'
-
-            if (qr && !sock.codeSent) {
-                sock.codeSent = true
-                const pairKey = getRandomCode()
-                let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
-                secret = secret?.match(/.{1,4}/g)?.join('-') || secret
-                txtCode = await conn.sendMessage(m.chat, { text: msgCodigo(nombre) }, { quoted: m })
-                codeBot = await conn.sendMessage(m.chat, { text: secret }, { quoted: m })
-                console.log(chalk.hex('#ff1493')(`\nꕤ Código generado para ${nombre}: ${secret} (${pairKey})\n`))
-
-                if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }), 60000)
-                if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }), 60000)
-            }
-
-            if (connection === 'close') {
-                const reason = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
-                const reconnectReasons = [428, 408, 500, 515]
-                const deleteReasons = [405, 401, 403]
-
-                if (reconnectReasons.includes(reason)) {
-                    console.log(chalk.hex('#ff69b4')(`ꕤ Reconectando subbot (+${sessionId})... razón: ${reason}`))
-                    await creloadHandler(true).catch(console.error)
-                } else if (deleteReasons.includes(reason)) {
-                    console.log(chalk.hex('#ff1493')(`ꕤ Sesión (+${sessionId}) inválida. Eliminando...`))
-                    fs.rmSync(sessionPath, { recursive: true, force: true })
-                    removeFromPool(sock)
-                } else if (reason === 440) {
-                    console.log(chalk.hex('#ff1493')(`ꕤ Sesión (+${sessionId}) reemplazada.`))
-                    removeFromPool(sock)
-                }
-            }
-
-            if (connection === 'open') {
-                console.log(chalk.hex('#ff1493')(
-                    `\nꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
-                    `ꕥ ${nombre} (+${sessionId}) conectado\n` +
-                    `ꕦ Método: Código\n` +
-                    `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
-                ))
-                sock.isInit = true
-                global.conns.push(sock)
-                if (m?.chat) {
-                    await conn.sendMessage(m.chat, { text: msgExito(nombre) }, { quoted: m })
-                }
-            }
-        }
-
-        setInterval(async () => {
-            if (!sock.user) removeFromPool(sock)
-        }, 60000)
 
         let handlerModule = await import('../handler.js')
 
@@ -287,9 +231,11 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
                     let msg = messages[0]
                     if (!msg?.message) return
                     if (msg.key?.remoteJid === 'status@broadcast') return
-                    msg = smsg(sock, msg)
+                    msg = await smsg(sock, msg)
                     await handlerModule.handler(msg, sock, subPlugins)
-                } catch (e) {}
+                } catch (e) {
+                    console.error('[SUBBOT HANDLER ERROR]', e.message)
+                }
             }
 
             sock.connectionUpdate = connectionUpdate.bind(sock)
@@ -300,6 +246,73 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath }) {
             sock.isInit = false
             return true
         }
+
+        async function connectionUpdate(update) {
+            const { connection, lastDisconnect, isNewLogin } = update
+            if (isNewLogin) sock.isInit = false
+
+            const nombre = sock.user?.name || sock.user?.verifiedName || sessionId
+
+            if (!sock.codeSent && !state.creds.registered) {
+                sock.codeSent = true
+                try {
+                    const pairKey = getRandomCode()
+                    let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
+                    secret = secret?.match(/.{1,4}/g)?.join('-') || secret
+                    txtCode = await conn.sendMessage(m.chat, { text: msgCodigo(m.pushName || sessionId) }, { quoted: m })
+                    codeBot = await conn.sendMessage(m.chat, { text: secret }, { quoted: m })
+                    console.log(chalk.hex('#ff1493')(`\nꕤ Código generado para ${sessionId}: ${secret} (${pairKey})\n`))
+
+                    if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }).catch(() => {}), 60000)
+                    if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }).catch(() => {}), 60000)
+                } catch (e) {
+                    console.error('[PAIRING ERROR]', e.message)
+                    await m.reply(`ꕤ Error al generar código: ${e.message}`)
+                }
+            }
+
+            if (connection === 'close') {
+                const reason = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
+                const reconnectReasons = [428, 408, 500, 515]
+                const deleteReasons = [405, 401, 403]
+
+                console.log(chalk.yellow(`[SUBBOT] Desconectado. Razón: ${reason}`))
+
+                if (reconnectReasons.includes(reason)) {
+                    console.log(chalk.hex('#ff69b4')(`ꕤ Reconectando subbot (+${sessionId})...`))
+                    await creloadHandler(true).catch(console.error)
+                } else if (deleteReasons.includes(reason)) {
+                    console.log(chalk.hex('#ff1493')(`ꕤ Sesión (+${sessionId}) inválida. Eliminando...`))
+                    fs.rmSync(sessionPath, { recursive: true, force: true })
+                    removeFromPool(sock)
+                } else if (reason === 440) {
+                    console.log(chalk.hex('#ff1493')(`ꕤ Sesión (+${sessionId}) reemplazada.`))
+                    removeFromPool(sock)
+                } else {
+                    console.log(chalk.yellow(`ꕤ SubBot (+${sessionId}) desconectado sin reconexión. Razón: ${reason}`))
+                    removeFromPool(sock)
+                }
+            }
+
+            if (connection === 'open') {
+                const nombre = sock.user?.name || sock.user?.verifiedName || sessionId
+                console.log(chalk.hex('#ff1493')(
+                    `\nꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
+                    `ꕥ ${nombre} (+${sessionId}) conectado\n` +
+                    `ꕦ Método: Código\n` +
+                    `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
+                ))
+                sock.isInit = true
+                global.conns.push(sock)
+                if (m?.chat) {
+                    await conn.sendMessage(m.chat, { text: msgExito(nombre) }, { quoted: m })
+                }
+            }
+        }
+
+        setInterval(async () => {
+            if (!sock.user) removeFromPool(sock)
+        }, 60000)
 
         creloadHandler(false)
 
