@@ -50,7 +50,6 @@ function isPremiumJid(jid) {
     return !!u?.premium
 }
 
-// Prefijos soportados
 const PREFIXES = ['#', '.', '/']
 
 function getPrefix(body) {
@@ -64,26 +63,21 @@ export const handler = async (m, conn, plugins) => {
     try {
         if (!m) return;
 
-        // 1. Serialización del mensaje
         m = smsg(conn, m); 
 
-        // 2. Monitor de chats
         await print(m, conn);
 
         if (!m.body) return;
 
-        // 3. Detectar prefijo
         const prefix = getPrefix(m.body)
         if (!prefix) return;
 
-        // 4. Parsear comando y argumentos
         const body = m.body.slice(prefix.length).trim()
         const args = body.split(/ +/)
         const commandName = args.shift().toLowerCase()
 
         if (!commandName) return;
 
-        // 5. Buscar plugin por command (compatible con handler.command = ['ping', 'p'])
         let cmd = null
         for (const [, plugin] of plugins) {
             if (!plugin.command) continue
@@ -96,8 +90,6 @@ export const handler = async (m, conn, plugins) => {
 
         if (!cmd) return;
 
-        // ========== 6. NORMALIZAR SENDER ==========
-
         const senderRawFull = m.sender || ''
         const senderCanonical = senderRawFull.replace(/:[0-9A-Za-z]+(?=@s\.whatsapp\.net)/, '')
         if (senderCanonical !== m.sender) {
@@ -105,13 +97,11 @@ export const handler = async (m, conn, plugins) => {
             m.sender = senderCanonical
         }
 
-        // Roles jerárquicos
         const isROwner = isRootOwnerJid(m.sender)
         const isOwner = isROwner || isOwnerJid(m.sender)
         const isPremium = isOwner || isPremiumJid(m.sender)
         const isRegistered = isOwner || database.data.users?.[m.sender]?.registered || false
 
-        // Admin del grupo
         const isGroup = m.isGroup;
         let isAdmin = false;
         let isBotAdmin = false;
@@ -120,15 +110,14 @@ export const handler = async (m, conn, plugins) => {
             try {
                 const groupMeta = await conn.groupMetadata(m.chat);
                 const participant = groupMeta.participants.find(p => p.id === m.sender);
-                isAdmin = participant?.admin !== undefined || isOwner;
-                const botParticipant = groupMeta.participants.find(p => p.id === conn.user.id);
-                isBotAdmin = botParticipant?.admin !== undefined;
+                isAdmin = !!participant?.admin || isOwner;
+                const botId = conn.user.id.split(':')[0] + '@s.whatsapp.net'
+                const botParticipant = groupMeta.participants.find(p => p.id === botId)
+                isBotAdmin = !!botParticipant?.admin
             } catch (err) {
                 console.log(chalk.red('[ERROR GROUP META]'), err.message);
             }
         }
-
-        // ========== 7. REGISTRO DE USUARIO AUTOMÁTICO ==========
 
         if (!database.data.users) database.data.users = {};
 
@@ -149,7 +138,6 @@ export const handler = async (m, conn, plugins) => {
             await database.save();
         }
 
-        // ========== 8. DETECCIÓN DE OBJETIVO (WHO) ==========
         let who = null;
 
         if (m.mentionedJid && m.mentionedJid[0]) {
@@ -162,54 +150,42 @@ export const handler = async (m, conn, plugins) => {
             who = who.split('@')[0].split(':')[0] + '@s.whatsapp.net';
         }
 
-        // ========== 9. FILTROS DE SEGURIDAD ==========
-
-        // Baneo
         if (database.data.users[m.sender]?.banned && !isOwner) {
             return m.reply('🚫 *ESTÁS BANEADO*\nNo puedes usar los comandos del bot.');
         }
 
-        // ROwner
         if (cmd.rowner && !isROwner) {
             return m.reply('👑 *ACCESO DENEGADO*\nEste comando solo puede ser ejecutado por el creador principal.');
         }
 
-        // Owner
         if (cmd.owner && !isOwner) {
             return m.reply('👑 *ACCESO RESTRINGIDO*\nEste comando solo puede ser ejecutado por mi creador.');
         }
 
-        // Premium
         if (cmd.premium && !isPremium) {
             return m.reply('💎 *USUARIO PREMIUM*\nEste comando es exclusivo para miembros Premium.');
         }
 
-        // Registro
         if (cmd.register && !isRegistered) {
             return m.reply(`📝 *REGISTRO REQUERIDO*\nDebes registrarte para usar este comando.\n\n> Usa: *${prefix}reg nombre.edad*\n> Ejemplo: *${prefix}reg Juan.25*`);
         }
 
-        // Solo grupos
         if (cmd.group && !isGroup) {
             return m.reply('🏢 *SOLO GRUPOS*\nEste comando solo está habilitado para grupos.');
         }
 
-        // Admin
         if (cmd.admin && !isAdmin) {
             return m.reply('👮 *ERES ADMIN?*\nEste comando es solo para administradores del grupo.');
         }
 
-        // Bot admin
         if (cmd.botAdmin && !isBotAdmin) {
             return m.reply('🤖 *ERROR DE PERMISOS*\nNecesito ser administrador del grupo para ejecutar esta acción.');
         }
 
-        // Solo privado
         if (cmd.private && isGroup) {
             return m.reply('💬 *CHAT PRIVADO*\nEscríbeme al privado para usar este comando.');
         }
 
-        // ========== 10. SISTEMA DE LÍMITES ==========
         if (cmd.limit && !isPremium && !isOwner) {
             const userLimit = database.data.users[m.sender].limit || 0;
             if (userLimit < 1) {
@@ -219,7 +195,6 @@ export const handler = async (m, conn, plugins) => {
             await database.save();
         }
 
-        // ========== 11. EJECUCIÓN DEL PLUGIN ==========
         try {
             await cmd(m, { 
                 conn, 
