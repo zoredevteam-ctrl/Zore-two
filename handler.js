@@ -107,7 +107,7 @@ export const handler = async (m, conn, plugins) => {
 
         await loadEvents(conn)
 
-        m = smsg(conn, m); 
+        m = await smsg(conn, m);
 
         await print(m, conn);
 
