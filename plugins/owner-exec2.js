@@ -5,6 +5,7 @@ const exec = promisify(_exec).bind(cp)
 
 let handler = async (m, { conn, args }) => {
     const text = args.join(' ')
+    console.log('$ ejecutando:', text)
     if (!text) return m.reply('💗 Darling, ingresa un comando~')
 
     await m.reply('💗 *Ejecutando, darling~*')
@@ -25,6 +26,6 @@ handler.help = ['$']
 handler.tags = ['owner']
 handler.customPrefix = ['$']
 handler.command = new RegExp
-handler.owner = true
+handler.rowner = true
 
 export default handler
