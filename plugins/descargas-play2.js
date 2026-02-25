@@ -79,7 +79,7 @@ function formatBox(video) {
   const author = video.author?.name || 'Desconocido'
   const time = video.timestamp || 'N/A'
 
-  const line = '══════════════════════'
+  const line = '══════════════'
 
   return (
 `╔✦★✦${line}✦★✦╗
