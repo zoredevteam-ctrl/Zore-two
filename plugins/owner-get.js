@@ -37,6 +37,6 @@ let handler = async (m, { conn, args }) => {
 handler.help = ['get']
 handler.tags = ['tools']
 handler.command = ['fetch', 'get']
-handler.rowner = true
+handler.owner = true
 
 export default handler
