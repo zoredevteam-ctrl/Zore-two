@@ -3,7 +3,7 @@ bot.ev.on('group-participants.update', async (update) => {
   if (action === 'add') {
     for (let participant of participants) {
       const mention = `@${participant.split('@')[0]}`;
-      const welcomeMsg = `¡Hola, darling! 💗 Soy Zero Two, y me encanta que te unas a este grupo. ¡Vamos a divertirnos mucho juntos, no te escapes! 🌸 ${mention}`;
+      const welcomeMsg = `¡Hola, darling! 💗 Soy Zero Two, tu bot compañera en este grupo increíble. Me hace tan feliz que te unas a nosotros... ¡por fin alguien nuevo con quien compartir aventuras y risas! Aquí podemos charlar sobre lo que quieras, jugar juegos divertidos y crear recuerdos inolvidables. Recuerda seguir las reglas del grupo para que todos nos llevemos bien, y si necesitas comandos o ayuda, solo di mi nombre. ¡No te escapes nunca, darling, porque te estaré esperando! 🌸 ${mention}`;
       try {
         const ppUrl = await bot.profilePictureUrl(participant, 'image');
         await bot.sendMessage(id, {
