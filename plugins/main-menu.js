@@ -33,20 +33,39 @@ ${cmds.map(c => `  💗 ${c}`).join('\n')}
         ).join('\n')
 
         const zonaHoraria = 'America/Bogota'
-        const fechaCol = new Date().toLocaleDateString('es-CO', {
+        const ahora = new Date()
+
+        const fechaCol = ahora.toLocaleDateString('es-CO', {
             timeZone: zonaHoraria,
             weekday: 'long',
             day: 'numeric',
             month: 'long'
         })
-        const horaCol = new Date().toLocaleTimeString('es-CO', {
+        const horaCol = ahora.toLocaleTimeString('es-CO', {
             timeZone: zonaHoraria,
             hour: '2-digit',
             minute: '2-digit',
             hour12: true
         })
 
+        const hora = parseInt(ahora.toLocaleTimeString('es-CO', { timeZone: zonaHoraria, hour: '2-digit', hour12: false }))
+        let saludo, carita
+        if (hora >= 5 && hora < 12) {
+            saludo = 'buenos días'
+            carita = '(＊^▽^＊) ☀️'
+        } else if (hora >= 12 && hora < 18) {
+            saludo = 'buenas tardes'
+            carita = '(｡•̀ᴗ-)✧ 🌸'
+        } else {
+            saludo = 'buenas noches'
+            carita = '(◕‿◕✿) 🌙'
+        }
+
         let menuTexto = `𖤐 ❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎'𝐒 𝐌𝐄𝐍𝐔 ❖ 𖤐
+
+❝ ¡Hola darling, ${saludo}~! ${carita}
+Soy *${botname}* y este es mi menú,
+más te vale usarlo bien... hmph 💗 ❞
 
 💗 *Darling:* @${m.sender.split('@')[0]}
 📅 *Fecha:* ${fechaCol}
@@ -55,14 +74,11 @@ ${cmds.map(c => `  💗 ${c}`).join('\n')}
 🌸 *Bot:* ${botname}
 💢 *Comandos:* ${totalCmds} disponibles
 
-❝ Hmph... más te vale usarlos bien,
-o no te lo perdonaré, darling~ 💗 ❞
-
 ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦
 
 ${seccionesTexto}
 ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦
-𖤐 *~Zero Two* 🌸`.trim()
+𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)`.trim()
 
         const response = await fetch('https://causas-files.vercel.app/fl/9vs2.jpg')
         const buffer = await response.buffer()
