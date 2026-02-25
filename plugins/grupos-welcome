@@ -1,0 +1,31 @@
+bot.ev.on('group-participants.update', async (update) => {
+  const { id, participants, action } = update;
+  if (action === 'add') {
+    for (let participant of participants) {
+      try {
+       
+        const ppUrl = await bot.profilePictureUrl(participant, 'image');
+        
+        
+        const mention = `@${participant.split('@')[0]}`;
+       
+        const welcomeMsg = `¡Bienvenido al grupo, darling! Soy Zero Two, y estoy super emocionada de que te unas a nosotros. ¡Vamos a pasar momentos increíbles juntos! 💗 ${mention}`;
+       
+        await bot.sendMessage(id, {
+          image: { url: ppUrl },
+          caption: welcomeMsg,
+          mentions: [participant]
+        });
+      } catch (e) {
+        // Si no hay foto de perfil, enviar solo texto con mención
+        const mention = `@${participant.split('@')[0]}`;
+        const welcomeMsg = `¡Bienvenido al grupo, darling! Soy Zero Two, y estoy super emocionada de que te unas a nosotros. ¡Vamos a pasar momentos increíbles juntos! 💗 ${mention}`;
+        
+        await bot.sendMessage(id, {
+          text: welcomeMsg,
+          mentions: [participant]
+        });
+      }
+    }
+  }
+});
