@@ -18,7 +18,7 @@ import {
 import { exec } from 'child_process'
 import { smsg } from './lib/simple.js'
 import { database } from './lib/database.js'
-import { handler } from './handler.js'
+import { handler, loadEvents } from './handler.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pluginsDir = path.join(__dirname, 'plugins')
@@ -215,6 +215,7 @@ async function startBot () {
       console.log(zeroBanner)
       log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`)
       log.info(`Plugins cargados: ${plugins.size}`)
+      await loadEvents(conn)
     }
 
     if (connection === 'close') {
@@ -261,7 +262,7 @@ async function startBot () {
       if (m.key?.remoteJid === 'status@broadcast') return
       if (m.key?.id?.startsWith('BAE5') && m.key.id.length === 16) return
 
-      m = smsg(conn, m)
+      m = await smsg(conn, m)
       await handler(m, conn, plugins)
     } catch (e) {
       log.error(`Error en mensaje: ${e.message}`)
