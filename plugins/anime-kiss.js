@@ -1,5 +1,3 @@
-import baileys from '@whiskeysockets/baileys'
-
 let handler = async (m, { conn }) => {
     try {
         await m.react('🫦')
@@ -14,7 +12,9 @@ let handler = async (m, { conn }) => {
         }
 
         let name = conn.getName(who)
-        let name2 = conn.getName let str
+        let name2 = conn.getName(m.sender)
+
+        let str
         if (m.mentionedJid?.length > 0) {
             str = `\`${name2}\` *le dio besos a* \`${name}\` *( ˘ ³˘)♥*`
         } else if (m.quoted) {
@@ -47,20 +47,16 @@ let handler = async (m, { conn }) => {
 
         const video = videos[Math.floor(Math.random() * videos.length)]
 
-        await conn.sendMessage(
-            m.chat,
-            {
-                video: { url: video },
-                caption: str,
-                mentions: [who]
-            },
-            { quoted: m }
-        )
+        await conn.sendMessage(m.chat, {
+            video: { url: video },
+            caption: str,
+            mentions: [who]
+        }, { quoted: m })
 
         await m.react('💋')
     } catch (e) {
         await m.react('💔')
-        m.reply('💔 Ocurrió un error enviando el beso...')
+        m.reply('💔 Darling, algo salió mal enviando el beso~')
     }
 }
 
