@@ -1,13 +1,11 @@
-let handler = async(m, { conn }) => {
+let handler = async (m, { conn }) => {
+    let img = 'https://api.delirius.store/nsfw/boobs'
+    let text = '*🍭 TETAS*'
 
-let img = 'https://api.delirius.store/nsfw/boobs';
-
-let text = '*🍭 TETAS*';
-
-conn.sendMessage(m.chat, { image: { url: img }, caption: text }, { quoted: m });
-m.react('✅');
+    await conn.sendMessage(m.chat, { image: { url: img }, caption: text }, { quoted: m })
+    await m.react('✅')
 }
 
-handler.command = ['tetas'];
+handler.command = ['Tetas']
 
-export default handler;
+export default handler
