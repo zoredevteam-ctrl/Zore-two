@@ -136,7 +136,6 @@ const handler = async (m, { conn, args }) => {
 
 handler.command = ['n', 'tag', 'notify']
 handler.group = true
-handler.admin = true
 handler.help = ['tag']
 handler.tags = ['grupos']
 
