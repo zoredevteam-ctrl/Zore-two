@@ -3,15 +3,6 @@ const handler = async (m, { conn, prefix, who, isOwner }) => {
 
     if (!user) return m.reply('❀ Debes mencionar a un usuario o responder a un mensaje para expulsarlo.')
 
-    // Resolver LID a JID normal
-    if (user.endsWith('@lid') || isNaN(user.split('@')[0])) {
-        try {
-            const groupMeta = await conn.groupMetadata(m.chat)
-            const found = groupMeta.participants.find(p => p.id === user || p.lid === user)
-            if (found?.jid) user = found.jid
-        } catch {}
-    }
-
     try {
         const groupInfo = await conn.groupMetadata(m.chat)
         const ownerGroup = groupInfo.owner || m.chat.split('-')[0] + '@s.whatsapp.net'
@@ -20,24 +11,36 @@ const handler = async (m, { conn, prefix, who, isOwner }) => {
             .map(p => Array.isArray(p) ? p[0] : p)
             .map(p => p.replace(/[^0-9]/g, '') + '@s.whatsapp.net')
 
-        if (user === conn.user.id.split(':')[0] + '@s.whatsapp.net') {
+        // Buscar participante por jid o lid
+        const participant = groupInfo.participants.find(p => 
+            p.jid === user || p.id === user ||
+            p.jid === user.replace('@lid', '@s.whatsapp.net') ||
+            p.lid === user
+        )
+
+        if (!participant) return m.reply('ꕥ No encontré a ese usuario en el grupo.')
+
+        // Resolver el ID real para usar en la expulsión
+        const targetId = participant.lid || participant.id || user
+        const targetJid = participant.jid || user
+
+        if (targetJid === conn.user.id.split(':')[0] + '@s.whatsapp.net') {
             return m.reply('ꕥ No puedo eliminarme a mí mismo del grupo.')
         }
 
-        if (user === ownerGroup) {
+        if (targetJid === ownerGroup) {
             return m.reply('ꕥ No puedo eliminar al creador del grupo.')
         }
 
-        if (botOwners.includes(user)) {
+        if (botOwners.includes(targetJid)) {
             return m.reply('ꕥ No puedo eliminar a un desarrollador de mi staff.')
         }
 
-        const participant = groupInfo.participants.find(p => p.jid === user || p.id === user)
         if (participant?.admin && !isOwner) {
             return m.reply('ꕥ No puedo expulsar a un administrador del grupo.')
         }
 
-        await conn.groupParticipantsUpdate(m.chat, [user], 'remove')
+        await conn.groupParticipantsUpdate(m.chat, [targetId], 'remove')
 
     } catch (e) {
         console.error(e)
