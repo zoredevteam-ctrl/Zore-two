@@ -6,8 +6,7 @@ let handler = async (m, { conn }) => {
 
     await conn.sendMessage(m.chat, {
         image: { url: img },
-        caption: txt,
-        viewOnce: true
+        caption: txt
     }, { quoted: m })
 
     await m.react('✅')
@@ -15,6 +14,6 @@ let handler = async (m, { conn }) => {
 
 handler.help = ['pack']
 handler.tags = ['misc']
-handler.command = ['pack']
+handler.command = ['nose']
 
 export default handler
