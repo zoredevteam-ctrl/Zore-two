@@ -3,6 +3,9 @@ import chalk from 'chalk';
 import print from './lib/print.js';
 import { smsg } from './lib/simple.js';
 import { database } from './lib/database.js';
+import { readdirSync } from 'fs'
+import { join, resolve } from 'path'
+import { pathToFileURL } from 'url'
 
 const toNum = v => (v + '').replace(/[^0-9]/g, '')
 const localPart = v => (v + '').split('@')[0].split(':')[0].split('/')[0].split(',')[0]
@@ -59,9 +62,45 @@ function getPrefix(body) {
     return null
 }
 
+let eventsLoaded = false
+
+export const loadEvents = async (conn) => {
+    if (eventsLoaded) return
+    eventsLoaded = true
+
+    const eventsPath = resolve('./events')
+
+    let files = []
+    try {
+        files = readdirSync(eventsPath).filter(f => f.endsWith('.js'))
+    } catch {
+        console.log(chalk.yellow('[EVENTS] Carpeta ./events no encontrada, omitiendo...'))
+        return
+    }
+
+    for (const file of files) {
+        try {
+            const url = pathToFileURL(join(eventsPath, file)).href
+            const mod = await import(url)
+
+            if (!mod.event || !mod.run) {
+                console.log(chalk.yellow(`[EVENTS] Saltando ${file}, falta event o run`))
+                continue
+            }
+
+            conn.ev.on(mod.event, (data) => mod.run(conn, data))
+            console.log(chalk.green(`[EVENTS] ✦ ${file} → ${mod.event}`))
+        } catch (e) {
+            console.log(chalk.red(`[EVENTS ERROR] ${file}:`), e.message)
+        }
+    }
+}
+
 export const handler = async (m, conn, plugins) => {
     try {
         if (!m) return;
+
+        await loadEvents(conn)
 
         m = smsg(conn, m); 
 
