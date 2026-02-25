@@ -2,6 +2,10 @@ import { downloadContentFromMessage } from '@whiskeysockets/baileys'
 import axios from 'axios'
 import sharp from 'sharp'
 
+global._notifyCache = global._notifyCache || {}
+
+const CACHE_TIME = 10 * 60 * 1000
+
 async function getBuffer(url) {
   try {
     const { data } = await axios.get(url, { responseType: 'arraybuffer' })
@@ -17,26 +21,44 @@ async function streamToBuffer(stream) {
   return Buffer.concat(chunks)
 }
 
-async function buildFakeQuote(conn, m) {
-  const FAKE_SENDER = '867051314767696@bot'
-  let groupName = global.namebot || 'XD'
-  let thumb = null
+async function getGroupData(conn, chatId) {
+  const now = Date.now()
+  const cache = global._notifyCache[chatId]
 
-  if (m.isGroup) {
-    const meta = await conn.groupMetadata(m.chat).catch(() => null)
-    groupName = meta?.subject || groupName
+  if (cache && now - cache.timestamp < CACHE_TIME) {
+    return cache
+  }
 
-    const ppUrl = await conn.profilePictureUrl(m.chat, 'image').catch(() => null)
-    if (ppUrl) {
-      const original = await getBuffer(ppUrl)
-      if (original) {
-        thumb = await sharp(original)
-          .resize(200, 200, { fit: 'cover' })
-          .jpeg({ quality: 60 })
-          .toBuffer()
-      }
+  const meta = await conn.groupMetadata(chatId).catch(() => null)
+  const name = meta?.subject || global.namebot || 'XD'
+  const participants = meta?.participants?.map(p => p.id) || []
+
+  let thumb = cache?.thumb || null
+  const ppUrl = await conn.profilePictureUrl(chatId, 'image').catch(() => null)
+
+  if (ppUrl && ppUrl !== cache?.ppUrl) {
+    const original = await getBuffer(ppUrl)
+    if (original) {
+      thumb = await sharp(original)
+        .resize(200, 200, { fit: 'cover' })
+        .jpeg({ quality: 60 })
+        .toBuffer()
     }
   }
+
+  global._notifyCache[chatId] = {
+    name,
+    thumb,
+    participants,
+    ppUrl,
+    timestamp: now
+  }
+
+  return global._notifyCache[chatId]
+}
+
+async function buildFakeQuote(m, data) {
+  const FAKE_SENDER = '867051314767696@bot'
 
   return {
     key: {
@@ -50,9 +72,9 @@ async function buildFakeQuote(conn, m) {
         product: {
           productImage: {
             mimetype: 'image/jpeg',
-            jpegThumbnail: thumb
+            jpegThumbnail: data.thumb
           },
-          title: groupName,
+          title: data.name,
           priceAmount1000: 1,
           retailerId: 'notify',
           productImageCount: 1
@@ -78,9 +100,9 @@ const handler = async (m, { conn, args }) => {
     return m.reply('❌ Uso incorrecto\n\n• .n texto\n• Responde a un mensaje con .n')
   }
 
-  const meta = await conn.groupMetadata(m.chat)
-  const mentionedJid = meta.participants.map(p => p.id)
-  const fquote = await buildFakeQuote(conn, m)
+  const data = await getGroupData(conn, m.chat)
+  const mentionedJid = data.participants
+  const fquote = await buildFakeQuote(m, data)
 
   if (!source && text) {
     return conn.sendMessage(
@@ -136,7 +158,8 @@ const handler = async (m, { conn, args }) => {
 
 handler.command = ['n', 'tag', 'notify']
 handler.group = true
-handler.help = ['tag']
+handler.admin = true
+handler.help = ['n <texto>']
 handler.tags = ['grupos']
 
 export default handler
