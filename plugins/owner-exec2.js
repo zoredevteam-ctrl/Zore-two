@@ -3,14 +3,15 @@ import { promisify } from 'util'
 
 const exec = promisify(_exec).bind(cp)
 
-let handler = async (m, { conn, command, args }) => {
+let handler = async (m, { conn, args }) => {
     const text = args.join(' ')
+    if (!text) return m.reply('💗 Darling, ingresa un comando~')
 
     await m.reply('💗 *Ejecutando, darling~*')
 
     let o
     try {
-        o = await exec(command.trimStart() + ' ' + text.trimEnd())
+        o = await exec(text.trimEnd())
     } catch (e) {
         o = e
     } finally {
