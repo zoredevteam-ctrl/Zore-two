@@ -168,7 +168,6 @@ export const handler = async (m, conn, plugins) => {
         if (isGroup) {
             try {
                 const groupMeta = await conn.groupMetadata(m.chat);
-
                 const participant = groupMeta.participants.find(p =>
                     p.jid === m.sender || p.id === m.sender
                 )
@@ -273,7 +272,8 @@ export const handler = async (m, conn, plugins) => {
                 isGroup, 
                 who,
                 db: database.data,
-                prefix
+                prefix,
+                plugins
             });
         } catch (cmdError) {
             console.log(chalk.red('[ERROR COMANDO]'), cmdError);
