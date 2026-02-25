@@ -1,165 +1,69 @@
-import { downloadContentFromMessage } from '@whiskeysockets/baileys'
-import axios from 'axios'
-import sharp from 'sharp'
+import { generateWAMessageFromContent } from '@whiskeysockets/baileys'
 
-global._notifyCache = global._notifyCache || {}
+let handler = async (m, { conn, args, isAdmin }) => {
+    const text = args.join(' ')
 
-const CACHE_TIME = 10 * 60 * 1000
+    if (!m.quoted && !text) return m.reply('💗 Darling, escribe un mensaje o responde algo para notificar a todos~')
 
-async function getBuffer(url) {
-  try {
-    const { data } = await axios.get(url, { responseType: 'arraybuffer' })
-    return data
-  } catch {
-    return null
-  }
-}
+    try {
+        const groupMeta = await conn.groupMetadata(m.chat)
+        const users = groupMeta.participants.map(u => u.id.split(':')[0] + '@s.whatsapp.net')
 
-async function streamToBuffer(stream) {
-  const chunks = []
-  for await (const chunk of stream) chunks.push(chunk)
-  return Buffer.concat(chunks)
-}
+        const q = m.quoted ? m.quoted : m
+        const messageType = m.quoted ? q.mtype : 'extendedTextMessage'
+        const content = m.quoted ? (await m.getQuotedObj()).message[q.mtype] : { text: text || '' }
 
-async function getGroupData(conn, chatId) {
-  const now = Date.now()
-  const cache = global._notifyCache[chatId]
+        const msg = conn.cMod(m.chat, generateWAMessageFromContent(m.chat, {
+            [messageType]: content
+        }, {
+            quoted: null,
+            userJid: conn.user.id
+        }), text || q.text, conn.user.jid, { mentions: users })
 
-  if (cache && now - cache.timestamp < CACHE_TIME) {
-    return cache
-  }
+        await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
 
-  const meta = await conn.groupMetadata(chatId).catch(() => null)
-  const name = meta?.subject || global.namebot || 'XD'
-  const participants = meta?.participants?.map(p => p.id) || []
+    } catch (error) {
+        console.error('Error método principal, usando alternativo:', error)
 
-  let thumb = cache?.thumb || null
-  const ppUrl = await conn.profilePictureUrl(chatId, 'image').catch(() => null)
+        try {
+            const groupMeta = await conn.groupMetadata(m.chat)
+            const users = groupMeta.participants.map(u => u.id.split(':')[0] + '@s.whatsapp.net')
+            const quoted = m.quoted ? m.quoted : m
+            const mime = (quoted.msg || quoted).mimetype || ''
+            const isMedia = /image|video|sticker|audio/.test(mime)
+            const more = String.fromCharCode(8206)
+            const masss = more.repeat(850)
+            const htextos = text || '💗 *¡ATENCIÓN!* 🌸\n\nAnuncio importante, darling~'
 
-  if (ppUrl && ppUrl !== cache?.ppUrl) {
-    const original = await getBuffer(ppUrl)
-    if (original) {
-      thumb = await sharp(original)
-        .resize(200, 200, { fit: 'cover' })
-        .jpeg({ quality: 60 })
-        .toBuffer()
+            if (isMedia && quoted.mtype === 'imageMessage') {
+                const mediax = await quoted.download?.()
+                await conn.sendMessage(m.chat, { image: mediax, mentions: users, caption: htextos }, { quoted: null })
+            } else if (isMedia && quoted.mtype === 'videoMessage') {
+                const mediax = await quoted.download?.()
+                await conn.sendMessage(m.chat, { video: mediax, mentions: users, mimetype: 'video/mp4', caption: htextos }, { quoted: null })
+            } else if (isMedia && quoted.mtype === 'audioMessage') {
+                const mediax = await quoted.download?.()
+                await conn.sendMessage(m.chat, { audio: mediax, mentions: users, mimetype: 'audio/mp4' }, { quoted: null })
+            } else if (isMedia && quoted.mtype === 'stickerMessage') {
+                const mediax = await quoted.download?.()
+                await conn.sendMessage(m.chat, { sticker: mediax, mentions: users }, { quoted: null })
+            } else {
+                await conn.sendMessage(m.chat, {
+                    text: `${masss}\n${htextos}\n`,
+                    mentions: users
+                }, { quoted: null })
+            }
+        } catch (e) {
+            console.error(e)
+            await m.reply('💔 Darling, no pude enviar el anuncio... intenta de nuevo~')
+        }
     }
-  }
-
-  global._notifyCache[chatId] = {
-    name,
-    thumb,
-    participants,
-    ppUrl,
-    timestamp: now
-  }
-
-  return global._notifyCache[chatId]
 }
 
-async function buildFakeQuote(m, data) {
-  const FAKE_SENDER = '867051314767696@bot'
-
-  return {
-    key: {
-      remoteJid: m.chat,
-      fromMe: false,
-      id: 'FAKE_ID',
-      participant: FAKE_SENDER
-    },
-    message: {
-      productMessage: {
-        product: {
-          productImage: {
-            mimetype: 'image/jpeg',
-            jpegThumbnail: data.thumb
-          },
-          title: data.name,
-          priceAmount1000: 1,
-          retailerId: 'notify',
-          productImageCount: 1
-        },
-        businessOwnerJid: FAKE_SENDER
-      }
-    },
-    participant: FAKE_SENDER
-  }
-}
-
-const handler = async (m, { conn, args }) => {
-  const text = args.length ? args.join(' ') : ''
-  let source = null
-  let type = null
-
-  if (m.quoted) {
-    type = m.quoted.mtype
-    source = m.quoted.msg
-  }
-
-  if (!source && !text) {
-    return m.reply('❌ Uso incorrecto\n\n• .n texto\n• Responde a un mensaje con .n')
-  }
-
-  const data = await getGroupData(conn, m.chat)
-  const mentionedJid = data.participants
-  const fquote = await buildFakeQuote(m, data)
-
-  if (!source && text) {
-    return conn.sendMessage(
-      m.chat,
-      { text, contextInfo: { mentionedJid } },
-      { quoted: fquote }
-    )
-  }
-
-  let media = null
-
-  if ([
-    'imageMessage',
-    'videoMessage',
-    'audioMessage',
-    'documentMessage',
-    'stickerMessage'
-  ].includes(type)) {
-    const stream = await downloadContentFromMessage(
-      source,
-      type.replace('Message', '')
-    )
-    media = await streamToBuffer(stream)
-  }
-
-  let payload
-
-  if (type === 'audioMessage') {
-    payload = {
-      audio: media,
-      mimetype: source.mimetype || 'audio/mpeg',
-      ptt: false
-    }
-  } else if (media) {
-    payload = {
-      [type.replace('Message', '')]: media,
-      caption: text || undefined
-    }
-  } else {
-    return conn.sendMessage(
-      m.chat,
-      { text: m.quoted.body, contextInfo: { mentionedJid } },
-      { quoted: fquote }
-    )
-  }
-
-  await conn.sendMessage(
-    m.chat,
-    { ...payload, contextInfo: { mentionedJid } },
-    { quoted: fquote }
-  )
-}
-
-handler.command = ['n', 'tag', 'notify']
+handler.help = ['hidetag', 'anuncio']
+handler.tags = ['grupo']
+handler.command = ['hidetag', 'notificar', 'notify', 'tag', 'anuncio']
 handler.group = true
 handler.admin = true
-handler.help = ['n <texto>']
-handler.tags = ['grupos']
 
 export default handler
