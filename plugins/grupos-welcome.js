@@ -1,104 +1,216 @@
+// plugins/grupos-welcome.js
 import { WAMessageStubType } from '@whiskeysockets/baileys'
 
-// Función para enviar bienvenida
-async function sendWelcome(conn, chatId, userId) {
+/**
+ * Welcome plugin personalizado para Zore
+ * - Comandos: #welcome on | #welcome off | #testwelcome
+ * - Envía foto de perfil + mención si existe, si no sólo texto
+ * - Respeta global.db.data.chats[chat].welcome si existe
+ *
+ * Personaliza BOT_NAME y FALLBACK_PIC y los textos al gusto.
+ */
+
+const BOT_NAME = 'Zero Two' // Cambia por el nombre que prefieras
+const FALLBACK_PIC = 'https://i.imgur.com/YourZeroTwoFallback.png' // tu fallback
+
+function getChatWelcomeEnabled(chatId) {
+  // Si existe global.db y la configuración, usarla; si no, por defecto true
   try {
-    const chat = global.db.data.chats?.[chatId]
-    const isWelcomeEnabled = chat && chat.welcome !== undefined ? chat.welcome : true
-    if (!isWelcomeEnabled) return
-
-    const taguser = '@' + (userId || '').split('@')[0]
-    const nombreBot = 'Yotsuba Nakano'
-    const profilePic = await conn.profilePictureUrl(userId, 'image').catch(() => 'https://i.imgur.com/whvB7v7.png') // Fallback si no hay foto
-
-    const bienvenida = 
-      `👑⚡🌱 ¡Welcome al grupo, ${taguser}! 🌟\n\n` +
-      `Yotsuba Nakano te da la bienvenida con toda su energía alegre y kawaii! 😊💚\n\n` +
-      `Esperamos disfrutes la estadía, usa *.menu* para ver mi magia mágica! ✨`
-
-    await conn.sendMessage(chatId, {
-      image: { url: profilePic },
-      caption: bienvenida,
-      mentions: [userId]
-    })
-  } catch (e) {
-    console.error('Error en sendWelcome:', e)
-  }
+    if (global.db && global.db.data && global.db.data.chats && global.db.data.chats[chatId]) {
+      const chat = global.db.data.chats[chatId]
+      return typeof chat.welcome !== 'undefined' ? !!chat.welcome : true
+    }
+  } catch (e) { /* ignore */ }
+  // fallback
+  if (!global.welcome) global.welcome = {}
+  if (typeof global.welcome[chatId] === 'undefined') global.welcome[chatId] = false // por defecto OFF si no hay db (evita spam)
+  return !!global.welcome[chatId]
 }
 
-// Handler para eventos de grupo (antes de procesar mensajes)
-let handler = m => m
-
-handler.before = async function (m, { conn, groupMetadata }) {
+async function sendWelcomeMessage(conn, chatId, userJid) {
   try {
-    if (!m.messageStubType || !m.isGroup) return true
+    if (!userJid) return
+    const mention = userJid.includes('@') ? userJid : `${userJid}@s.whatsapp.net`
+    const simpleTag = (mention || '').split('@')[0]
 
-    const chat = global.db.data.chats?.[m.chat]
-    if (!chat) return true
+    // Texto personalizado (edítalo a tu gusto)
+    const bienvenida =
+`✨🌸 ¡Hey ${simpleTag}! Bienvenid@ al grupo 🌸✨
 
-    const isWelcomeEnabled = typeof chat.welcome !== 'undefined' ? chat.welcome : true
-    if (!isWelcomeEnabled) return true
+Soy *${BOT_NAME}* — mucho gusto 💗
+Pásala bien, respeta las reglas y si necesitas ayuda escribe *#menu*.
 
-    // Evento: usuario añadido al grupo
-    if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
-      const userId = m.messageStubParameters?.[0]
-      if (!userId) return true
+¡Disfruta y quédate por aquí! 🎀`
 
-      await sendWelcome(conn, m.chat, userId)
-      return false
+    // Intentar obtener foto de perfil del usuario
+    let pp = null
+    try {
+      pp = await conn.profilePictureUrl(mention, 'image')
+    } catch (e) {
+      pp = null
     }
 
-    return true
+    if (pp) {
+      await conn.sendMessage(chatId, {
+        image: { url: pp },
+        caption: bienvenida,
+        mentions: [mention]
+      })
+    } else {
+      // fallback a imagen del bot o solo texto
+      const botPic = FALLBACK_PIC
+      if (botPic) {
+        await conn.sendMessage(chatId, {
+          image: { url: botPic },
+          caption: bienvenida,
+          mentions: [mention]
+        })
+      } else {
+        await conn.sendMessage(chatId, {
+          text: bienvenida,
+          mentions: [mention]
+        })
+      }
+    }
   } catch (err) {
-    console.error('Error en welcome handler.before:', err)
+    console.error('SEND WELCOME ERROR', err)
+    // fallback: intentar solo texto
+    try {
+      await conn.sendMessage(chatId, {
+        text: `🌸 Bienvenido @${(userJid||'').split('@')[0]} 💗`,
+        mentions: [userJid]
+      })
+    } catch (e) { /* ignore */ }
+  }
+}
+
+let handler = async (m, { conn, args, isAdmin, isOwner, usedPrefix, command }) => {
+  try {
+    // comando para activar/desactivar desde el chat (si tienes db lo guarda ahí)
+    if (!m.isGroup) return
+    // asegurar estructura db si existe
+    if (global.db && global.db.data && global.db.data.chats && !global.db.data.chats[m.chat]) {
+      global.db.data.chats[m.chat] = {}
+    }
+
+    // fallback a global.welcome si no hay db
+    if (!global.db || !global.db.data || !global.db.data.chats) {
+      if (!global.welcome) global.welcome = {}
+      if (typeof global.welcome[m.chat] === 'undefined') global.welcome[m.chat] = false
+    }
+
+    // Si es testwelcome: enviar bienvenida al sender
+    if (command === 'testwelcome') {
+      const to = m.sender || m.key?.participant
+      await sendWelcomeMessage(conn, m.chat, to)
+      return
+    }
+
+    // Comando welcome
+    if (command === 'welcome') {
+      if (!(isAdmin || isOwner)) return m.reply('🔒 Solo administradores pueden cambiar la configuración de bienvenida.')
+
+      const sub = (args && args[0]) ? args[0].toLowerCase() : null
+      if (!sub) {
+        const enabled = getChatWelcomeEnabled(m.chat)
+        return m.reply(`✨ Bienvenida está *${enabled ? 'ACTIVADA' : 'DESACTIVADA'}* en este grupo.\nUsa: *${usedPrefix || '#'}welcome on* | *${usedPrefix || '#'}welcome off*`)
+      }
+
+      if (sub === 'on') {
+        if (global.db && global.db.data && global.db.data.chats) {
+          global.db.data.chats[m.chat].welcome = true
+        } else {
+          global.welcome[m.chat] = true
+        }
+        return m.reply('✅ Bienvenida activada. Daré la bienvenida a los nuevos miembros 💗')
+      }
+
+      if (sub === 'off') {
+        if (global.db && global.db.data && global.db.data.chats) {
+          global.db.data.chats[m.chat].welcome = false
+        } else {
+          global.welcome[m.chat] = false
+        }
+        return m.reply('❌ Bienvenida desactivada. No enviaré mensajes de bienvenida.')
+      }
+
+      return m.reply('Uso: #welcome on | #welcome off')
+    }
+  } catch (err) {
+    console.error('WELCOME CMD ERROR', err)
+    return m.reply('⚠️ Error en comando welcome.')
+  }
+}
+
+// before hook: escucha eventos de participantes añadidos
+handler.before = async function (m, { conn }) {
+  try {
+    if (!m) return true
+    if (!m.isGroup) return true
+
+    // comprobar si welcome está activado para este chat
+    const enabled = getChatWelcomeEnabled(m.chat)
+    if (!enabled) return true
+
+    // Detectar datos según varias estructuras posibles
+    const stub = m.messageStubType ?? m.message?.messageStubType ?? m.message?.stubType ?? null
+
+    let participants = m.messageStubParameters
+      ?? m.message?.messageStubParameters
+      ?? m.message?.participants
+      ?? m.message?.message?.participants
+      ?? m.message?.key?.participants
+      ?? null
+
+    // extra fallback para invited by link o estructuras raras
+    if (!participants && m.message?.message?.groupInviteMessage && m.message.message.groupInviteMessage.participant) {
+      participants = [m.message.message.groupInviteMessage.participant]
+    }
+
+    // otros lugares raros
+    if (!participants && m.message?.message?.extendedTextMessage?.contextInfo?.mentionedJid) {
+      participants = m.message.message.extendedTextMessage.contextInfo.mentionedJid
+    }
+
+    if (!participants) participants = []
+
+    // DEBUG log: pega esto en consola si algo falla
+    console.log('WELCOME DEBUG =>', { chat: m.chat, stub, parts: participants?.length ?? 0, sample: participants?.slice?.(0,5) })
+
+    // Considerar que es evento add si stub coincide o hay participantes detectados
+    const isAdd = stub === WAMessageStubType.GROUP_PARTICIPANT_ADD || (Array.isArray(participants) && participants.length > 0)
+
+    if (!isAdd) return true
+
+    // Enviar bienvenida a cada participante detectado
+    for (const raw of participants) {
+      if (!raw) continue
+      // raw puede venir como string o como objeto
+      let user = null
+      if (typeof raw === 'string') user = raw
+      else if (raw.id) user = raw.id
+      else if (raw.jid) user = raw.jid
+      else if (raw.participant) user = raw.participant
+      else if (raw[0]) user = raw[0]
+      if (!user) continue
+
+      // Normalizar a jid completo
+      const userJid = ('' + user).includes('@') ? ('' + user) : ('' + user) + '@s.whatsapp.net'
+      await sendWelcomeMessage(conn, m.chat, userJid)
+    }
+
+    // permitir que otros handlers también procesen el evento
+    return true
+
+  } catch (err) {
+    console.error('WELCOME BEFORE ERROR', err)
     return true
   }
 }
 
-// Comando para activar/desactivar y test
-const cmdHandler = async (m, { conn, command, args, usedPrefix, isAdmin, isOwner }) => {
-  if (command === 'testwelcome') {
-    // Test: envía bienvenida simulada al sender
-    await sendWelcome(conn, m.chat, m.sender)
-    return
-  }
+// metadata para el loader (manténla)
+handler.command = ['welcome', 'testwelcome']
+handler.tags = ['group']
+handler.group = true
 
-  if (command !== 'welcome') return
-
-  // Solo admins/owner pueden activar/desactivar
-  if (!(isAdmin || isOwner)) return conn.reply(m.chat, '🤨 Solo los administradores pueden activar o desactivar la bienvenida.', m)
-
-  const chat = global.db.data.chats[m.chat]
-  if (!chat) return
-  let isWelcomeEnabled = chat.welcome !== undefined ? chat.welcome : true
-
-  if (args[0] === 'on') {
-    if (isWelcomeEnabled) return conn.reply(m.chat, `🌟 La bienvenida ya estaba activada.`, m)
-    isWelcomeEnabled = true
-  } else if (args[0] === 'off') {
-    if (!isWelcomeEnabled) return conn.reply(m.chat, `❄ La bienvenida ya estaba desactivada.`, m)
-    isWelcomeEnabled = false
-  } else {
-    return conn.reply(
-      m.chat,
-      `☃️ Usa: *\( {usedPrefix + command} on* para activar o * \){usedPrefix + command} off* para desactivar.\n\n🛠 Estado actual: *${isWelcomeEnabled ? '✓ Activado' : '✗ Desactivado'}*`,
-      m
-    )
-  }
-
-  chat.welcome = isWelcomeEnabled
-  return conn.reply(m.chat, `La bienvenida fue *${isWelcomeEnabled ? 'activada' : 'desactivada'}* en este grupo.`, m)
-}
-
-cmdHandler.help = ['welcome on/off', 'testwelcome']
-cmdHandler.tags = ['group']
-cmdHandler.command = ['welcome', 'testwelcome']
-cmdHandler.group = true
-
-const exported = handler
-exported.help = cmdHandler.help
-exported.tags = cmdHandler.tags
-exported.command = cmdHandler.command
-exported.group = true
-
-export default exported
+export default handler
