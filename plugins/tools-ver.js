@@ -2,7 +2,7 @@ import { downloadContentFromMessage } from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn }) => {
     if (!m.quoted) 
-        return m.reply('💗 Darling, responde a un mensaje de *ver una sola vez*~')
+        return m.reply('*🌷 hey tu! y la imagen estás desafiando a darling~! 😡*')
 
     try {
         const quoted = m.quoted
