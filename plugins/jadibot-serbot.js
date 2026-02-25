@@ -50,7 +50,7 @@ const msgExito = (nombre) =>
     `ꙮ *¡${nombre} conectado!*\n\n` +
     `> ꕦ Usuario: *${nombre}*\n` +
     `> ꕦ Método: *Código*\n` +
-    `> ꕦ Bot: *${global.botName}*\n\n` +
+    `> ꕦ Bot: *${global.botname}*\n\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
 
 function cleanPhone(phone) {
