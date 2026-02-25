@@ -18,11 +18,6 @@ const handler = async (msg, { conn, args, usedPrefix }) => {
     )
   }
 
-  await conn.sendMessage(
-    msg.chat,
-    { text: '🎬 Descargando video...' },
-    { quoted: msg }
-  )
 
   try {
     const search = await yts(query)
@@ -82,7 +77,7 @@ function formatBox(video) {
   const author = video.author?.name || 'Desconocido'
   const time = video.timestamp || 'N/A'
 
-  const line = '══════════════'
+  const line = '════════════'
 
   return (
 `╔✦★✦${line}✦★✦╗
