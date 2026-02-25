@@ -5,21 +5,25 @@ let handler = async (m, { conn }) => {
 
     try {
         const quoted = m.quoted
+        const msg = quoted.message || {}
 
-        const viewOnce = quoted.message?.viewOnceMessage?.message
-                      || quoted.message?.viewOnceMessageV2?.message
-                      || quoted.message?.viewOnceMessageV2Extension?.message
+        const viewOnce = msg.viewOnceMessage?.message
+                      || msg.viewOnceMessageV2?.message
+                      || msg.viewOnceMessageV2Extension?.message
+                      || (msg.imageMessage?.viewOnce ? msg : null)
+                      || (msg.videoMessage?.viewOnce ? msg : null)
+                      || (msg.audioMessage?.viewOnce ? msg : null)
 
         if (!viewOnce) return m.reply('💔 Ese mensaje no es de una sola vista, darling~')
 
         let mediaType, mediaMessage
-        if (viewOnce.imageMessage?.viewOnce) {
+        if (viewOnce.imageMessage) {
             mediaType = 'image'
             mediaMessage = viewOnce.imageMessage
-        } else if (viewOnce.videoMessage?.viewOnce) {
+        } else if (viewOnce.videoMessage) {
             mediaType = 'video'
             mediaMessage = viewOnce.videoMessage
-        } else if (viewOnce.audioMessage?.viewOnce) {
+        } else if (viewOnce.audioMessage) {
             mediaType = 'audio'
             mediaMessage = viewOnce.audioMessage
         } else {
