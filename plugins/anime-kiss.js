@@ -1,6 +1,6 @@
 import baileys from '@whiskeysockets/baileys'
 
-let handler = async (m, { conn, usedPrefix }) => {
+let handler = async (m, { conn }) => {
     try {
         await m.react('🫦')
 
@@ -14,9 +14,7 @@ let handler = async (m, { conn, usedPrefix }) => {
         }
 
         let name = conn.getName(who)
-        let name2 = conn.getName(m.sender)
-        
-        let str
+        let name2 = conn.getName let str
         if (m.mentionedJid?.length > 0) {
             str = `\`${name2}\` *le dio besos a* \`${name}\` *( ˘ ³˘)♥*`
         } else if (m.quoted) {
@@ -53,7 +51,6 @@ let handler = async (m, { conn, usedPrefix }) => {
             m.chat,
             {
                 video: { url: video },
-                gifPlayback: true,
                 caption: str,
                 mentions: [who]
             },
@@ -62,7 +59,6 @@ let handler = async (m, { conn, usedPrefix }) => {
 
         await m.react('💋')
     } catch (e) {
-        console.error('Error en kiss:', e)
         await m.react('💔')
         m.reply('💔 Ocurrió un error enviando el beso...')
     }
