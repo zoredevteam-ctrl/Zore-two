@@ -7,19 +7,7 @@ let handler = async (m, { conn }) => {
     await conn.sendMessage(m.chat, {
         image: { url: img },
         caption: txt,
-        footer: global.botTag,
-        buttons: [
-            {
-                buttonId: `.pack`,
-                buttonText: { displayText: 'Siguiente' }
-            },
-            {
-                buttonId: '.tetas',
-                buttonText: { displayText: 'Tetas' }
-            }
-        ],
-        viewOnce: true,
-        headerType: 4
+        viewOnce: true
     }, { quoted: m })
 
     await m.react('✅')
