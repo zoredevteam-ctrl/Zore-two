@@ -79,16 +79,27 @@ export const handler = async (m, conn, plugins) => {
         if (!commandName) return;
 
         let cmd = null
-        for (const [, plugin] of plugins) {
-            if (!plugin.command) continue
-            const cmds = Array.isArray(plugin.command)
-                ? plugin.command
-                : plugin.command instanceof RegExp
-                    ? []
-                    : [plugin.command]
-            if (cmds.map(c => c.toLowerCase()).includes(commandName)) {
-                cmd = plugin
-                break
+
+        if (prefix === '$') {
+            for (const [, plugin] of plugins) {
+                if (plugin.customPrefix?.includes('$')) {
+                    cmd = plugin
+                    args.unshift(commandName)
+                    break
+                }
+            }
+        } else {
+            for (const [, plugin] of plugins) {
+                if (!plugin.command) continue
+                const cmds = Array.isArray(plugin.command)
+                    ? plugin.command
+                    : plugin.command instanceof RegExp
+                        ? []
+                        : [plugin.command]
+                if (cmds.map(c => c.toLowerCase()).includes(commandName)) {
+                    cmd = plugin
+                    break
+                }
             }
         }
 
