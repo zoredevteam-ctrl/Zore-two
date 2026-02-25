@@ -50,7 +50,7 @@ function isPremiumJid(jid) {
     return !!u?.premium
 }
 
-const PREFIXES = ['#', '.', '/']
+const PREFIXES = ['#', '.', '/', '$']
 
 function getPrefix(body) {
     for (const p of PREFIXES) {
