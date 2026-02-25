@@ -33,8 +33,8 @@ async function sendAlbumMessage(conn, jid, medias, options = {}) {
     return album
 }
 
-let handler = async (m, { conn, text, prefix, command }) => {
-    if (!text) return m.reply(`💗 Darling, dime qué buscar~\n> Ejemplo: ${prefix}${command} Zero Two`)
+let handler = async (m, { conn, text, prefix }) => {
+    if (!text) return m.reply(`💗 Darling, dime qué buscar~\n> Ejemplo: ${prefix}pinterest Zero Two`)
 
     await m.react('⏳')
     await m.reply('🌸 Buscando imágenes en Pinterest, espera un momento~')
