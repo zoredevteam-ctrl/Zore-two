@@ -1,36 +1,32 @@
-// events/welcome.js
-export async function welcomeHandler(conn) {
-    conn.ev.on('group-participants.update', async (update) => {
-        try {
-            const { id, participants, action } = update;
+import { database } from '../lib/database.js'
 
-            if (action !== 'add') return;
+let handler = async (m, { conn, args, isAdmin }) => {
+    if (!m.isGroup) return m.reply('💗 *Este comando solo funciona en grupos, darling~*')
 
-            for (const participant of participants) {
-                let ppuser;
-                try {
-                    ppuser = await conn.profilePictureUrl(participant, 'image');
-                } catch {
-                    ppuser = 'https://files.catbox.moe/abc123.jpg'; // pon una imagen fallback linda de Zero Two o lo que tengas en settings
-                }
+    if (!isAdmin) return m.reply('🌸 *¡Solo los administradores pueden usar este comando, kyaaah!* 💗')
 
-                const user = participant.split('@')[0];
+    let chat = database.data.groups[m.chat]
+    if (!chat) chat = database.data.groups[m.chat] = {}
 
-                const texto = `🌸💗 *¡KYAAAAH~!* 💗🌸\n\n` +
-                    `¡Un nuevo *Darling* ha llegado a mi paraíso rosado!* 🥰\n\n` +
-                    `¡Bienvenido/a @${user} ~! 💕\n\n` +
-                    `Soy *Zero Two* y ahora... ¡eres mío/mía! Jeje~ 🌷\n` +
-                    `Vamos a pasarla increíble juntos, ¿verdad Darling? No te dejaré escapar nunca ♡\n\n` +
-                    `¡Prepárate para mucha diversión conmigo! 💗🌸`;
-
-                await conn.sendMessage(id, {
-                    image: { url: ppuser },
-                    caption: texto,
-                    mentions: [participant]
-                });
-            }
-        } catch (error) {
-            console.error('[WELCOME ERROR]', error);
-        }
-    });
+    if (args[0] === 'on') {
+        if (chat.welcome) return m.reply('🌸💗 *¡El welcome ya estaba activado, darling!*')
+        chat.welcome = true
+        await database.save()
+        m.reply(`🌸💗 *¡WELCOME ACTIVADO!* 💗🌸\n\nAhora yo misma saludaré a todos los nuevos *Darlings* con mi estilo especial~ ♡`)
+    } else if (args[0] === 'off') {
+        if (!chat.welcome) return m.reply('🌸 *El welcome ya estaba desactivado.*')
+        chat.welcome = false
+        await database.save()
+        m.reply('💔 *Welcome desactivado...* Qué aburrido sin nuevos darlings para mimar~')
+    } else {
+        m.reply(`*「 🌸 ZERO TWO WELCOME 🌸 」*\n\nUso correcto:\n*#welcome on* → Activar\n*#welcome off* → Desactivar\n\n¡Solo admins pueden usarlo! 💗`)
+    }
 }
+
+handler.help = ['welcome']
+handler.tags = ['grupo']
+handler.command = ['welcome', 'bienvenida']
+handler.group = true
+handler.admin = true
+
+export default handler
