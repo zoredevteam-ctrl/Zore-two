@@ -62,6 +62,8 @@ function getPrefix(body) {
     return null
 }
 
+const normalizeParticipant = (id) => id.split('@')[0].split(':')[0] + '@s.whatsapp.net'
+
 let eventsLoaded = false
 
 export const loadEvents = async (conn) => {
@@ -69,8 +71,8 @@ export const loadEvents = async (conn) => {
     eventsLoaded = true
 
     const eventsPath = resolve('./events')
-
     let files = []
+
     try {
         files = readdirSync(eventsPath).filter(f => f.endsWith('.js'))
     } catch {
@@ -88,7 +90,12 @@ export const loadEvents = async (conn) => {
                 continue
             }
 
-            conn.ev.on(mod.event, (data) => mod.run(conn, data))
+            conn.ev.on(mod.event, (data) => {
+                const id = data?.id || data?.key?.remoteJid || null
+                if (mod.enabled && id && !mod.enabled(id)) return
+                mod.run(conn, data)
+            })
+
             console.log(chalk.green(`[EVENTS] ✦ ${file} → ${mod.event}`))
         } catch (e) {
             console.log(chalk.red(`[EVENTS ERROR] ${file}:`), e.message)
@@ -163,10 +170,11 @@ export const handler = async (m, conn, plugins) => {
         if (isGroup) {
             try {
                 const groupMeta = await conn.groupMetadata(m.chat);
-                const participant = groupMeta.participants.find(p => p.id === m.sender);
+                const senderNorm = normalizeParticipant(m.sender)
+                const participant = groupMeta.participants.find(p => normalizeParticipant(p.id) === senderNorm)
                 isAdmin = !!participant?.admin || isOwner;
-                const botId = conn.user.id.split(':')[0] + '@s.whatsapp.net'
-                const botParticipant = groupMeta.participants.find(p => p.id === botId)
+                const botId = normalizeParticipant(conn.user.id)
+                const botParticipant = groupMeta.participants.find(p => normalizeParticipant(p.id) === botId)
                 isBotAdmin = !!botParticipant?.admin
             } catch (err) {
                 console.log(chalk.red('[ERROR GROUP META]'), err.message);
