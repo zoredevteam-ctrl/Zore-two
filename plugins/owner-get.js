@@ -4,7 +4,7 @@ import { format } from 'util'
 let handler = async (m, { conn, args }) => {
     const text = args.join(' ')
     if (m.fromMe) return
-    if (!/^https?:\/\//.test(text)) return m.reply(`💗 Darling, ingresa una URL válida~\n> Ejemplo: ${text}`)
+    if (!/^https?:\/\//.test(text)) return m.reply(`💗 Darling, ingresa una URL válida~`)
 
     await m.react('⏳')
 
@@ -15,8 +15,16 @@ let handler = async (m, { conn, args }) => {
             throw `Content-Length: ${res.headers.get('content-length')}`
         }
 
-        if (!/text|json/.test(res.headers.get('content-type'))) {
-            return await conn.sendMessage(m.chat, { document: { url: text }, fileName: 'file', caption: text }, { quoted: m })
+        const contentType = res.headers.get('content-type') || ''
+
+        if (!/text|json/.test(contentType)) {
+            if (contentType.includes('image')) {
+                return await conn.sendMessage(m.chat, { image: { url: text }, caption: text }, { quoted: m })
+            } else if (contentType.includes('video')) {
+                return await conn.sendMessage(m.chat, { video: { url: text }, caption: text }, { quoted: m })
+            } else {
+                return await conn.sendMessage(m.chat, { document: { url: text }, fileName: 'file', caption: text }, { quoted: m })
+            }
         }
 
         let txt = await res.buffer()
