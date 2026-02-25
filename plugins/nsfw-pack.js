@@ -1,23 +1,13 @@
-import fetch from 'node-fetch';
+let handler = async (m, { conn }) => {
+    await m.react('🕑')
 
-let handler = async(m, { conn, usedPrefix, command }) => {
+    let txt = 'Pack🔥🔥🔥'
+    let img = 'https://api.delirius.store/nsfw/girls'
 
-m.react('🕑');
-
-const gp = global.db.data.chats[m.chat] || {};
-
-
-
-let txt = 'Pack🔥🔥🔥';
-
-let img = 'https://api.delirius.store/nsfw/girls';
-
-m.react('✅');
-// viva el porno jodido 
-conn.sendMessage(m.chat, { 
-        image: { url: img }, 
-        caption: txt, 
-        footer: dev, 
+    await conn.sendMessage(m.chat, {
+        image: { url: img },
+        caption: txt,
+        footer: global.botTag,
         buttons: [
             {
                 buttonId: `.pack`,
@@ -30,11 +20,13 @@ conn.sendMessage(m.chat, {
         ],
         viewOnce: true,
         headerType: 4
-    }, { quoted: m });
+    }, { quoted: m })
+
+    await m.react('✅')
 }
 
-handler.help = ['pack'];
-handler.tag = ['emox'];
-handler.command = ['pack', 'loli'];
+handler.help = ['pack']
+handler.tags = ['misc']
+handler.command = ['pack']
 
-export default handler;
+export default handler
