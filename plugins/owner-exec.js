@@ -3,11 +3,12 @@ import { format } from 'util'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import { createRequire } from 'module'
+import { database } from '../lib/database.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const require = createRequire(__dirname)
 
-let handler = async (m, { conn, isOwner, args, prefix, db }) => {
+let handler = async (m, { conn, args }) => {
     const _body = args.join(' ')
     if (!_body) return m.reply('💗 Darling, ingresa código a evaluar~')
 
@@ -20,7 +21,7 @@ let handler = async (m, { conn, isOwner, args, prefix, db }) => {
         let f = { exports: {} }
         let exec = new (async () => {}).constructor(
             'print', 'm', 'handler', 'require', 'conn',
-            'Array', 'process', 'args', 'module', 'exports', 'argument',
+            'Array', 'process', 'args', 'module', 'exports', 'argument', 'db',
             _text
         )
         _return = await exec.call(
@@ -32,7 +33,7 @@ let handler = async (m, { conn, isOwner, args, prefix, db }) => {
             },
             m, handler, require, conn,
             CustomArray, process, args,
-            f, f.exports, [conn]
+            f, f.exports, [conn], database.data
         )
     } catch (e) {
         let err = syntaxerror(_text, 'Execution Function', {
@@ -50,7 +51,7 @@ let handler = async (m, { conn, isOwner, args, prefix, db }) => {
 handler.help = ['eval']
 handler.tags = ['owner']
 handler.command = ['e']
-handler.rowner = true
+handler.owner = true
 
 export default handler
 
