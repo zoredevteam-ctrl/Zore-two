@@ -1,250 +1,72 @@
-import fetch from 'node-fetch';
+import fetch from 'node-fetch'
+import baileys from '@whiskeysockets/baileys'
 
-const HEADER = `𖤐 ❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎'𝐒 𝐏𝐈𝐍𝐓𝐄𝐑𝐄𝐒𝐓 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 💗`;
-
-const buildCaption = (data) => `${HEADER}
-
-✦ *Título:* ${data.title || 'Sin título, darling\~'}
-✦ *Descripción:* ${data.description || 'Nada que decir, solo mírame 💗'}
-✦ *Autor:* ${data.author || data.name || 'Un darling desconocido'}
-✦ *Usuario:* ${data.username || 'Anónimo como un secreto'}
-✦ *Seguidores:* ${data.followers || 0}
-✦ *Fecha:* ${data.uploadDate || data.created_at || 'Del pasado, darling'}
-✦ *Likes:* ${data.likes || 0}
-✦ *Comentarios:* ${data.comments || 0}
-✦ *Vistas:* ${data.views || 0}
-✦ *Guardados:* ${data.saved || 0}
-✦ *Formato:* ${data.format || data.type || 'Mágico 💗'}
-✦ *Enlace:* ${data.source || data.url || 'Secreto\~'}`.trim();
-
-export default {
-  command: ['pinterest', 'pin'],
-  category: 'search',
-  run: async (client, m, args, usedPrefix, command) => {
-    const text = args.join(' ');
-    const isPinterestUrl = /^https?:\/\//.test(text);
-    if (!text) {
-      return m.reply('💗 Darling, dame un término o enlace de Pinterest... ¿O quieres que busque en tus sueños?\~');
-    }
-    try {
-      console.log(chalk.yellow(`[PIN] Fetching: ${text}`));
-      if (isPinterestUrl) {
-        const data = await getPinterestDownload(text);
-        if (!data) return m.reply('💗 No encontré nada, darling... ¿Me estás probando?');
-        const caption = buildCaption(data);
-        if (data.type === 'video') {
-          console.log(chalk.green(`[PIN] Sending video: ${data.image}`));
-          await client.sendMessage(m.chat, { video: { url: data.image }, caption, mimetype: 'video/mp4', fileName: 'zero_two_pin.mp4' }, { quoted: m });
-        } else if (data.type === 'image') {
-          console.log(chalk.green(`[PIN] Sending image: ${data.image}`));
-          await client.sendMessage(m.chat, { image: { url: data.image }, caption }, { quoted: m });
-        } else {
-          return m.reply('💗 Contenido no soportado, darling... Solo imágenes o videos por ahora\~');
+async function sendAlbumMessage(conn, jid, medias, options = {}) {
+    if (typeof jid !== 'string') throw new TypeError(`jid must be string, received: ${jid}`)
+    if (medias.length < 2) throw new RangeError('Se necesitan al menos 2 imágenes para un álbum')
+    const caption = options.text || options.caption || ''
+    const delay = !isNaN(options.delay) ? options.delay : 500
+    const quoted = options.quoted || null
+    delete options.text
+    delete options.caption
+    delete options.delay
+    delete options.quoted
+    const album = baileys.generateWAMessageFromContent(
+        jid,
+        { messageContextInfo: {}, albumMessage: { expectedImageCount: medias.length } },
+        quoted ? { quoted } : {}
+    )
+    await conn.relayMessage(album.key.remoteJid, album.message, { messageId: album.key.id })
+    for (let i = 0; i < medias.length; i++) {
+        const { type, data } = medias[i]
+        const img = await baileys.generateWAMessage(
+            album.key.remoteJid,
+            { [type]: data, ...(i === 0 ? { caption } : {}) },
+            { upload: conn.waUploadToServer }
+        )
+        img.message.messageContextInfo = {
+            messageAssociation: { associationType: 1, parentMessageKey: album.key },
         }
-      } else {
-        const results = await getPinterestSearch(text);
-        if (!results || results.length === 0) {
-          return m.reply(`💗 No encontré resultados para *${text}*, darling. Prueba algo más jugoso\~`);
+        await conn.relayMessage(img.key.remoteJid, img.message, { messageId: img.key.id })
+        await baileys.delay(delay)
+    }
+    return album
+}
+
+let handler = async (m, { conn, text, prefix, command }) => {
+    if (!text) return m.reply(`💗 Darling, dime qué buscar~\n> Ejemplo: ${prefix}${command} Zero Two`)
+
+    await m.react('⏳')
+    await m.reply('🌸 Buscando imágenes en Pinterest, espera un momento~')
+
+    try {
+        const res = await fetch(`https://rest.alyabotpe.xyz/search/pinterest?query=${encodeURIComponent(text)}&key=Duarte-zz12`)
+
+        if (!res.ok) throw new Error(`Error en la API: ${res.status} ${res.statusText}`)
+
+        const data = await res.json()
+
+        if (!data.status || data.status !== true || !Array.isArray(data.data) || data.data.length < 2) {
+            return m.reply('💔 No encontré suficientes imágenes, darling... prueba con otra búsqueda~')
         }
-        const medias = results.slice(0, 10).map(r => {
-          const caption = buildCaption(r);
-          return { type: r.type === 'video' ? 'video' : 'image', data: { url: r.image }, caption };
-        });
-        console.log(chalk.green(`[PIN] Sending album with ${medias.length} items`));
-        await client.sendAlbumMessage(m.chat, medias, { quoted: m });
-      }
-    } catch (e) {
-      console.error(chalk.red(`[PIN ERROR] ${e.message}`));
-      await m.reply(`💗 Darling, algo salió mal... No me gusta fallar, pero prueba de nuevo. [Error: *${e.message}*] \~Zero Two 💗`);
+
+        const images = data.data.slice(0, 10).map(img => ({
+            type: 'image',
+            data: { url: img.hd }
+        }))
+
+        const caption = `🌸 *Resultados para:* ${text}\n💗 *~Zero Two*`
+        await sendAlbumMessage(conn, m.chat, images, { caption, quoted: m })
+        await m.react('✅')
+    } catch (error) {
+        console.error('Error en pinterest:', error)
+        await m.react('💔')
+        await m.reply(`💔 Darling, algo salió mal... [Error: ${error.message}]`)
     }
-  }
 }
 
-async function getPinterestDownload(url) {
-  const apis = [
-    {
-      endpoint: `\( {global.apiConfigs.stellar.baseUrl}/dl/pinterest?url= \){encodeURIComponent(url)}&key=${global.apiConfigs.stellar.key}`,
-      extractor: res => {
-        if (!res.status || !res.data?.dl) return null;
-        return {
-          type: res.data.type,
-          title: res.data.title || null,
-          author: res.data.author || null,
-          username: res.data.username || null,
-          uploadDate: res.data.uploadDate || null,
-          format: res.data.type === 'video' ? 'mp4' : 'jpg',
-          image: res.data.dl,
-          thumbnail: res.data.thumbnail || null
-        };
-      }
-    },
-    {
-      endpoint: `\( {global.apiConfigs.vreden.baseUrl}/api/v1/download/pinterest?url= \){encodeURIComponent(url)}`,
-      extractor: res => {
-        if (!res.status || !res.result?.media_urls?.length) return null;
-        const media = res.result.media_urls.find(m => m.quality === 'original') || res.result.media_urls[0];
-        if (!media?.url) return null;
-        return {
-          type: media.type,
-          title: res.result.title || null,
-          description: res.result.description || null,
-          author: res.result.uploader?.full_name || null,
-          username: res.result.uploader?.username || null,
-          uploadDate: res.result.created_at || null,
-          likes: res.result.statistics?.likes || null,
-          views: res.result.statistics?.views || null,
-          saved: res.result.statistics?.saved || null,
-          format: media.type,
-          image: media.url
-        };
-      }
-    },
-    {
-      endpoint: `\( {global.apiConfigs.nekolabs.baseUrl}/downloader/pinterest?url= \){encodeURIComponent(url)}`,
-      extractor: res => {
-        if (!res.success || !res.result?.medias?.length) return null;
-        const media = res.result.medias.find(m => m.extension === 'mp4' || m.extension === 'jpg');
-        if (!media?.url) return null;
-        return {
-          type: media.extension === 'mp4' ? 'video' : 'image',
-          title: res.result.title || null,
-          description: null,
-          format: media.extension,
-          image: media.url,
-          thumbnail: res.result.thumbnail || null,
-          duration: res.result.duration || null
-        };
-      }
-    },
-    {
-      endpoint: `\( {global.apiConfigs.delirius.baseUrl}/download/pinterestdl?url= \){encodeURIComponent(url)}`,
-      extractor: res => {
-        if (!res.status || !res.data?.download?.url) return null;
-        return {
-          type: res.data.download.type,
-          title: res.data.title || null,
-          description: res.data.description || null,
-          author: res.data.author_name || null,
-          username: res.data.username || null,
-          followers: res.data.followers || null,
-          uploadDate: res.data.upload || null,
-          likes: res.data.likes || null,
-          comments: res.data.comments || null,
-          format: res.data.download.type,
-          image: res.data.download.url,
-          thumbnail: res.data.thumbnail || null,
-          source: res.data.source || null
-        };
-      }
-    },
-    {
-      endpoint: `\( {global.apiConfigs.ootaizumi.baseUrl}/downloader/pinterest?url= \){encodeURIComponent(url)}`,
-      extractor: res => {
-        if (!res.status || !res.result?.download) return null;
-        return {
-          type: res.result.download.includes('.mp4') ? 'video' : 'image',
-          title: res.result.title || null,
-          description: null,
-          author: res.result.author?.name || null,
-          username: res.result.author?.username || null,
-          uploadDate: res.result.upload || null,
-          format: res.result.download.includes('.mp4') ? 'mp4' : 'jpg',
-          image: res.result.download,
-          thumbnail: res.result.thumb || null,
-          source: res.result.source || null
-        };
-      }
-    }
-  ];
+handler.help = ['pinterest <query>']
+handler.tags = ['misc']
+handler.command = ['pinterest', 'pin']
 
-  for (const { endpoint, extractor } of apis) {
-    try {
-      const res = await fetch(endpoint).then(r => r.json());
-      const result = extractor(res);
-      if (result) return result;
-    } catch (err) {
-      console.log(chalk.gray(`[PIN API] Falló ${endpoint.split('/')[3] || 'API'}: ${err.message}`));
-    }
-    await new Promise(r => setTimeout(r, 500));
-  }
-  return null;
-}
-
-async function getPinterestSearch(query) {
-  const apis = [
-    `\( {global.apiConfigs.stellar.baseUrl}/search/pinterest?query= \){encodeURIComponent(query)}&key=${global.apiConfigs.stellar.key}`,
-    `\( {global.apiConfigs.stellar.baseUrl}/search/pinterestv2?query= \){encodeURIComponent(query)}&key=${global.apiConfigs.stellar.key}`,
-    `\( {global.apiConfigs.delirius.baseUrl}/search/pinterestv2?text= \){encodeURIComponent(query)}`,
-    `\( {global.apiConfigs.vreden.baseUrl}/api/v1/search/pinterest?query= \){encodeURIComponent(query)}`,
-    `\( {global.apiConfigs.vreden.baseUrl}/api/v2/search/pinterest?query= \){encodeURIComponent(query)}&limit=10&type=videos`,
-    `\( {global.apiConfigs.delirius.baseUrl}/search/pinterest?text= \){encodeURIComponent(query)}`,
-    `\( {global.apiConfigs.siputzx.baseUrl}/api/s/pinterest?query= \){encodeURIComponent(query)}&type=image`
-  ];
-
-  for (const endpoint of apis) {
-    try {
-      const res = await fetch(endpoint).then(r => r.json());
-      if (res?.data?.length) {
-        return res.data.map(d => ({
-          type: 'image',
-          title: d.title || null,
-          description: d.description || null,
-          name: d.full_name || d.name || null,
-          username: d.username || null,
-          followers: d.followers || null,
-          likes: d.likes || null,
-          created_at: d.created || d.created_at || null,
-          image: d.hd || d.image || null
-        }));
-      }
-      if (res?.response?.pins?.length) {
-        return res.response.pins.map(p => ({
-          type: p.media?.video ? 'video' : 'image',
-          title: p.title || null,
-          description: p.description || null,
-          name: p.uploader?.full_name || null,
-          username: p.uploader?.username || null,
-          followers: p.uploader?.followers || null,
-          likes: null,
-          created_at: null,
-          image: p.media?.images?.orig?.url || null
-        }));
-      }
-      if (res?.results?.length) {
-        return res.results.map(url => ({ type: 'image', title: null, description: null, name: null, username: null, followers: null, likes: null, created_at: null, image: url }));
-      }
-      if (res?.result?.search_data?.length) {
-        return res.result.search_data.map(url => ({ type: 'image', title: null, description: null, name: null, username: null, followers: null, likes: null, created_at: null, image: url }));
-      }
-      if (res?.result?.result?.length) {
-        return res.result.result.map(d => ({
-          type: d.media_urls?.[0]?.type || 'video',
-          title: d.title || null,
-          description: d.description || null,
-          name: d.uploader?.full_name || null,
-          username: d.uploader?.username || null,
-          followers: d.uploader?.followers || null,
-          likes: null,
-          created_at: null,
-          image: d.media_urls?.[0]?.url || null
-        }));
-      }
-      if (res?.data?.length && res.data[0]?.image_url) {
-        return res.data.map(d => ({
-          type: d.type || 'image',
-          title: d.grid_title || null,
-          description: d.description || null,
-          name: d.pinner?.full_name || null,
-          username: d.pinner?.username || null,
-          followers: d.pinner?.follower_count || null,
-          likes: d.reaction_counts?.[1] || null,
-          created_at: d.created_at || null,
-          image: d.image_url || null
-        }));
-      }
-    } catch (err) {
-      console.log(chalk.gray(`[PIN SEARCH] Falló ${endpoint.split('/')[3] || 'API'}: ${err.message}`));
-    }
-  }
-  return [];
-}
+export default handler
