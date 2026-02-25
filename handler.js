@@ -62,12 +62,6 @@ function getPrefix(body) {
     return null
 }
 
-const matchParticipant = (a, b) => {
-    const numA = a.split('@')[0].split(':')[0]
-    const numB = b.split('@')[0].split(':')[0]
-    return numA === numB
-}
-
 let eventsLoaded = false
 
 export const loadEvents = async (conn) => {
@@ -174,9 +168,16 @@ export const handler = async (m, conn, plugins) => {
         if (isGroup) {
             try {
                 const groupMeta = await conn.groupMetadata(m.chat);
-                const participant = groupMeta.participants.find(p => matchParticipant(p.id, m.sender))
-                isAdmin = !!participant?.admin || isOwner;
-                const botParticipant = groupMeta.participants.find(p => matchParticipant(p.id, conn.user.id))
+
+                const participant = groupMeta.participants.find(p =>
+                    p.jid === m.sender || p.id === m.sender
+                )
+                isAdmin = !!participant?.admin || isOwner
+
+                const botJid = conn.user.id.split(':')[0] + '@s.whatsapp.net'
+                const botParticipant = groupMeta.participants.find(p =>
+                    p.jid === botJid || p.id === botJid
+                )
                 isBotAdmin = !!botParticipant?.admin
             } catch (err) {
                 console.log(chalk.red('[ERROR GROUP META]'), err.message);
