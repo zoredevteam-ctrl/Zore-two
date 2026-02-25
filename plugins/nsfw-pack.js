@@ -1,3 +1,5 @@
+// deja créditos o serás funado por la legión lgtb 
+
 let handler = async (m, { conn }) => {
     await m.react('🕑')
 
