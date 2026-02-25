@@ -14,6 +14,6 @@ let handler = async (m, { conn }) => {
 
 handler.help = ['pack']
 handler.tags = ['misc']
-handler.command = ['nose']
+handler.command = ['pack']
 
 export default handler
