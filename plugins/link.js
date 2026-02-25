@@ -1,15 +1,15 @@
-// CREAOD POR YO SOY YO 
-var handler = async (m, { conn, args }) => {
-
-let group = m.chat
-let link = 'https://chat.whatsapp.com/' + await conn.groupInviteCode(group)
-conn.reply(m.chat, '\t\t✿:･✧ link del grupo ✧･:✿\n\n\v' + link, m, { detectLink: true })
-
+let handler = async (m, { conn }) => {
+    try {
+        const link = 'https://chat.whatsapp.com/' + await conn.groupInviteCode(m.chat)
+        await m.reply(`🌸 *Link del grupo, darling~*\n\n${link}`)
+    } catch (e) {
+        await m.reply('💔 Darling, no pude obtener el link del grupo~')
+    }
 }
+
 handler.help = ['link']
 handler.tags = ['grupo']
 handler.command = ['link', 'enlace']
 handler.group = true
-handler.botAdmin = false
 
 export default handler
