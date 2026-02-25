@@ -19,7 +19,7 @@ async function streamToBuffer(stream) {
 
 async function buildFakeQuote(conn, m) {
   const FAKE_SENDER = '867051314767696@bot'
-  let groupName = global.namebot || '𝖸𝖺𝗑𝗋𝖼𝗂𝗍𝗈 𝖡𝗈𝗍'
+  let groupName = global.namebot || 'XD'
   let thumb = null
 
   if (m.isGroup) {
