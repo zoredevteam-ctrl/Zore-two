@@ -41,7 +41,10 @@ const handler = async (msg, { conn, args, usedPrefix }) => {
 
     await conn.sendMessage(
       msg.chat,
-      { text: info },
+      {
+        image: { url: video.thumbnail },
+        caption: info
+      },
       { quoted: msg }
     )
 
