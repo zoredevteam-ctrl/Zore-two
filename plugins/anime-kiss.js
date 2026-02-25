@@ -1,4 +1,4 @@
-let handler = async (m, { conn }) => {
+let handler = async (m, { conn, db }) => {
     try {
         await m.react('🫦')
 
@@ -11,7 +11,17 @@ let handler = async (m, { conn }) => {
             who = m.sender
         }
 
-        let name = who.split('@')[0]
+        if (who.endsWith('@lid') || isNaN(who.split('@')[0])) {
+            try {
+                const groupMeta = await conn.groupMetadata(m.chat)
+                const found = groupMeta.participants.find(p => p.id === who || p.lid === who)
+                if (found?.jid) who = found.jid
+            } catch {}
+        }
+
+        const getName = (jid) => db.users?.[jid]?.name || jid.split('@')[0]
+
+        let name = getName(who)
         let name2 = m.pushName || m.sender.split('@')[0]
 
         let str
