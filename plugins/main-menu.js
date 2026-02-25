@@ -1,7 +1,7 @@
 import fs from 'fs'
 import fetch from 'node-fetch'
 
-let handler = async (m, { conn, prefix }) => {
+let handler = async (m, { conn }) => {
     try {
         const botname = global.botname || global.botName || 'Zero Two'
 
@@ -34,21 +34,8 @@ ${cmds.map(c => `  💗 ${c}`).join('\n')}
 
         const zonaHoraria = 'America/Bogota'
         const ahora = new Date()
-
-        const fechaCol = ahora.toLocaleDateString('es-CO', {
-            timeZone: zonaHoraria,
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long'
-        })
-        const horaCol = ahora.toLocaleTimeString('es-CO', {
-            timeZone: zonaHoraria,
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        })
-
         const hora = parseInt(ahora.toLocaleTimeString('es-CO', { timeZone: zonaHoraria, hour: '2-digit', hour12: false }))
+
         let saludo, carita
         if (hora >= 5 && hora < 12) {
             saludo = 'buenos días'
@@ -63,15 +50,10 @@ ${cmds.map(c => `  💗 ${c}`).join('\n')}
 
         let menuTexto = `𖤐 ❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎'𝐒 𝐌𝐄𝐍𝐔 ❖ 𖤐
 
-❝ ¡Hola darling, ${saludo}~! ${carita}
+❝ ¡Hola *${m.pushName}*, ${saludo}~! ${carita}
 Soy *${botname}* y este es mi menú,
 más te vale usarlo bien... hmph 💗 ❞
 
-💗 *Darling:* @${m.sender.split('@')[0]}
-📅 *Fecha:* ${fechaCol}
-⏰ *Hora:* ${horaCol} (CO)
-🍬 *Prefijo:* ${prefix}
-🌸 *Bot:* ${botname}
 💢 *Comandos:* ${totalCmds} disponibles
 
 ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦
