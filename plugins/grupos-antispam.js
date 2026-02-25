@@ -13,12 +13,12 @@ let handler = async (m, { conn, args, isAdmin }) => {
         if (chat.antispam) return m.reply('🌸💗 *¡El AntiSpam ya estaba activado, mi darling!*')
         chat.antispam = true
         await database.save()
-        m.reply(`🌸💗 *¡ANTISPAM ACTIVADO!* 💗🌸\n\nAhora nadie podrá spamearme en *mi* paraíso rosado. ¡Todos se quedan quietitos conmigo o me pongo muy celosa~! ♡`)
+        m.reply(`🌸💗 *¡ANTISPAM ACTIVADO!* 💗🌸\n\nAhora nadie podrá spamearme en *mi* paraíso rosado. ¡3 strikes y te expulso con amor y celos, kyaaah~! ♡`)
     } else if (args[0] === 'off') {
         if (!chat.antispam) return m.reply('🌸 *El AntiSpam ya estaba desactivado.*')
         chat.antispam = false
         await database.save()
-        m.reply('🌸 *AntiSpam desactivado...* Está bien, pero si alguien me spamea igual lo regañaré yo misma, kyaaah~ 💔')
+        m.reply('🌸 *AntiSpam desactivado...* Está bien, pero igual te voy a regañar si me spameas, darling~ 💔')
     } else {
         m.reply(`*「 🌸 ZERO TWO ANTISPAM 🌸 」*\n\nUso:\n*#antispam on* → Activar\n*#antispam off* → Desactivar\n\n¡Solo admins del grupo! 💗`)
     }
@@ -31,7 +31,7 @@ handler.group = true
 
 export default handler
 
-// ==================== EVENTO ANTISPAM COMPLETO (Zero Two Style) ====================
+// ==================== EVENTO ANTISPAM COMPLETO + EXPULSIÓN (Zero Two Style) ====================
 const registerAntiSpamEvent = () => {
     if (global.zeroAntiSpamRegistered || !global.conn) {
         setTimeout(registerAntiSpamEvent, 2000)
@@ -46,10 +46,10 @@ const registerAntiSpamEvent = () => {
             const m = messages[0]
             if (!m.message || !m.key.remoteJid?.endsWith('@g.us')) return
 
-            const chat = database.data.groups[m.key.remoteJid]
+            const groupId = m.key.remoteJid
+            const chat = database.data.groups[groupId]
             if (!chat?.antispam) return
 
-            const groupId = m.key.remoteJid
             const user = m.key.participant || m.key.remoteJid
             const now = Date.now()
 
@@ -63,21 +63,21 @@ const registerAntiSpamEvent = () => {
             // Inicializar tracker
             if (!global.antispamTracker[groupId]) global.antispamTracker[groupId] = {}
             if (!global.antispamTracker[groupId][user]) {
-                global.antispamTracker[groupId][user] = { times: [], lastText: '', repeat: 0 }
+                global.antispamTracker[groupId][user] = { times: [], lastText: '', repeat: 0, warnings: 0 }
             }
 
             const tracker = global.antispamTracker[groupId][user]
 
-            // Limpiar timestamps viejos (7 segundos)
+            // Limpiar timestamps viejos
             tracker.times = tracker.times.filter(t => now - t < 7000)
             tracker.times.push(now)
 
             let isSpam = false
 
-            // ANTI-FLOOD: más de 5 mensajes en 7 segundos
+            // ANTI-FLOOD: 6+ msgs en 7 segundos
             if (tracker.times.length >= 6) isSpam = true
 
-            // ANTI-REPEAT: mismo mensaje 4 veces seguidas
+            // ANTI-REPEAT: mismo texto 4+ veces
             if (text && text.length > 3) {
                 if (text === tracker.lastText) {
                     tracker.repeat++
@@ -89,31 +89,17 @@ const registerAntiSpamEvent = () => {
             }
 
             if (isSpam) {
-                // Borrar el mensaje spam
+                // Borrar mensaje spam
                 await global.conn.sendMessage(groupId, { delete: m.key })
 
                 const username = user.split('@')[0]
+                tracker.warnings = (tracker.warnings || 0) + 1
 
-                const warning = `🌸💗 *¡KYAAAAAH NO SPAMEES!!* 💗🌸\n\n` +
-                    `¡@${username} ! ¿Llenándome de mensajes tan rápido en *mi* paraíso rosado? 💢😠\n\n` +
-                    `¡No me gusta que me spamees, darling! Quédate quietito conmigo o te castigaré con mucho amor y celos~ ♡\n` +
-                    `La próxima vez no respondo tan lindo... ¡Ven aquí y compórtate! 🌷💗`
+                if (tracker.warnings >= 3) {
+                    // === EXPULSIÓN ===
+                    await global.conn.groupParticipantsUpdate(groupId, [user], 'remove')
 
-                await global.conn.sendMessage(groupId, {
-                    text: warning,
-                    mentions: [user]
-                })
-
-                // Reset tracker después de spam
-                tracker.times = []
-                tracker.repeat = 0
-            }
-        } catch (e) {
-            console.error('[ZERO TWO ANTISPAM ERROR]', e.message)
-        }
-    })
-
-    console.log('🌸💗 Zero Two AntiSpam COMPLETO (flood + repeat) registrado correctamente')
-}
-
-registerAntiSpamEvent()
+                    const kickText = `🌸💗 *¡KYAAAAAH EXPULSADO POR SPAM!!* 💗🌸\n\n` +
+                        `¡@${username} ! ¡3 advertencias y sigues spameando en *mi* paraíso rosado?! 💢😠\n\n` +
+                        `¡No tolero que me llenes de mensajes! Te expulso por ahora, darling...\n` +
+                        `Vuelve cuando sepas comportarte o saldré con mi Franxx a buscarte
