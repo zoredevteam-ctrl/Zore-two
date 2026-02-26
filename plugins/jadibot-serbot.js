@@ -82,7 +82,6 @@ function isSocketReady(sock) {
   return hasWs && hasUser
 }
 
-
 setInterval(() => {
   try {
     if (!global.conns.length) return
@@ -195,7 +194,6 @@ async function startSubBot({ m, conn, args, prefix, sessionPath, useCode }) {
         nombreUsuario = m.pushName || 'Usuario'
       }
 
-
       if (qr && !useCode) {
         txtQR = await conn.sendMessage(m.chat, {
           image: await qrcode.toBuffer(qr, { scale: 8 }),
@@ -208,13 +206,12 @@ async function startSubBot({ m, conn, args, prefix, sessionPath, useCode }) {
         return
       }
 
-
       if (qr && useCode) {
         try {
           let secret = await sock.requestPairingCode(m.sender.split('@')[0])
           secret = secret?.match(/.{1,4}/g)?.join('-') || secret
           txtCode = await conn.sendMessage(m.chat, { text: generarMensajeCodigo(nombreUsuario) }, { quoted: m })
-          codeBot = await m.reply(`\`${secret}\``)
+          codeBot = await m.reply(`> ${secret}`)
           console.log(chalk.bold.greenBright(`\n◆ Código generado para ${nombreUsuario}: ${secret}\n`))
           if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }).catch(() => {}), 30000)
           if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }).catch(() => {}), 30000)
@@ -224,9 +221,10 @@ async function startSubBot({ m, conn, args, prefix, sessionPath, useCode }) {
         return
       }
 
-
       if (connection === 'open') {
         console.log(chalk.cyanBright(`\n◆ ${nombreUsuario} (+${sessionId}) conectado · Método: ${metodoUsado}`))
+
+        sock.startTime = Date.now()
 
         const idx = global.conns.findIndex(c => c.sessionPath === sessionPath)
         if (idx !== -1) global.conns.splice(idx, 1)
@@ -238,7 +236,6 @@ async function startSubBot({ m, conn, args, prefix, sessionPath, useCode }) {
           text: generarMensajeExito(nombreUsuario, metodoUsado)
         }, { quoted: m }).catch(() => {})
       }
-
 
       if (connection === 'close') {
         const reason = lastDisconnect?.error?.output?.statusCode
@@ -270,7 +267,6 @@ async function startSubBot({ m, conn, args, prefix, sessionPath, useCode }) {
     })
 
     sock.ev.on('creds.update', saveCreds)
-
 
     sock.ev.on('messages.upsert', async ({ messages, type }) => {
       try {
