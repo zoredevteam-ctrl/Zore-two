@@ -204,29 +204,13 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
         sock.startTime = Date.now()
         sock._pushName = pushName
 
-        async function connectionUpdate(update) {
-            const { connection, lastDisconnect, isNewLogin, qr } = update
-
-            if (isNewLogin) sock.isInit = false
-
-            const nombreUsuario = sock._pushName || m.pushName || 'Usuario'
-
-            if (qr && !useCode) {
-                if (m?.chat) {
-                    txtQR = await conn.sendMessage(m.chat, {
-                        image: await qrcode.toBuffer(qr, { scale: 8 }),
-                        caption: generarMensajeQR(nombreUsuario)
-                    }, { quoted: m })
-                }
-                if (txtQR?.key) {
-                    setTimeout(() => conn.sendMessage(m.chat, { delete: txtQR.key }).catch(() => {}), 30000)
-                }
-                return
-            }
-
-            if (qr && useCode && !codeSent) {
+        // ✅ FIX: pedir código apenas se crea el socket, no esperar evento qr
+        if (useCode && !state.creds.registered) {
+            setTimeout(async () => {
+                if (codeSent) return
                 codeSent = true
                 try {
+                    const nombreUsuario = pushName || 'Usuario'
                     const pairKey = getRandomCode()
                     let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
                     secret = secret?.match(/.{1,4}/g)?.join('-') || secret
@@ -239,6 +223,28 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
                     console.error('[PAIRING ERROR]', e.message)
                     await m.reply(`ꕤ Error al generar código: ${e.message}`)
                 }
+            }, 3000)
+        }
+
+        async function connectionUpdate(update) {
+            const { connection, lastDisconnect, isNewLogin, qr } = update
+
+            if (isNewLogin) sock.isInit = false
+
+            const nombreUsuario = sock._pushName || pushName || 'Usuario'
+
+            // QR mode
+            if (qr && !useCode) {
+                if (m?.chat) {
+                    txtQR = await conn.sendMessage(m.chat, {
+                        image: await qrcode.toBuffer(qr, { scale: 8 }),
+                        caption: generarMensajeQR(nombreUsuario)
+                    }, { quoted: m })
+                }
+                if (txtQR?.key) {
+                    setTimeout(() => conn.sendMessage(m.chat, { delete: txtQR.key }).catch(() => {}), 30000)
+                }
+                return
             }
 
             if (connection === 'close') {
