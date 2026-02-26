@@ -1,44 +1,51 @@
-import fs from 'fs/promises'
-import { exec } from 'child_process'
-import { promisify } from 'util'
-import path from 'path'
-import { tmpdir } from 'os'
+import { Sticker, StickerTypes } from 'wa-sticker-formatter'
 
-const execAsync = promisify(exec)
-
-let handler = async (m, { conn }) => {
+let handler = async (m, { conn, args, command }) => {
     let q = m.quoted ? m.quoted : m
     let mime = (q.msg || q).mimetype || ''
 
-    if (!mime) return m.reply(`🌸💗 *¡Kyaaah darling!* No veo imagen.\nResponde a una foto con *#s* o envía foto + *#s*`)
+    if (!mime) {
+        await m.react('🌸')
+        return m.reply(`🌸 *¿Y mi media, darling?* 💗\nResponde a una imagen, video o gif con *.${command}*`)
+    }
 
-    if (!/image/.test(mime)) return m.reply(`🌸 *Solo imágenes por ahora, darling~* 💗`)
+    if (!/image|video/.test(mime)) {
+        await m.react('💔')
+        return m.reply('💔 Solo imágenes, videos y gifs se pueden convertir, mi amor\~')
+    }
 
-    let media = await q.download()
-
-    const tmp = path.join(tmpdir(), `zt_${Date.now()}`)
-    const input = `${tmp}.jpg`
-    const output = `${tmp}.webp`
+    await m.react('🍬')
 
     try {
-        await fs.writeFile(input, media)
+        let media = await q.download()
+        
+        let pack = args.length ? args.join(' ') : (global.packname || '💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 💗')
+        let author = global.author || '© ZoreDevTeam'
 
-        await execAsync(`ffmpeg -i "${input}" -vf scale=512:512 -c:v libwebp -q:v 80 "${output}" -y`)
+        const sticker = new Sticker(media, {
+            pack: pack,
+            author: author,
+            type: StickerTypes.FULL,      // soporta stickers animados
+            categories: ['💗', '🌸'],
+            id: 'zore-two-darling',
+            quality: 75,
+            background: 'transparent'
+        })
 
-        const sticker = await fs.readFile(output)
+        const buffer = await sticker.toBuffer()
 
-        await conn.sendMessage(m.chat, { sticker: sticker }, { quoted: m })
+        await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m })
+        await m.react('💗')
+        
     } catch (e) {
-        console.error('[ZERO TWO STICKER ERROR]', e.message)
-        m.reply(`🌸💗 *¡Kyaaah~! Algo salió mal al hacer el sticker, darling...* 💔\n\nUsa el comando *#report* y cuéntale exactamente qué pasó al owner para arreglarlo rápido ♡`)
-    } finally {
-        fs.unlink(input).catch(() => {})
-        fs.unlink(output).catch(() => {})
+        console.error(e)
+        await m.react('💔')
+        m.reply('💔 Uy darling... mi poder de waifu falló esta vez\~ Inténtalo otra vez no me dejes sola 🌸')
     }
 }
 
-handler.help = ['s']
-handler.tags = ['sticker']
-handler.command = ['s', 'sticker', 'stick']
+handler.help = ['s', 'sticker', 'stiker']
+handler.tags = ['stickers']
+handler.command = ['s', 'sticker', 'stiker']
 
 export default handler
