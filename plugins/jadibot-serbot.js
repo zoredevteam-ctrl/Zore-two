@@ -152,7 +152,8 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
     }
 
     const sessionId = m.sender.split('@')[0]
-    const sessionPath = path.join('./jadi', sessionId)
+    // ✅ FIX: usar global.jadi en lugar de ./jadi
+    const sessionPath = path.join(global.jadi, sessionId)
 
     if (!fs.existsSync(sessionPath)) {
         fs.mkdirSync(sessionPath, { recursive: true })
