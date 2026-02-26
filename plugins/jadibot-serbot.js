@@ -158,7 +158,7 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
     await database.save()
 
     const useCode = command === 'code'
-    await startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pushName: m.pushName })
+    await startSubBot({ m, conn, sessionPath, useCode, pushName: m.pushName })
 }
 
 handler.help = ['code']
@@ -168,11 +168,11 @@ handler.reg = true
 
 export default handler
 
-async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pushName }) {
+async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
     const sessionId = path.basename(sessionPath)
     let sock = null
     const metodoUsado = useCode ? 'Código' : 'QR'
-    let txtCode, codeBot, txtQR
+    let txtQR
     let codeSent = false
 
     try {
@@ -201,50 +201,43 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
         sock = makeWASocket(connectionOptions)
         sock.isInit = false
         sock.sessionPath = sessionPath
-        sock.startTime = Date.now()
         sock._pushName = pushName
 
-        // ✅ FIX: pedir código apenas se crea el socket, no esperar evento qr
-        if (useCode && !state.creds.registered) {
-            setTimeout(async () => {
-                if (codeSent) return
+        async function connectionUpdate(update) {
+            const { connection, lastDisconnect, isNewLogin, qr } = update
+            if (isNewLogin) sock.isInit = false
+
+            const nombreUsuario = pushName || 'Usuario'
+
+            // ✅ QR mode
+            if (qr && !useCode) {
+                txtQR = await conn.sendMessage(m.chat, {
+                    image: await qrcode.toBuffer(qr, { scale: 8 }),
+                    caption: generarMensajeQR(nombreUsuario)
+                }, { quoted: m }).catch(() => {})
+                if (txtQR?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtQR.key }).catch(() => {}), 30000)
+                return
+            }
+
+            // ✅ FIX: pedir código cuando connection es null (primer evento) y no está registrado
+            if (useCode && !codeSent && !state.creds.registered && connection !== 'open') {
                 codeSent = true
+                console.log(chalk.hex('#ff1493')(`ꕤ Iniciando pairing para ${sessionId}...`))
                 try {
-                    const nombreUsuario = pushName || 'Usuario'
+                    await new Promise(r => setTimeout(r, 3000))
                     const pairKey = getRandomCode()
                     let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
                     secret = secret?.match(/.{1,4}/g)?.join('-') || secret
-                    txtCode = await conn.sendMessage(m.chat, { text: generarMensajeCodigo(nombreUsuario) }, { quoted: m })
-                    codeBot = await conn.sendMessage(m.chat, { text: secret }, { quoted: m })
-                    console.log(chalk.hex('#ff1493')(`\nꕤ Código generado para ${nombreUsuario} (${sessionId}): ${secret} (${pairKey})\n`))
+                    console.log(chalk.hex('#ff1493')(`ꕤ Código: ${secret} (${pairKey})`))
+                    const txtCode = await conn.sendMessage(m.chat, { text: generarMensajeCodigo(nombreUsuario) }, { quoted: m })
+                    const codeBot = await conn.sendMessage(m.chat, { text: secret }, { quoted: m })
                     if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }).catch(() => {}), 60000)
                     if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }).catch(() => {}), 60000)
                 } catch (e) {
                     console.error('[PAIRING ERROR]', e.message)
+                    codeSent = false
                     await m.reply(`ꕤ Error al generar código: ${e.message}`)
                 }
-            }, 3000)
-        }
-
-        async function connectionUpdate(update) {
-            const { connection, lastDisconnect, isNewLogin, qr } = update
-
-            if (isNewLogin) sock.isInit = false
-
-            const nombreUsuario = sock._pushName || pushName || 'Usuario'
-
-            // QR mode
-            if (qr && !useCode) {
-                if (m?.chat) {
-                    txtQR = await conn.sendMessage(m.chat, {
-                        image: await qrcode.toBuffer(qr, { scale: 8 }),
-                        caption: generarMensajeQR(nombreUsuario)
-                    }, { quoted: m })
-                }
-                if (txtQR?.key) {
-                    setTimeout(() => conn.sendMessage(m.chat, { delete: txtQR.key }).catch(() => {}), 30000)
-                }
-                return
             }
 
             if (connection === 'close') {
@@ -269,7 +262,7 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
 
             if (connection === 'open') {
                 const nombreReal = sock.user?.name || sock.user?.verifiedName || sessionId
-                const displayName = sock._pushName || nombreReal
+                const displayName = pushName || nombreReal
 
                 console.log(chalk.hex('#ff1493')(
                     `\nꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
