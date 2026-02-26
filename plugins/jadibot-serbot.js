@@ -214,7 +214,7 @@ async function startSubBot({ m, conn, args, prefix, sessionPath, useCode }) {
           let secret = await sock.requestPairingCode(m.sender.split('@')[0])
           secret = secret?.match(/.{1,4}/g)?.join('-') || secret
           txtCode = await conn.sendMessage(m.chat, { text: generarMensajeCodigo(nombreUsuario) }, { quoted: m })
-          codeBot = await m.reply(`  ✦ ${secret}`)
+          codeBot = await m.reply(`\`${secret}\``)
           console.log(chalk.bold.greenBright(`\n◆ Código generado para ${nombreUsuario}: ${secret}\n`))
           if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }).catch(() => {}), 30000)
           if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }).catch(() => {}), 30000)
