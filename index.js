@@ -148,6 +148,25 @@ else if (!fs.existsSync('./Sessions/Owner/creds.json')) {
   }
 }
 
+function registerEvents(conn) {
+  conn.ev.on('messages.upsert', async ({ messages, type }) => {
+    try {
+      if (type !== 'notify') return
+      let m = messages[0]
+      if (!m?.message) return
+      if (Object.keys(m.message)[0] === 'ephemeralMessage') {
+        m.message = m.message.ephemeralMessage.message
+      }
+      if (m.key?.remoteJid === 'status@broadcast') return
+      if (m.key?.id?.startsWith('BAE5') && m.key.id.length === 16) return
+      m = await smsg(conn, m)
+      await handler(m, conn, plugins)
+    } catch (e) {
+      log.error(`Error en mensaje: ${e.message}`)
+    }
+  })
+}
+
 export async function startSubBot(sessionPath) {
   try {
     const { state, saveCreds } = await useMultiFileAuthState(sessionPath)
@@ -171,7 +190,6 @@ export async function startSubBot(sessionPath) {
     }
 
     let subConn = makeWASocket(connectionOptions)
-    subConn.isInit = false
     subConn.sessionPath = sessionPath
 
     subConn.decodeJid = jid => {
@@ -183,74 +201,74 @@ export async function startSubBot(sessionPath) {
       return jid
     }
 
-    let handlerModule = await import('./handler.js')
-
-    const creloadHandler = async (restatConn) => {
+    const reconnect = async () => {
       try {
-        const Handler = await import(`./handler.js?update=${Date.now()}`).catch(console.error)
-        if (Object.keys(Handler || {}).length) handlerModule = Handler
-      } catch (e) {
-        console.error(e)
-      }
-      if (restatConn) {
-        const oldChats = subConn.chats
-        try { subConn.ws.close() } catch {}
         subConn.ev.removeAllListeners()
-        subConn = makeWASocket(connectionOptions, { chats: oldChats })
-        subConn.isInit = true
-      }
-      if (!subConn.isInit) {
-        if (subConn.handler) subConn.ev.off('messages.upsert', subConn.handler)
-        if (subConn.connectionUpdate) subConn.ev.off('connection.update', subConn.connectionUpdate)
-        if (subConn.credsUpdate) subConn.ev.off('creds.update', subConn.credsUpdate)
-      }
-      subConn.handler = handlerModule.handler.bind(subConn)
-      subConn.connectionUpdate = connectionUpdate.bind(subConn)
-      subConn.credsUpdate = saveCreds.bind(subConn, true)
-      subConn.ev.on('messages.upsert', subConn.handler)
-      subConn.ev.on('connection.update', subConn.connectionUpdate)
-      subConn.ev.on('creds.update', subConn.credsUpdate)
-      subConn.isInit = false
-      return true
-    }
-
-    async function connectionUpdate(update) {
-      const { connection, lastDisconnect } = update
-      const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
-
-      if (code && subConn?.ws?.socket == null) {
-        await creloadHandler(true).catch(console.error)
-      }
-
-      if (connection === 'open') {
-        const already = global.conns.findIndex(c => c.sessionPath === sessionPath)
-        if (already !== -1) global.conns.splice(already, 1)
-        global.conns.push(subConn)
-        log.success(`SubBot conectado: ${subConn.user?.name || 'Desconocido'} [${sessionPath}]`)
-        log.info(`Total subbots activos: ${global.conns.length}`)
-        await loadEvents(subConn)
-      }
-
-      if (connection === 'close') {
-        global.conns = global.conns.filter(c => c.sessionPath !== sessionPath)
-        log.warn(`SubBot desconectado [${sessionPath}] | Razón: ${code}`)
-
-        if ([401, 405, 403].includes(code)) {
-          log.error(`Sesión inválida [${sessionPath}]. Eliminando...`)
-          fs.rmSync(sessionPath, { recursive: true, force: true })
-        } else {
-          log.warn(`Reconectando subbot [${sessionPath}]...`)
-          await creloadHandler(true).catch(console.error)
+        subConn = makeWASocket(connectionOptions)
+        subConn.sessionPath = sessionPath
+        subConn.decodeJid = jid => {
+          if (!jid) return jid
+          if (/:\d+@/gi.test(jid)) {
+            const decode = jidDecode(jid) || {}
+            return decode.user && decode.server ? decode.user + '@' + decode.server : jid
+          }
+          return jid
         }
+        setupSubBot(subConn)
+      } catch (e) {
+        log.error(`Error reconectando subbot [${sessionPath}]: ${e.message}`)
       }
     }
 
-    process.on('unhandledRejection', (reason) => {
-      console.error('SubBot - Rechazo no manejado:', reason)
-    })
+    const setupSubBot = (sc) => {
+      sc.ev.on('creds.update', saveCreds)
 
-    await creloadHandler(false)
+      sc.ev.on('connection.update', async update => {
+        const { connection, lastDisconnect } = update
+        const code = lastDisconnect?.error?.output?.statusCode
 
+        if (connection === 'open') {
+          const already = global.conns.findIndex(c => c.sessionPath === sessionPath)
+          if (already !== -1) global.conns.splice(already, 1)
+          global.conns.push(sc)
+          log.success(`SubBot conectado: ${sc.user?.name || 'Desconocido'} [${sessionPath}]`)
+          log.info(`Total subbots activos: ${global.conns.length}`)
+          await loadEvents(sc)
+        }
+
+        if (connection === 'close') {
+          global.conns = global.conns.filter(c => c.sessionPath !== sessionPath)
+          log.warn(`SubBot desconectado [${sessionPath}] | Razón: ${code}`)
+
+          if ([401, 405, 403].includes(code)) {
+            log.error(`Sesión inválida [${sessionPath}]. Eliminando...`)
+            fs.rmSync(sessionPath, { recursive: true, force: true })
+          } else {
+            log.warn(`Reconectando subbot [${sessionPath}]...`)
+            reconnect()
+          }
+        }
+      })
+
+      sc.ev.on('messages.upsert', async ({ messages, type }) => {
+        try {
+          if (type !== 'notify') return
+          let m = messages[0]
+          if (!m?.message) return
+          if (Object.keys(m.message)[0] === 'ephemeralMessage') {
+            m.message = m.message.ephemeralMessage.message
+          }
+          if (m.key?.remoteJid === 'status@broadcast') return
+          if (m.key?.id?.startsWith('BAE5') && m.key.id.length === 16) return
+          m = await smsg(sc, m)
+          await handler(m, sc, plugins)
+        } catch (e) {
+          log.error(`Error en mensaje subbot: ${e.message}`)
+        }
+      })
+    }
+
+    setupSubBot(subConn)
     return subConn
   } catch (e) {
     log.error(`Error iniciando subbot [${sessionPath}]: ${e.message}`)
@@ -303,18 +321,72 @@ async function startBot() {
     keepAliveIntervalMs: 45000
   }
 
-  global.conn = makeWASocket(connectionOptions)
-  let conn = global.conn
-  conn.isInit = false
+  const setupConn = (conn) => {
+    global.conn = conn
 
-  conn.decodeJid = jid => {
-    if (!jid) return jid
-    if (/:\d+@/gi.test(jid)) {
-      const decode = jidDecode(jid) || {}
-      return decode.user && decode.server ? decode.user + '@' + decode.server : jid
+    conn.decodeJid = jid => {
+      if (!jid) return jid
+      if (/:\d+@/gi.test(jid)) {
+        const decode = jidDecode(jid) || {}
+        return decode.user && decode.server ? decode.user + '@' + decode.server : jid
+      }
+      return jid
     }
-    return jid
+
+    conn.ev.on('creds.update', saveCreds)
+
+    conn.ev.on('connection.update', async update => {
+      const { qr, connection, lastDisconnect } = update
+      const code = lastDisconnect?.error?.output?.statusCode
+
+      if (qr && opcion === '1') {
+        console.log(chalk.hex('#ff1493')('\nꕤ Escanea el código QR:\n'))
+        qrcode.generate(qr, { small: true })
+      }
+
+      if (connection === 'open') {
+        console.log(zeroBanner)
+        log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`)
+        log.info(`Plugins cargados: ${plugins.size}`)
+        await loadEvents(conn)
+        await autoConnectSubBots()
+      }
+
+      if (connection === 'close') {
+        log.warn(`Desconectado. Razón: ${code}`)
+
+        if ([401, 405, 403].includes(code)) {
+          log.error('Sesión cerrada definitivamente. Eliminando sesión...')
+          exec('rm -rf ./Sessions/Owner/*')
+          process.exit(1)
+        } else {
+          log.warn('Reconectando bot principal...')
+          try { conn.ev.removeAllListeners() } catch {}
+          const newConn = makeWASocket(connectionOptions)
+          setupConn(newConn)
+        }
+      }
+    })
+
+    conn.ev.on('messages.upsert', async ({ messages, type }) => {
+      try {
+        if (type !== 'notify') return
+        let m = messages[0]
+        if (!m?.message) return
+        if (Object.keys(m.message)[0] === 'ephemeralMessage') {
+          m.message = m.message.ephemeralMessage.message
+        }
+        if (m.key?.remoteJid === 'status@broadcast') return
+        if (m.key?.id?.startsWith('BAE5') && m.key.id.length === 16) return
+        m = await smsg(conn, m)
+        await handler(m, conn, plugins)
+      } catch (e) {
+        log.error(`Error en mensaje: ${e.message}`)
+      }
+    })
   }
+
+  const conn = makeWASocket(connectionOptions)
 
   if (opcion === '2' && !fs.existsSync('./Sessions/Owner/creds.json')) {
     setTimeout(async () => {
@@ -336,96 +408,7 @@ async function startBot() {
     }, 3000)
   }
 
-  let handlerModule = await import('./handler.js')
-
-  async function connectionUpdate(update) {
-    const { qr, connection, lastDisconnect, isNewLogin } = update
-
-    if (isNewLogin) conn.isInit = true
-
-    const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
-
-    if (code && conn?.ws?.socket == null) {
-      await global.reloadHandler(true).catch(console.error)
-    }
-
-    if (qr && opcion === '1') {
-      console.log(chalk.hex('#ff1493')('\nꕤ Escanea el código QR:\n'))
-      qrcode.generate(qr, { small: true })
-    }
-
-    if (connection === 'open') {
-      console.log(zeroBanner)
-      log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`)
-      log.info(`Plugins cargados: ${plugins.size}`)
-      await loadEvents(conn)
-      await autoConnectSubBots()
-    }
-
-    if (connection === 'close') {
-      log.warn(`Desconectado. Razón: ${code}`)
-
-      if ([401, 405, 403].includes(code)) {
-        log.error('Sesión cerrada definitivamente. Eliminando sesión...')
-        exec('rm -rf ./Sessions/Owner/*')
-        process.exit(1)
-      } else {
-        log.warn('Reconectando bot principal...')
-        await global.reloadHandler(true).catch(console.error)
-      }
-    }
-  }
-
-  global.reloadHandler = async (restatConn) => {
-    try {
-      const Handler = await import(`./handler.js?update=${Date.now()}`).catch(console.error)
-      if (Object.keys(Handler || {}).length) handlerModule = Handler
-    } catch (e) {
-      console.error(e)
-    }
-    if (restatConn) {
-      const oldChats = conn.chats
-      try { conn.ws.close() } catch {}
-      conn.ev.removeAllListeners()
-      global.conn = makeWASocket(connectionOptions, { chats: oldChats })
-      conn = global.conn
-      conn.isInit = true
-    }
-    if (!conn.isInit) {
-      if (conn.handler) conn.ev.off('messages.upsert', conn.handler)
-      if (conn.connectionUpdate) conn.ev.off('connection.update', conn.connectionUpdate)
-      if (conn.credsUpdate) conn.ev.off('creds.update', conn.credsUpdate)
-    }
-    conn.handler = async ({ messages, type }) => {
-      try {
-        if (type !== 'notify') return
-        let m = messages[0]
-        if (!m?.message) return
-        if (Object.keys(m.message)[0] === 'ephemeralMessage') {
-          m.message = m.message.ephemeralMessage.message
-        }
-        if (m.key?.remoteJid === 'status@broadcast') return
-        if (m.key?.id?.startsWith('BAE5') && m.key.id.length === 16) return
-        m = await smsg(conn, m)
-        await handlerModule.handler(m, conn, plugins)
-      } catch (e) {
-        log.error(`Error en mensaje: ${e.message}`)
-      }
-    }
-    conn.connectionUpdate = connectionUpdate.bind(conn)
-    conn.credsUpdate = saveCreds.bind(conn, true)
-    conn.ev.on('messages.upsert', conn.handler)
-    conn.ev.on('connection.update', conn.connectionUpdate)
-    conn.ev.on('creds.update', conn.credsUpdate)
-    conn.isInit = false
-    return true
-  }
-
-  process.on('unhandledRejection', (reason) => {
-    console.error('Rechazo no manejado:', reason)
-  })
-
-  await global.reloadHandler(false)
+  setupConn(conn)
 }
 
 ;(async () => {
