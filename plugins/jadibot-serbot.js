@@ -1,5 +1,4 @@
 import { useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, Browsers, makeWASocket } from "@whiskeysockets/baileys"
-import qrcode from "qrcode"
 import NodeCache from "node-cache"
 import fs from "fs"
 import path from "path"
@@ -44,26 +43,13 @@ const generarMensajeCodigo = (nombreUsuario) =>
     `> ꕦ *6.* Ingresa el código\n\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
 
-const generarMensajeQR = (nombreUsuario) =>
-    `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
-    `ꕥ *CONEXIÓN SUBBOT* ꕥ\n` +
-    `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n\n` +
-    `ꙮ Hola *${nombreUsuario}*, sigue los pasos:\n\n` +
-    `> ꕦ *1.* Pulsa los *tres puntos* (⋮)\n` +
-    `> ꕦ *2.* Toca *Dispositivos vinculados*\n` +
-    `> ꕦ *3.* Selecciona *Vincular un dispositivo*\n` +
-    `> ꕦ *4.* Escanea el *código QR*\n\n` +
-    `ꙮ ⏳ *¡Este código expirará en 45 segundos!*\n\n` +
-    `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
-
-const generarMensajeExito = (nombreUsuario, metodo) =>
+const generarMensajeExito = (nombreUsuario) =>
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
     `ꕥ *CONEXIÓN EXITOSA* ꕥ\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n\n` +
     `ꙮ *¡${nombreUsuario} conectado!*\n\n` +
     `> ꕦ Usuario: *${nombreUsuario}*\n` +
-    `> ꕦ Método: *${metodo}*\n` +
-    `> ꕦ Browser: *${metodo === 'Código' ? 'Chrome (MacOS)' : 'Safari (MacOS)'}*\n` +
+    `> ꕦ Método: *Código*\n` +
     `> ꕦ Bot: *${global.botName || global.botname}*\n\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
 
@@ -107,7 +93,7 @@ setInterval(() => {
     }
 }, 60000)
 
-let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
+let handler = async (m, { conn, usedPrefix, command }) => {
     const userId = m.sender
     const now = Date.now()
 
@@ -159,11 +145,8 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
 
     await m.reply(`ꕤ *Generando código, espera un momento...* ꕤ`)
 
-    const useCode = command === 'code'
-
-    // ✅ try/catch global para que nunca crashee el server
     try {
-        await startSubBot({ m, conn, sessionPath, useCode, pushName: m.pushName })
+        await startSubBot({ m, conn, sessionPath, pushName: m.pushName })
     } catch (e) {
         console.error('ꕤ Error en startSubBot:', e.message)
         await m.reply(`ꕤ Error al crear SubBot: ${e.message}`)
@@ -177,11 +160,9 @@ handler.reg = true
 
 export default handler
 
-async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
+async function startSubBot({ m, conn, sessionPath, pushName }) {
     const sessionId = path.basename(sessionPath)
     let sock = null
-    const metodoUsado = useCode ? 'Código' : 'QR'
-    let txtQR
 
     try {
         const { state, saveCreds } = await useMultiFileAuthState(sessionPath)
@@ -196,7 +177,7 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
                 keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' }))
             },
             msgRetryCache,
-            browser: useCode ? Browsers.ubuntu('Chrome') : Browsers.ubuntu('Safari'),
+            browser: Browsers.ubuntu('Chrome'),
             version,
             generateHighQualityLinkPreview: true,
             getMessage: async () => ({ conversation: '' }),
@@ -211,7 +192,7 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
         sock.sessionPath = sessionPath
         sock._pushName = pushName
 
-        if (useCode && !state.creds.registered) {
+        if (!state.creds.registered) {
             try {
                 await new Promise(r => setTimeout(r, 3000))
                 const nombreUsuario = pushName || 'Usuario'
@@ -230,19 +211,8 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
         }
 
         async function connectionUpdate(update) {
-            const { connection, lastDisconnect, isNewLogin, qr } = update
+            const { connection, lastDisconnect, isNewLogin } = update
             if (isNewLogin) sock.isInit = false
-
-            const nombreUsuario = pushName || 'Usuario'
-
-            if (qr && !useCode) {
-                txtQR = await conn.sendMessage(m.chat, {
-                    image: await qrcode.toBuffer(qr, { scale: 8 }),
-                    caption: generarMensajeQR(nombreUsuario)
-                }, { quoted: m }).catch(() => {})
-                if (txtQR?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtQR.key }).catch(() => {}), 30000)
-                return
-            }
 
             if (connection === 'close') {
                 const reason = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
@@ -271,7 +241,7 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
                 console.log(chalk.hex('#ff1493')(
                     `\nꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
                     `ꕥ ${displayName} (+${sessionId}) conectado\n` +
-                    `ꕦ Método: ${metodoUsado}\n` +
+                    `ꕦ Método: Código\n` +
                     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
                 ))
 
@@ -290,7 +260,7 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
                 global.conns.push(sock)
 
                 if (m?.chat) {
-                    await conn.sendMessage(m.chat, { text: generarMensajeExito(displayName, metodoUsado) }, { quoted: m })
+                    await conn.sendMessage(m.chat, { text: generarMensajeExito(displayName) }, { quoted: m })
                 }
 
                 sock._healthInterval = setInterval(async () => {
@@ -323,7 +293,6 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
                 sock._pushName = pushName
             }
             if (!sock.isInit) {
-                // ✅ FIX: verificar que son funciones antes de hacer off
                 if (typeof sock.handler === 'function') sock.ev.off('messages.upsert', sock.handler)
                 if (typeof sock.connectionUpdate === 'function') sock.ev.off('connection.update', sock.connectionUpdate)
                 if (typeof sock.credsUpdate === 'function') sock.ev.off('creds.update', sock.credsUpdate)
