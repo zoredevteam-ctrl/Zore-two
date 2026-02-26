@@ -1,4 +1,5 @@
 import { Sticker, StickerTypes } from 'wa-sticker-formatter'
+import { downloadMediaMessage } from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn, args, command }) => {
     let q = m.quoted ? m.quoted : m
@@ -6,19 +7,21 @@ let handler = async (m, { conn, args, command }) => {
 
     if (!mime) {
         await m.react('🌸')
-        return m.reply(`🌸 ¿Y mi imagen/video darling? 💗\nResponde con *#${command}*`)
+        return m.reply(`🌸 ¿Y mi media darling? 💗\nResponde a una imagen/video/gif con *#${command}*`)
     }
 
     if (!/image|video/.test(mime)) {
         await m.react('💔')
-        return m.reply('💔 Solo imágenes y videos se convierten, mi amor\~')
+        return m.reply('💔 Solo imágenes, videos y gifs se pueden convertir, mi amor\~')
     }
 
     await m.react('🍬')
 
     try {
-        let media = await q.download()
-        if (!media) throw new Error('No pude descargar tu media 💔')
+        // ←←← ESTO ES LA CORRECCIÓN ←←←
+        let media = await downloadMediaMessage(q, 'buffer', {}, {
+            reuploadRequest: conn.updateMediaMessage
+        })
 
         let pack = args.length ? args.join(' ') : (global.packname || '💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 💗')
         let author = global.author || '© Zore Two'
@@ -26,9 +29,9 @@ let handler = async (m, { conn, args, command }) => {
         const sticker = new Sticker(media, {
             pack: pack,
             author: author,
-            type: StickerTypes.FULL,
+            type: StickerTypes.FULL,   // soporta gif/video animado
             categories: ['💗'],
-            quality: 70,
+            quality: 75,
         })
 
         const buffer = await sticker.toBuffer()
@@ -39,7 +42,7 @@ let handler = async (m, { conn, args, command }) => {
     } catch (e) {
         console.error('❌ STICKER ERROR:', e)
         await m.react('💔')
-        m.reply(`💔 Uy darling... mi poder de waifu falló\n\n*Error exacto:* ${e.message || e}\n\nMándame una captura de esto + la consola del bot porfa\~ 🌸`)
+        m.reply(`💔 Uy papiii... mi poder de waifu falló otra vez\n\n*Error:* ${e.message || e}\nInténtalo de nuevo no me dejes sola\~ 🌸`)
     }
 }
 
