@@ -157,6 +157,9 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
     database.data.users[userId].Subs = now
     await database.save()
 
+    // ✅ Mandar mensaje de espera mientras se genera el código
+    await m.reply(`ꕤ *Generando código, espera un momento...* ꕤ`)
+
     const useCode = command === 'code'
     await startSubBot({ m, conn, sessionPath, useCode, pushName: m.pushName })
 }
@@ -173,7 +176,6 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
     let sock = null
     const metodoUsado = useCode ? 'Código' : 'QR'
     let txtQR
-    let codeSent = false
 
     try {
         const { state, saveCreds } = await useMultiFileAuthState(sessionPath)
@@ -203,13 +205,34 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
         sock.sessionPath = sessionPath
         sock._pushName = pushName
 
+        console.log(chalk.hex('#ff1493')(`ꕤ chat: ${m.chat}`))
+        console.log(chalk.hex('#ff1493')(`ꕤ sender: ${m.sender}`))
+        console.log(chalk.hex('#ff1493')(`ꕤ conn user: ${conn.user?.id}`))
+
+        if (useCode && !state.creds.registered) {
+            try {
+                await new Promise(r => setTimeout(r, 3000))
+                const nombreUsuario = pushName || 'Usuario'
+                const pairKey = getRandomCode()
+                let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
+                secret = secret?.match(/.{1,4}/g)?.join('-') || secret
+                console.log(chalk.hex('#ff1493')(`ꕤ Código: ${secret} (${pairKey})`))
+                const txtCode = await conn.sendMessage(m.chat, { text: generarMensajeCodigo(nombreUsuario) }, { quoted: m })
+                const codeBot = await conn.sendMessage(m.chat, { text: secret }, { quoted: m })
+                if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }).catch(() => {}), 60000)
+                if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }).catch(() => {}), 60000)
+            } catch (e) {
+                console.error('[PAIRING ERROR]', e.message)
+                await m.reply(`ꕤ Error al generar código: ${e.message}`)
+            }
+        }
+
         async function connectionUpdate(update) {
             const { connection, lastDisconnect, isNewLogin, qr } = update
             if (isNewLogin) sock.isInit = false
 
             const nombreUsuario = pushName || 'Usuario'
 
-            // ✅ QR mode
             if (qr && !useCode) {
                 txtQR = await conn.sendMessage(m.chat, {
                     image: await qrcode.toBuffer(qr, { scale: 8 }),
@@ -217,27 +240,6 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
                 }, { quoted: m }).catch(() => {})
                 if (txtQR?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtQR.key }).catch(() => {}), 30000)
                 return
-            }
-
-            // ✅ FIX: pedir código cuando connection es null (primer evento) y no está registrado
-            if (useCode && !codeSent && !state.creds.registered && connection !== 'open') {
-                codeSent = true
-                console.log(chalk.hex('#ff1493')(`ꕤ Iniciando pairing para ${sessionId}...`))
-                try {
-                    await new Promise(r => setTimeout(r, 3000))
-                    const pairKey = getRandomCode()
-                    let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
-                    secret = secret?.match(/.{1,4}/g)?.join('-') || secret
-                    console.log(chalk.hex('#ff1493')(`ꕤ Código: ${secret} (${pairKey})`))
-                    const txtCode = await conn.sendMessage(m.chat, { text: generarMensajeCodigo(nombreUsuario) }, { quoted: m })
-                    const codeBot = await conn.sendMessage(m.chat, { text: secret }, { quoted: m })
-                    if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }).catch(() => {}), 60000)
-                    if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }).catch(() => {}), 60000)
-                } catch (e) {
-                    console.error('[PAIRING ERROR]', e.message)
-                    codeSent = false
-                    await m.reply(`ꕤ Error al generar código: ${e.message}`)
-                }
             }
 
             if (connection === 'close') {
