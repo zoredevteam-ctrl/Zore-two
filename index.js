@@ -22,7 +22,11 @@ import { handler, loadEvents } from './handler.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pluginsDir = path.join(__dirname, 'plugins')
+
+
 const SUBBOTS_DIR = './Sessions/SubBots'
+global.conns = []
+
 
 const log = {
   info: msg => console.log(chalk.bgBlue.white.bold('INFO'), chalk.white(msg)),
@@ -112,8 +116,6 @@ try {
   log.error(`No se pudo crear carpeta de sesión: ${e.message}`)
 }
 
-global.conns = []
-
 const methodCodeQR = process.argv.includes('--qr')
 const methodCode = process.argv.includes('--code')
 const DIGITS = s => String(s).replace(/\D/g, '')
@@ -151,6 +153,8 @@ else if (!fs.existsSync('./Sessions/Owner/creds.json')) {
     phoneNumber = normalizePhone(phoneInput)
   }
 }
+
+
 
 export async function startSubBot (sessionPath) {
   try {
@@ -192,8 +196,8 @@ export async function startSubBot (sessionPath) {
       const reason = lastDisconnect?.error?.output?.statusCode
 
       if (connection === 'open') {
-        const already = global.conns.findIndex(c => c.sessionPath === sessionPath)
-        if (already !== -1) global.conns.splice(already, 1)
+        const idx = global.conns.findIndex(c => c.sessionPath === sessionPath)
+        if (idx !== -1) global.conns.splice(idx, 1)
         global.conns.push(subConn)
         log.success(`SubBot conectado: ${subConn.user?.name || 'Desconocido'} [${sessionPath}]`)
         log.info(`Total subbots activos: ${global.conns.length}`)
@@ -274,8 +278,11 @@ async function autoConnectSubBots () {
   }
 }
 
+
 global.startSubBot = startSubBot
 global.subBotsDir = SUBBOTS_DIR
+
+
 
 async function startBot () {
   const { state, saveCreds } = await useMultiFileAuthState(global.sessionName)
@@ -344,7 +351,7 @@ async function startBot () {
       log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`)
       log.info(`Plugins cargados: ${plugins.size}`)
       await loadEvents(conn)
-      await autoConnectSubBots()
+      await autoConnectSubBots() 
     }
 
     if (connection === 'close') {
