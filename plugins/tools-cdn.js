@@ -6,8 +6,7 @@ let handler = async (m, { conn }) => {
   if (!mime)
     return m.reply('❌ Responde a un archivo con *.cdn*')
 
-  const esCompatible = /gif|video|image|audio/.test(mime)
-  if (!esCompatible)
+  if (!/gif|video|image|audio/.test(mime))
     return m.reply('❌ Formato no compatible. Solo gif, foto, video o audio')
 
   let extension
@@ -23,8 +22,7 @@ let handler = async (m, { conn }) => {
   await m.reply(`⏳ Subiendo archivo *.${extension}*...`)
 
   try {
-
-    const media = await msg.download()
+    const media = await conn.downloadMediaMessage(msg)
     if (!media) throw new Error('No se pudo descargar el archivo')
 
     const form = new FormData()
