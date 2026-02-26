@@ -7,7 +7,7 @@ let handler = async (m, { conn, args, command }) => {
 
     if (!mime) {
         await m.react('🌸')
-        return m.reply(`🌸 ¿Y mi media darling? 💗\nResponde a una imagen/video/gif con *#${command}*`)
+        return m.reply(`🌸 ¿Y mi media darling? 💗\nResponde a una imagen/video/gif con\n*${prefix}s*`)
     }
 
     if (!/image|video/.test(mime)) {
