@@ -278,10 +278,8 @@ async function autoConnectSubBots () {
   }
 }
 
-
 global.startSubBot = startSubBot
 global.subBotsDir = SUBBOTS_DIR
-
 
 
 async function startBot () {
@@ -411,5 +409,6 @@ async function startBot () {
   await database.read()
   log.success('Base de datos cargada.')
   await loadPlugins()
+  global.plugins = plugins 
   await startBot()
 })()

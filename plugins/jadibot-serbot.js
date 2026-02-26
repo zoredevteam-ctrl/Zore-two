@@ -1,11 +1,19 @@
-import { useMultiFileAuthState, DisconnectReason, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, Browsers } from "@whiskeysockets/baileys"
+import {
+  useMultiFileAuthState,
+  DisconnectReason,
+  makeCacheableSignalKeyStore,
+  fetchLatestBaileysVersion,
+  Browsers
+} from "@whiskeysockets/baileys"
 import qrcode from "qrcode"
 import NodeCache from "node-cache"
 import fs from "fs"
 import path from "path"
 import pino from 'pino'
 import chalk from 'chalk'
-import { makeWASocket } from '../lib/simple.js'
+import { makeWASocket } from '@whiskeysockets/baileys'
+import { smsg } from '../lib/simple.js'
+import { handler } from '../handler.js'
 import { database } from '../lib/database.js'
 import { fileURLToPath } from 'url'
 
@@ -16,7 +24,6 @@ if (!Array.isArray(global.conns)) global.conns = []
 
 const MAX_SUBBOTS = 15
 const MAX_PER_USER = 2
-const RECONNECT_MAX = 10
 const COOLDOWN_MS = 120000
 
 const generarMensajeCodigo = (nombre) => `✦ Zero Two
@@ -75,6 +82,7 @@ function isSocketReady(sock) {
   return hasWs && hasUser
 }
 
+
 setInterval(() => {
   try {
     if (!global.conns.length) return
@@ -96,12 +104,7 @@ setInterval(() => {
   }
 }, 60000)
 
-let handler = async (m, { conn, args, prefix, isOwner }) => {
-  const settings = database.data?.settings?.[conn.user.jid]
-  if (settings && settings.jadibotmd === false) {
-    return m.reply(`✦ Zero Two\n\n  ◇ Este comando está desactivado temporalmente.`)
-  }
-
+let pluginHandler = async (m, { conn, args, prefix, isOwner }) => {
   const userId = m.sender
   const now = Date.now()
 
@@ -123,7 +126,7 @@ let handler = async (m, { conn, args, prefix, isOwner }) => {
   const userPhone = cleanPhoneNumber(m.sender)
   if (userPhone) {
     const userCount = global.conns.filter(c =>
-      isSocketReady(c) && cleanPhoneNumber(c.user.jid) === userPhone
+      isSocketReady(c) && cleanPhoneNumber(c.user?.jid) === userPhone
     ).length
 
     if (userCount >= MAX_PER_USER) {
@@ -140,20 +143,20 @@ let handler = async (m, { conn, args, prefix, isOwner }) => {
 
   database.data.users[userId].Subs = now
 
-  const useCode = m.body.trim().slice(prefix.length).trim().split(/ +/)[0].toLowerCase() === 'code'
+  const commandUsed = m.body.trim().slice(prefix.length).trim().split(/ +/)[0].toLowerCase()
+  const useCode = commandUsed === 'code'
 
   await startSubBot({ m, conn, args, prefix, sessionPath, useCode })
 }
 
-handler.help = ['code']
-handler.tags = ['serbot']
-handler.command = ['code', 'serbot']
+pluginHandler.help = ['code', 'serbot']
+pluginHandler.tags = ['serbot']
+pluginHandler.command = ['code', 'serbot']
 
-export default handler
+export default pluginHandler
 
 async function startSubBot({ m, conn, args, prefix, sessionPath, useCode }) {
   const sessionId = path.basename(sessionPath)
-  let sock = null
   const metodoUsado = useCode ? 'Código' : 'QR'
   let txtCode, codeBot, txtQR
 
@@ -163,140 +166,134 @@ async function startSubBot({ m, conn, args, prefix, sessionPath, useCode }) {
     const msgRetryCache = new NodeCache()
 
     const connectionOptions = {
-      logger: pino({ level: "fatal" }),
+      version,
+      logger: pino({ level: 'fatal' }),
       printQRInTerminal: false,
       auth: {
         creds: state.creds,
         keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' }))
       },
       msgRetryCache,
-      browser: useCode ? Browsers.macOS("Chrome") : Browsers.macOS("Safari"),
-      version,
-      generateHighQualityLinkPreview: true
+      browser: useCode ? Browsers.macOS('Chrome') : Browsers.macOS('Safari'),
+      generateHighQualityLinkPreview: true,
+      markOnlineOnConnect: false,
+      syncFullHistory: false,
+      getMessage: async () => '',
+      keepAliveIntervalMs: 45000
     }
 
-    sock = makeWASocket(connectionOptions)
-    sock.isInit = false
+    const sock = makeWASocket(connectionOptions)
     sock.sessionPath = sessionPath
-    sock.reconnectAttempts = 0
-    sock.maxReconnects = RECONNECT_MAX
-    sock.startTime = Date.now()
 
-    async function connectionUpdate(update) {
-      const { connection, lastDisconnect, isNewLogin, qr } = update
+    sock.ev.on('connection.update', async update => {
+      const { connection, lastDisconnect, qr } = update
 
-      if (isNewLogin) sock.isInit = false
-
-      let nombreUsuario = "Usuario"
+      let nombreUsuario = 'Usuario'
       try {
-        nombreUsuario = await conn.getName(m.sender) || "Usuario"
+        nombreUsuario = await conn.getName(m.sender) || m.pushName || 'Usuario'
       } catch {
-        nombreUsuario = "Usuario"
+        nombreUsuario = m.pushName || 'Usuario'
       }
 
+
       if (qr && !useCode) {
-        if (m?.chat) {
-          txtQR = await conn.sendMessage(m.chat, {
-            image: await qrcode.toBuffer(qr, { scale: 8 }),
-            caption: generarMensajeQR(nombreUsuario)
-          }, { quoted: m })
-        } else {
-          return
-        }
+        txtQR = await conn.sendMessage(m.chat, {
+          image: await qrcode.toBuffer(qr, { scale: 8 }),
+          caption: generarMensajeQR(nombreUsuario)
+        }, { quoted: m })
+
         if (txtQR?.key) {
-          setTimeout(() => { conn.sendMessage(m.sender, { delete: txtQR.key }) }, 30000)
+          setTimeout(() => conn.sendMessage(m.chat, { delete: txtQR.key }).catch(() => {}), 30000)
         }
         return
       }
 
+
       if (qr && useCode) {
-        let secret = await sock.requestPairingCode(m.sender.split('@')[0])
-        secret = secret?.match(/.{1,4}/g)?.join("-") || secret
-        txtCode = await conn.sendMessage(m.chat, { text: generarMensajeCodigo(nombreUsuario) }, { quoted: m })
-        codeBot = await m.reply(`  ✦ ${secret}`)
-        console.log(chalk.bold.greenBright(`\n◆ Código generado para ${nombreUsuario}: ${secret}\n`))
+        try {
+          let secret = await sock.requestPairingCode(m.sender.split('@')[0])
+          secret = secret?.match(/.{1,4}/g)?.join('-') || secret
+          txtCode = await conn.sendMessage(m.chat, { text: generarMensajeCodigo(nombreUsuario) }, { quoted: m })
+          codeBot = await m.reply(`  ✦ ${secret}`)
+          console.log(chalk.bold.greenBright(`\n◆ Código generado para ${nombreUsuario}: ${secret}\n`))
+          if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }).catch(() => {}), 30000)
+          if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }).catch(() => {}), 30000)
+        } catch (e) {
+          console.error('Error generando código:', e.message)
+        }
+        return
       }
 
-      if (txtCode?.key) setTimeout(() => { conn.sendMessage(m.sender, { delete: txtCode.key }) }, 30000)
-      if (codeBot?.key) setTimeout(() => { conn.sendMessage(m.sender, { delete: codeBot.key }) }, 30000)
-
-      const reason = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
-
-      if (connection === 'close') {
-        if ([428, 408, 500, 515].includes(reason)) {
-          console.log(chalk.magentaBright(`\n◆ Reconectando SubBot (+${sessionId})... Razón: ${reason}`))
-          await creloadHandler(true).catch(console.error)
-        }
-        if ([405, 401, 403].includes(reason)) {
-          console.log(chalk.magentaBright(`\n◆ Sesión (+${sessionId}) cerrada. Eliminando credenciales...`))
-          fs.rmSync(sessionPath, { recursive: true, force: true })
-          const i = global.conns.indexOf(sock)
-          if (i >= 0) global.conns.splice(i, 1)
-        }
-        if (reason === 440) {
-          console.log(chalk.magentaBright(`\n◆ Sesión (+${sessionId}) reemplazada por otra activa.`))
-        }
-      }
 
       if (connection === 'open') {
         console.log(chalk.cyanBright(`\n◆ ${nombreUsuario} (+${sessionId}) conectado · Método: ${metodoUsado}`))
-        sock.isInit = true
+
+        const idx = global.conns.findIndex(c => c.sessionPath === sessionPath)
+        if (idx !== -1) global.conns.splice(idx, 1)
         global.conns.push(sock)
 
-        if (m?.sender && m?.chat) {
-          await conn.sendMessage(m.chat, {
-            text: generarMensajeExito(nombreUsuario, metodoUsado)
-          }, { quoted: m })
+        log.success(`Total subbots activos: ${global.conns.length}`)
+
+        await conn.sendMessage(m.chat, {
+          text: generarMensajeExito(nombreUsuario, metodoUsado)
+        }, { quoted: m }).catch(() => {})
+      }
+
+
+      if (connection === 'close') {
+        const reason = lastDisconnect?.error?.output?.statusCode
+
+        global.conns = global.conns.filter(c => c.sessionPath !== sessionPath)
+
+        if ([
+          DisconnectReason.connectionLost,
+          DisconnectReason.connectionClosed,
+          DisconnectReason.restartRequired,
+          DisconnectReason.timedOut,
+          DisconnectReason.badSession
+        ].includes(reason)) {
+          console.log(chalk.magentaBright(`\n◆ Reconectando SubBot (+${sessionId})... Razón: ${reason}`))
+          startSubBot({ m, conn, args, prefix, sessionPath, useCode })
+        } else if ([
+          DisconnectReason.loggedOut,
+          DisconnectReason.forbidden
+        ].includes(reason)) {
+          console.log(chalk.magentaBright(`\n◆ Sesión (+${sessionId}) cerrada. Eliminando...`))
+          fs.rmSync(sessionPath, { recursive: true, force: true })
+        } else if (reason === 440) {
+          console.log(chalk.magentaBright(`\n◆ Sesión (+${sessionId}) reemplazada por otra activa.`))
+        } else {
+          console.log(chalk.yellow(`\n◆ Desconexión desconocida SubBot (+${sessionId}): ${reason}`))
+          startSubBot({ m, conn, args, prefix, sessionPath, useCode })
         }
       }
-    }
+    })
 
-    setInterval(async () => {
-      if (!sock.user) {
-        try { sock.ws.close() } catch {}
-        sock.ev.removeAllListeners()
-        const i = global.conns.indexOf(sock)
-        if (i >= 0) global.conns.splice(i, 1)
-      }
-    }, 60000)
-
-    let handlerModule = await import('../handler.js')
-    let creloadHandler = async function (restatConn) {
-      try {
-        const Handler = await import(`../handler.js?update=${Date.now()}`).catch(console.error)
-        if (Object.keys(Handler || {}).length) handlerModule = Handler
-      } catch (e) {
-        console.error('Error recargando handler:', e)
-      }
-      if (restatConn) {
-        const oldChats = sock.chats
-        try { sock.ws.close() } catch {}
-        sock.ev.removeAllListeners()
-        sock = makeWASocket(connectionOptions, { chats: oldChats })
-        sock.isInit = true
-      }
-      if (!sock.isInit) {
-        sock.ev.off("messages.upsert", sock.handler)
-        sock.ev.off("connection.update", sock.connectionUpdate)
-        sock.ev.off('creds.update', sock.credsUpdate)
-      }
-      sock.handler = handlerModule.handler.bind(sock)
-      sock.connectionUpdate = connectionUpdate.bind(sock)
-      sock.credsUpdate = saveCreds.bind(sock, true)
-      sock.ev.on("messages.upsert", sock.handler)
-      sock.ev.on("connection.update", sock.connectionUpdate)
-      sock.ev.on("creds.update", sock.credsUpdate)
-      sock.isInit = false
-      return true
-    }
-
-    sock.ev.on('connection.update', connectionUpdate)
     sock.ev.on('creds.update', saveCreds)
 
-    creloadHandler(false)
+
+    sock.ev.on('messages.upsert', async ({ messages, type }) => {
+      try {
+        if (type !== 'notify') return
+        let msg = messages[0]
+        if (!msg?.message) return
+
+        if (Object.keys(msg.message)[0] === 'ephemeralMessage') {
+          msg.message = msg.message.ephemeralMessage.message
+        }
+
+        if (msg.key?.remoteJid === 'status@broadcast') return
+        if (msg.key?.id?.startsWith('BAE5') && msg.key.id.length === 16) return
+
+        msg = smsg(sock, msg)
+        await handler(msg, sock, global.plugins)
+      } catch (e) {
+        console.error(`Error en mensaje subbot [${sessionId}]:`, e.message)
+      }
+    })
 
   } catch (error) {
-    console.error(chalk.red(`[x] Error iniciando SubBot: ${error.message}`))
+    console.error(chalk.red(`[x] Error iniciando SubBot [${sessionId}]: ${error.message}`))
     await m.reply(`✦ Zero Two\n\n  ◇ Error al crear el SubBot.\n  ✧ Detalle › ${error.message}`)
   }
 }
