@@ -6,6 +6,7 @@ import path from "path"
 import pino from 'pino'
 import chalk from 'chalk'
 import { smsg } from '../lib/simple.js'
+import { database } from '../lib/database.js'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -107,18 +108,17 @@ setInterval(() => {
 }, 60000)
 
 let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
-    if (!global.db.data.settings[conn.user.jid].jadibotmd) {
+    if (!database.data.settings?.jadibotmd) {
         return m.reply(`[!] El comando *${command}* está desactivado temporalmente.`)
     }
 
     const userId = m.sender
     const now = Date.now()
 
-    if (!global.db.data.users[userId].Subs) {
-        global.db.data.users[userId].Subs = 0
-    }
+    if (!database.data.users[userId]) database.data.users[userId] = {}
+    if (!database.data.users[userId].Subs) database.data.users[userId].Subs = 0
 
-    const lastUse = global.db.data.users[userId].Subs
+    const lastUse = database.data.users[userId].Subs
 
     if (now - lastUse < COOLDOWN_MS) {
         const remaining = msToTime(COOLDOWN_MS - (now - lastUse))
@@ -158,7 +158,8 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
         fs.mkdirSync(sessionPath, { recursive: true })
     }
 
-    global.db.data.users[userId].Subs = now
+    database.data.users[userId].Subs = now
+    await database.save()
 
     const useCode = command === 'code'
     await startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pushName: m.pushName })
@@ -191,11 +192,9 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
                 keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' }))
             },
             msgRetryCache,
-            // ✅ FIX PRINCIPAL: browser Ubuntu más estable
             browser: useCode ? Browsers.ubuntu('Chrome') : Browsers.ubuntu('Safari'),
             version,
             generateHighQualityLinkPreview: true,
-            // ✅ FIX: getMessage correcto, no string vacío
             getMessage: async () => ({ conversation: '' }),
             connectTimeoutMs: 60000,
             defaultQueryTimeoutMs: 60000,
@@ -203,7 +202,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
             retryRequestDelayMs: 2000,
         }
 
-        // ✅ FIX PRINCIPAL: makeWASocket de baileys directamente, no de simple.js
         sock = makeWASocket(connectionOptions)
         sock.isInit = false
         sock.sessionPath = sessionPath
@@ -217,7 +215,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
 
             const nombreUsuario = sock._pushName || m.pushName || 'Usuario'
 
-            // QR mode
             if (qr && !useCode) {
                 if (m?.chat) {
                     txtQR = await conn.sendMessage(m.chat, {
@@ -231,7 +228,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
                 return
             }
 
-            // ✅ FIX: Código solo se pide una vez con flag codeSent
             if (qr && useCode && !codeSent) {
                 codeSent = true
                 try {
@@ -282,7 +278,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
 
                 sock.isInit = true
 
-                // Evitar duplicados en el pool
                 const existingIndex = global.conns.findIndex(c => cleanPhoneNumber(c.user?.jid) === sessionId)
                 if (existingIndex >= 0) {
                     try {
@@ -340,7 +335,6 @@ async function startSubBot({ m, conn, args, usedPrefix, sessionPath, useCode, pu
                     let msg = messages[0]
                     if (!msg?.message) return
                     if (msg.key?.remoteJid === 'status@broadcast') return
-                    // ✅ FIX: usar smsg correctamente para el subbot
                     msg = await smsg(sock, msg)
                     await handlerModule.handler(msg, sock)
                 } catch (e) {
