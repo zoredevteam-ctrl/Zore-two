@@ -157,11 +157,17 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
     database.data.users[userId].Subs = now
     await database.save()
 
-    // ✅ Mandar mensaje de espera mientras se genera el código
     await m.reply(`ꕤ *Generando código, espera un momento...* ꕤ`)
 
     const useCode = command === 'code'
-    await startSubBot({ m, conn, sessionPath, useCode, pushName: m.pushName })
+
+    // ✅ try/catch global para que nunca crashee el server
+    try {
+        await startSubBot({ m, conn, sessionPath, useCode, pushName: m.pushName })
+    } catch (e) {
+        console.error('ꕤ Error en startSubBot:', e.message)
+        await m.reply(`ꕤ Error al crear SubBot: ${e.message}`)
+    }
 }
 
 handler.help = ['code']
@@ -205,10 +211,6 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
         sock.sessionPath = sessionPath
         sock._pushName = pushName
 
-        console.log(chalk.hex('#ff1493')(`ꕤ chat: ${m.chat}`))
-        console.log(chalk.hex('#ff1493')(`ꕤ sender: ${m.sender}`))
-        console.log(chalk.hex('#ff1493')(`ꕤ conn user: ${conn.user?.id}`))
-
         if (useCode && !state.creds.registered) {
             try {
                 await new Promise(r => setTimeout(r, 3000))
@@ -223,7 +225,7 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
                 if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }).catch(() => {}), 60000)
             } catch (e) {
                 console.error('[PAIRING ERROR]', e.message)
-                await m.reply(`ꕤ Error al generar código: ${e.message}`)
+                await m.reply(`ꕤ Error al generar código: ${e.message}`).catch(() => {})
             }
         }
 
@@ -321,9 +323,10 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
                 sock._pushName = pushName
             }
             if (!sock.isInit) {
-                sock.ev.off('messages.upsert', sock.handler)
-                sock.ev.off('connection.update', sock.connectionUpdate)
-                sock.ev.off('creds.update', sock.credsUpdate)
+                // ✅ FIX: verificar que son funciones antes de hacer off
+                if (typeof sock.handler === 'function') sock.ev.off('messages.upsert', sock.handler)
+                if (typeof sock.connectionUpdate === 'function') sock.ev.off('connection.update', sock.connectionUpdate)
+                if (typeof sock.credsUpdate === 'function') sock.ev.off('creds.update', sock.credsUpdate)
             }
 
             sock.handler = async ({ messages, type }) => {
@@ -355,7 +358,7 @@ async function startSubBot({ m, conn, sessionPath, useCode, pushName }) {
 
     } catch (error) {
         console.error(chalk.hex('#ff1493')(`ꕤ Error iniciando SubBot: ${error.message}`))
-        await m.reply(`ꕤ Error al crear SubBot: ${error.message}`)
+        await m.reply(`ꕤ Error al crear SubBot: ${error.message}`).catch(() => {})
     }
 }
 
