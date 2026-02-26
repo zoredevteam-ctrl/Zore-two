@@ -200,9 +200,9 @@ export async function startSubBot(sessionPath) {
         subConn.isInit = true
       }
       if (!subConn.isInit) {
-        subConn.ev.off('messages.upsert', subConn.handler)
-        subConn.ev.off('connection.update', subConn.connectionUpdate)
-        subConn.ev.off('creds.update', subConn.credsUpdate)
+        if (subConn.handler) subConn.ev.off('messages.upsert', subConn.handler)
+        if (subConn.connectionUpdate) subConn.ev.off('connection.update', subConn.connectionUpdate)
+        if (subConn.credsUpdate) subConn.ev.off('creds.update', subConn.credsUpdate)
       }
       subConn.handler = handlerModule.handler.bind(subConn)
       subConn.connectionUpdate = connectionUpdate.bind(subConn)
@@ -392,9 +392,9 @@ async function startBot() {
       conn.isInit = true
     }
     if (!conn.isInit) {
-      conn.ev.off('messages.upsert', conn.handler)
-      conn.ev.off('connection.update', conn.connectionUpdate)
-      conn.ev.off('creds.update', conn.credsUpdate)
+      if (conn.handler) conn.ev.off('messages.upsert', conn.handler)
+      if (conn.connectionUpdate) conn.ev.off('connection.update', conn.connectionUpdate)
+      if (conn.credsUpdate) conn.ev.off('creds.update', conn.credsUpdate)
     }
     conn.handler = async ({ messages, type }) => {
       try {
