@@ -1,32 +1,36 @@
+import { downloadContentFromMessage } from '@whiskeysockets/baileys'
+
 let handler = async (m, { conn }) => {
 
   const msg = m.quoted ? m.quoted : m
-  const mime = msg.msg?.mimetype || ''
+  const mime = msg.msg?.mimetype || msg.mimetype || ''
 
   if (!mime)
     return m.reply('❌ Responde a un archivo con *.cdn*')
 
   if (!/gif|video|image|audio/.test(mime))
-    return m.reply('❌ Formato no compatible. Solo gif, foto, video o audio')
+    return m.reply('❌ Formato no compatible.')
 
-  let extension
-  if (/gif/.test(mime)) extension = 'gif'
-  else if (/mp4|video/.test(mime)) extension = 'mp4'
-  else if (/jpeg|jpg/.test(mime)) extension = 'jpg'
-  else if (/png/.test(mime)) extension = 'png'
-  else if (/webp/.test(mime)) extension = 'webp'
-  else if (/ogg/.test(mime)) extension = 'ogg'
-  else if (/mp3/.test(mime)) extension = 'mp3'
-  else extension = 'bin'
-
-  await m.reply(`⏳ Subiendo archivo *.${extension}*...`)
+  await m.reply('⏳ Descargando archivo...')
 
   try {
-    const media = await conn.downloadMediaMessage(msg)
-    if (!media) throw new Error('No se pudo descargar el archivo')
+
+    const type = mime.split('/')[0]
+    const stream = await downloadContentFromMessage(msg.msg || msg, type)
+
+    let buffer = Buffer.from([])
+    for await (const chunk of stream) {
+      buffer = Buffer.concat([buffer, chunk])
+    }
+
+    if (!buffer.length) throw new Error('No se pudo descargar el archivo')
+
+    const extension = mime.split('/')[1] || 'bin'
+
+    await m.reply('⏳ Subiendo a CDN...')
 
     const form = new FormData()
-    form.append('files', new Blob([media], { type: mime }), `archivo.${extension}`)
+    form.append('files', new Blob([buffer], { type: mime }), `archivo.${extension}`)
     form.append('expiresIn', 'never')
 
     const response = await fetch('https://causas-files.vercel.app/upload', {
@@ -47,7 +51,7 @@ let handler = async (m, { conn }) => {
     )
 
   } catch (e) {
-    await m.reply(`❌ Error al subir: ${e.message}`)
+    await m.reply(`❌ Error: ${e.message}`)
   }
 }
 
