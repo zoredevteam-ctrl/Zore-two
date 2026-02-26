@@ -1,8 +1,10 @@
+import { Sticker, StickerTypes } from 'wa-sticker-formatter'
+
 let handler = async (m, { conn }) => {
     let q = m.quoted ? m.quoted : m
     let mime = (q.msg || q).mimetype || ''
 
-    if (!mime) return m.reply(`🌸💗 *¡Kyaaah darling!* No veo imagen.\nResponde a una foto con *#s* o envía foto + *#s*`)
+    if (!mime) return m.reply(`🌸💗 *¡Kyaaah darling!* No veo ninguna imagen.\n\nResponde a una foto con *#s* o envía una foto + *#s*`)
 
     if (!/image|video/.test(mime)) return m.reply(`🌸 *Solo fotos y videos, darling~* 💗`)
 
@@ -19,10 +21,16 @@ let handler = async (m, { conn }) => {
         year: 'numeric'
     })
 
-    await conn.sendImageAsSticker(m.chat, media, m, {
-        packname: "Zero Two 🌸💗",
-        author: `Creado por Zero Two Bot • ${hora}`
+    const stiker = new Sticker(media, {
+        pack: "Zero Two 🌸💗",
+        author: `Creado por Zero Two Bot • ${hora}`,
+        type: StickerTypes.FULL,
+        quality: 70
     })
+
+    const buffer = await stiker.toBuffer()
+
+    await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m })
 }
 
 handler.help = ['s']
