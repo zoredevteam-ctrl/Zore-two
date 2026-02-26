@@ -30,11 +30,12 @@ const JADIBOT_CODES = [
 
 const getRandomCode = () => JADIBOT_CODES[Math.floor(Math.random() * JADIBOT_CODES.length)]
 
-const msgCodigo = (nombre) =>
+// ✅ FIX: pushName agregado
+const msgCodigo = (nombre, pushName) =>
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
     `ꕥ *CONEXIÓN SUBBOT* ꕥ\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n\n` +
-    `ꙮ Hola *${nombre}*, sigue los pasos:\n\n` +
+    `ꙮ Hola *${pushName || nombre}*, sigue los pasos:\n\n` +
     `> ꕦ *1.* Abre *WhatsApp*\n` +
     `> ꕦ *2.* Toca los *tres puntos* (⋮)\n` +
     `> ꕦ *3.* Selecciona *Dispositivos vinculados*\n` +
@@ -43,12 +44,14 @@ const msgCodigo = (nombre) =>
     `> ꕦ *6.* Ingresa el código\n\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
 
-const msgExito = (nombre) =>
+// ✅ FIX: pushName agregado
+const msgExito = (nombre, pushName) =>
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
     `ꕥ *CONEXIÓN EXITOSA* ꕥ\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n\n` +
-    `ꙮ *¡${nombre} conectado!*\n\n` +
-    `> ꕦ Usuario: *${nombre}*\n` +
+    `ꙮ *¡${pushName || nombre} conectado!*\n\n` +
+    `> ꕦ Usuario: *${pushName || nombre}*\n` +
+    `> ꕦ Número: *+${nombre}*\n` +
     `> ꕦ Método: *Código*\n` +
     `> ꕦ Bot: *${global.botName || global.botname}*\n\n` +
     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
@@ -80,6 +83,11 @@ function removeFromPool(sock) {
         }
         sock?.ws?.close()
         sock?.ev?.removeAllListeners()
+        // ✅ FIX: Limpiar intervalo al remover
+        if (sock._healthInterval) {
+            clearInterval(sock._healthInterval)
+            sock._healthInterval = null
+        }
     } catch (e) {
         console.error('Error removiendo SubBot:', e.message)
     }
@@ -94,6 +102,7 @@ setInterval(() => {
                 try {
                     conn?.ws?.close()
                     conn?.ev?.removeAllListeners()
+                    if (conn?._healthInterval) clearInterval(conn._healthInterval)
                 } catch {}
                 return false
             }
@@ -150,7 +159,8 @@ const handler = async (m, { conn, args, prefix }) => {
     database.data.users[userId].lastSubbot = now
     await database.save()
 
-    await startSubBot({ m, conn, args, prefix, sessionPath })
+    // ✅ FIX: Pasar pushName
+    await startSubBot({ m, conn, args, prefix, sessionPath, pushName: m.pushName })
 }
 
 handler.help = ['code', 'serbot']
@@ -159,7 +169,8 @@ handler.command = ['code', 'serbot']
 
 export default handler
 
-async function startSubBot({ m, conn, args, prefix, sessionPath }) {
+// ✅ FIX: pushName como parámetro
+async function startSubBot({ m, conn, args, prefix, sessionPath, pushName }) {
     const sessionId = path.basename(sessionPath)
     let sock = null
     let txtCode, codeBot
@@ -177,16 +188,23 @@ async function startSubBot({ m, conn, args, prefix, sessionPath }) {
                 keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' }))
             },
             msgRetryCache,
-            browser: Browsers.macOS('Chrome'),
+            // ✅ FIX: Ubuntu más estable que macOS
+            browser: Browsers.ubuntu('Chrome'),
             version,
             generateHighQualityLinkPreview: true,
-            getMessage: async () => ''
+            getMessage: async () => ({ conversation: '' }),
+            // ✅ FIX: Opciones de estabilidad
+            connectTimeoutMs: 60000,
+            defaultQueryTimeoutMs: 60000,
+            keepAliveIntervalMs: 10000,
+            retryRequestDelayMs: 2000,
         }
 
         sock = makeWASocket(connectionOptions)
         sock.isInit = false
         sock.codeSent = false
         sock.sessionPath = sessionPath
+        sock._pushName = pushName // ✅ Guardar pushName en el socket
 
         let handlerModule = await import('../handler.js')
 
@@ -202,9 +220,15 @@ async function startSubBot({ m, conn, args, prefix, sessionPath }) {
                 const oldChats = sock.chats
                 try { sock.ws.close() } catch {}
                 sock.ev.removeAllListeners()
+                // ✅ FIX: Limpiar intervalo antes de crear nuevo socket
+                if (sock._healthInterval) {
+                    clearInterval(sock._healthInterval)
+                    sock._healthInterval = null
+                }
                 sock = makeWASocket(connectionOptions, { chats: oldChats })
                 sock.isInit = true
-                sock.codeSent = false
+                sock.codeSent = true // ✅ FIX: No pedir código de nuevo al reconectar
+                sock._pushName = pushName
             }
 
             if (!sock.isInit) {
@@ -251,7 +275,9 @@ async function startSubBot({ m, conn, args, prefix, sessionPath }) {
             const { connection, lastDisconnect, isNewLogin } = update
             if (isNewLogin) sock.isInit = false
 
+            // ✅ FIX: Usar pushName guardado
             const nombre = sock.user?.name || sock.user?.verifiedName || sessionId
+            const displayName = sock._pushName || nombre
 
             if (!sock.codeSent && !state.creds.registered) {
                 sock.codeSent = true
@@ -259,9 +285,10 @@ async function startSubBot({ m, conn, args, prefix, sessionPath }) {
                     const pairKey = getRandomCode()
                     let secret = await sock.requestPairingCode(m.sender.split('@')[0], pairKey)
                     secret = secret?.match(/.{1,4}/g)?.join('-') || secret
-                    txtCode = await conn.sendMessage(m.chat, { text: msgCodigo(m.pushName || sessionId) }, { quoted: m })
+                    // ✅ FIX: pushName en el mensaje
+                    txtCode = await conn.sendMessage(m.chat, { text: msgCodigo(sessionId, displayName) }, { quoted: m })
                     codeBot = await conn.sendMessage(m.chat, { text: secret }, { quoted: m })
-                    console.log(chalk.hex('#ff1493')(`\nꕤ Código generado para ${sessionId}: ${secret} (${pairKey})\n`))
+                    console.log(chalk.hex('#ff1493')(`\nꕤ Código generado para ${displayName} (${sessionId}): ${secret} (${pairKey})\n`))
 
                     if (txtCode?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: txtCode.key }).catch(() => {}), 60000)
                     if (codeBot?.key) setTimeout(() => conn.sendMessage(m.chat, { delete: codeBot.key }).catch(() => {}), 60000)
@@ -295,24 +322,46 @@ async function startSubBot({ m, conn, args, prefix, sessionPath }) {
             }
 
             if (connection === 'open') {
-                const nombre = sock.user?.name || sock.user?.verifiedName || sessionId
+                const nombreReal = sock.user?.name || sock.user?.verifiedName || sessionId
+                const pushNameFinal = sock._pushName || nombreReal
+
                 console.log(chalk.hex('#ff1493')(
                     `\nꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n` +
-                    `ꕥ ${nombre} (+${sessionId}) conectado\n` +
+                    `ꕥ ${pushNameFinal} / ${nombreReal} (+${sessionId}) conectado\n` +
                     `ꕦ Método: Código\n` +
                     `ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ`
                 ))
                 sock.isInit = true
-                global.conns.push(sock)
-                if (m?.chat) {
-                    await conn.sendMessage(m.chat, { text: msgExito(nombre) }, { quoted: m })
+
+                // ✅ FIX: Evitar duplicados en el pool
+                const existingIndex = global.conns.findIndex(c => cleanPhone(c.user?.jid) === sessionId)
+                if (existingIndex >= 0) {
+                    try {
+                        global.conns[existingIndex]?.ws?.close()
+                        global.conns[existingIndex]?.ev?.removeAllListeners()
+                        if (global.conns[existingIndex]?._healthInterval) {
+                            clearInterval(global.conns[existingIndex]._healthInterval)
+                        }
+                    } catch {}
+                    global.conns.splice(existingIndex, 1)
                 }
+
+                global.conns.push(sock)
+
+                if (m?.chat) {
+                    // ✅ FIX: pushName en mensaje de éxito
+                    await conn.sendMessage(m.chat, { text: msgExito(sessionId, pushNameFinal) }, { quoted: m })
+                }
+
+                // ✅ FIX: Intervalo guardado en socket para poder limpiarlo después
+                sock._healthInterval = setInterval(async () => {
+                    if (!sock.user || !isSocketReady(sock)) {
+                        console.log(chalk.yellow(`ꕤ SubBot (+${sessionId}) sin respuesta, removiendo...`))
+                        removeFromPool(sock)
+                    }
+                }, 60000)
             }
         }
-
-        setInterval(async () => {
-            if (!sock.user) removeFromPool(sock)
-        }, 60000)
 
         creloadHandler(false)
 
