@@ -108,10 +108,6 @@ setInterval(() => {
 }, 60000)
 
 let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
-    if (!database.data.settings?.jadibotmd) {
-        return m.reply(`[!] El comando *${command}* está desactivado temporalmente.`)
-    }
-
     const userId = m.sender
     const now = Date.now()
 
@@ -152,7 +148,6 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
     }
 
     const sessionId = m.sender.split('@')[0]
-    // ✅ FIX: usar global.jadi en lugar de ./jadi
     const sessionPath = path.join(global.jadi, sessionId)
 
     if (!fs.existsSync(sessionPath)) {
