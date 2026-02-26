@@ -68,19 +68,20 @@ function msToTime(duration) {
 
 function isSocketReady(sock) {
     if (!sock) return false
-    return sock.ws?.socket?.readyState === 1 && sock.user?.jid
+    if (!sock.user?.jid) return false
+    return true
 }
 
+// Limpieza cada 5 minutos, no cada minuto
 setInterval(() => {
     try {
         if (!global.conns.length) return
         const before = global.conns.length
         global.conns = global.conns.filter(conn => {
-            if (!conn || !conn.user || !isSocketReady(conn)) {
+            if (!conn || !conn.user) {
                 try {
                     conn?.ws?.close()
                     conn?.ev?.removeAllListeners()
-                    if (conn?._healthInterval) clearInterval(conn._healthInterval)
                 } catch {}
                 return false
             }
@@ -91,7 +92,7 @@ setInterval(() => {
     } catch (error) {
         console.error('Error en limpieza:', error.message)
     }
-}, 60000)
+}, 300000)
 
 let handler = async (m, { conn, usedPrefix, command }) => {
     const userId = m.sender
@@ -247,12 +248,12 @@ async function startSubBot({ m, conn, sessionPath, pushName }) {
 
                 sock.isInit = true
 
+                // Evitar duplicados
                 const existingIndex = global.conns.findIndex(c => cleanPhoneNumber(c.user?.jid) === sessionId)
                 if (existingIndex >= 0) {
                     try {
                         global.conns[existingIndex]?.ws?.close()
                         global.conns[existingIndex]?.ev?.removeAllListeners()
-                        if (global.conns[existingIndex]?._healthInterval) clearInterval(global.conns[existingIndex]._healthInterval)
                     } catch {}
                     global.conns.splice(existingIndex, 1)
                 }
@@ -262,13 +263,6 @@ async function startSubBot({ m, conn, sessionPath, pushName }) {
                 if (m?.chat) {
                     await conn.sendMessage(m.chat, { text: generarMensajeExito(displayName) }, { quoted: m })
                 }
-
-                sock._healthInterval = setInterval(async () => {
-                    if (!sock.user || !isSocketReady(sock)) {
-                        console.log(chalk.yellow(`ꕤ SubBot (+${sessionId}) sin respuesta, removiendo...`))
-                        removeFromPool(sock)
-                    }
-                }, 60000)
             }
         }
 
@@ -284,10 +278,6 @@ async function startSubBot({ m, conn, sessionPath, pushName }) {
                 const oldChats = sock.chats
                 try { sock.ws.close() } catch {}
                 sock.ev.removeAllListeners()
-                if (sock._healthInterval) {
-                    clearInterval(sock._healthInterval)
-                    sock._healthInterval = null
-                }
                 sock = makeWASocket(connectionOptions, { chats: oldChats })
                 sock.isInit = true
                 sock._pushName = pushName
@@ -340,10 +330,6 @@ function removeFromPool(sock) {
         }
         sock?.ws?.close()
         sock?.ev?.removeAllListeners()
-        if (sock?._healthInterval) {
-            clearInterval(sock._healthInterval)
-            sock._healthInterval = null
-        }
     } catch (error) {
         console.error('Error removiendo SubBot:', error.message)
     }
