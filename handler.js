@@ -1,11 +1,11 @@
 import './settings.js';
-import chalk from 'chalk'; 
+import chalk from 'chalk';
 import print from './lib/print.js';
 import { smsg } from './lib/simple.js';
 import { database } from './lib/database.js';
-import { readdirSync } from 'fs'
-import { join, resolve } from 'path'
-import { pathToFileURL } from 'url'
+import { readdirSync } from 'fs';
+import { join, resolve } from 'path';
+import { pathToFileURL } from 'url';
 
 const toNum = v => (v + '').replace(/[^0-9]/g, '')
 const localPart = v => (v + '').split('@')[0].split(':')[0].split('/')[0].split(',')[0]
@@ -260,16 +260,16 @@ export const handler = async (m, conn, plugins) => {
         }
 
         try {
-            await cmd(m, { 
-                conn, 
-                args, 
-                isOwner, 
+            await cmd(m, {
+                conn,
+                args,
+                isOwner,
                 isROwner,
                 isPremium,
                 isRegistered,
                 isAdmin,
                 isBotAdmin,
-                isGroup, 
+                isGroup,
                 who,
                 db: database.data,
                 prefix,
