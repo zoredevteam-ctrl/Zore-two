@@ -12,7 +12,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
 
     return conn.sendMessage(
       msg.chat,
-      { text: `✳️ Usa:\n${usedPrefix}pindl <link de pinterest>` },
+      { text: `✳️ Usa:\n${usedPrefix}${command} <link de pinterest>` },
       { quoted: msg }
     )
   }
@@ -25,7 +25,14 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
 
   try {
     const api = `https://nexevo-api.vercel.app/download/pinterest?url=${encodeURIComponent(url)}`
-    const { data } = await axios.get(api)
+
+    const { data } = await axios.get(api, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Accept': '*/*',
+        'Referer': 'https://nexevo-api.vercel.app/'
+      }
+    })
 
     if (!data?.status || !data?.result?.dl)
       throw new Error('Error en la descarga.')
@@ -44,7 +51,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   } catch (e) {
     await conn.sendMessage(
       msg.chat,
-      { text: `❌ Error:\n${e.message}` },
+      { text: `❌ Error:\n${e?.response?.status || ''} ${e.message}` },
       { quoted: msg }
     )
   }
