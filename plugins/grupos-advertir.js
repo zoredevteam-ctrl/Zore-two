@@ -1,124 +1,127 @@
-import fs from 'fs'
-import path from 'path'
+import { database } from '../lib/database.js'
 
-const dataDir = './database'
-const dataFile = path.join(dataDir, 'warnings.json')
-
-if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
-
-let warnings = {}
-try {
-    if (fs.existsSync(dataFile)) {
-        const data = fs.readFileSync(dataFile, 'utf8').trim()
-        if (data) warnings = JSON.parse(data)
-    }
-} catch (e) {
-    console.error('⚠️ Error cargando warnings:', e)
-}
-
-const saveWarnings = () => {
-    fs.writeFileSync(dataFile, JSON.stringify(warnings, null, 2))
-}
-
-let handler = async (m, { conn, args, command, isAdmin, isOwner }) => {
-    if (!m.isGroup) {
-        await m.react('💔')
-        return m.reply('💔 Este comando solo funciona en grupos darling\~')
-    }
-    if (!isAdmin && !isOwner) {
-        await m.react('💔')
-        return m.reply('💔 Solo los admins pueden dar advertencias, mi amor\~ 🌸')
-    }
-
-    await m.react('🍬')
-
+const handler = async (m, { conn, args, command, who }) => {
     const groupId = m.chat
-    if (!warnings[groupId]) warnings[groupId] = {}
 
-    const mentioned = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : null)
-    if (!mentioned) {
-        await m.react('🌸')
-        return m.reply('💗 Menciona o responde a un usuario darling\~\nEjemplo: #advertir @fulano spam')
+    if (!database.data.groups) database.data.groups = {}
+    if (!database.data.groups[groupId]) database.data.groups[groupId] = {}
+    if (!database.data.groups[groupId].warnings) database.data.groups[groupId].warnings = {}
+
+    const warns = database.data.groups[groupId].warnings
+
+    if (['advertir', 'warn', 'ad'].includes(command)) {
+        let user = who
+        if (!user) return m.reply('💗 Menciona o responde a alguien darling~')
+
+        if (user.endsWith('@lid') || isNaN(user.split('@')[0])) {
+            try {
+                const groupMeta = await conn.groupMetadata(m.chat)
+                const found = groupMeta.participants.find(p => p.id === user || p.lid === user)
+                if (found?.jid) user = found.jid
+            } catch {}
+        }
+
+        const reason = args.slice(1).join(' ') || 'Sin razón especificada'
+
+        if (!warns[user]) warns[user] = { count: 0, reasons: [] }
+        warns[user].count++
+        warns[user].reasons.push(reason)
+        await database.save()
+
+        const count = warns[user].count
+
+        if (count >= 2) {
+            await conn.sendMessage(m.chat, {
+                text:
+                    `𖤐 *¡ADVERTENCIA #${count}!* 𖤐\n\n` +
+                    `ꕦ Usuario: @${user.split('@')[0]}\n` +
+                    `ꕦ Razón: ${reason}\n\n` +
+                    `💔 *Llegó al límite y fue expulsado...*\n` +
+                    `Vuela lejos darling~ 🌸`,
+                mentions: [user]
+            }, { quoted: m })
+
+            try {
+                const groupMeta = await conn.groupMetadata(m.chat)
+                const participant = groupMeta.participants.find(p => p.jid === user || p.id === user)
+                const targetId = participant?.lid || participant?.id || user
+                await conn.groupParticipantsUpdate(m.chat, [targetId], 'remove')
+            } catch (e) {
+                console.error('[WARN KICK ERROR]', e.message)
+            }
+
+            delete warns[user]
+            await database.save()
+        } else {
+            await conn.sendMessage(m.chat, {
+                text:
+                    `𖤐 *¡ADVERTENCIA #${count}!* 𖤐\n\n` +
+                    `ꕦ Usuario: @${user.split('@')[0]}\n` +
+                    `ꕦ Razón: ${reason}\n\n` +
+                    `ꙮ Advertencias: *${count}/2*\n` +
+                    `💗 La próxima te vas volando darling~ 🌸`,
+                mentions: [user]
+            }, { quoted: m })
+        }
+
+        await m.react('💗')
     }
 
-    const userId = mentioned
-    const reason = args.slice(1).join(' ') || 'Sin razón especificada'
+    else if (['unwarn', 'quitarad'].includes(command)) {
+        let user = who
+        if (!user) return m.reply('💗 Menciona o responde a alguien darling~')
 
-    try {
-        if (command === 'advertir' || command === 'warn' || command === 'ad') {
-            if (!warnings[groupId][userId]) warnings[groupId][userId] = { count: 0, reasons: [] }
-
-            warnings[groupId][userId].count++
-            warnings[groupId][userId].reasons.push(reason)
-            saveWarnings()
-
-            const count = warnings[groupId][userId].count
-            let msg = `💔 *¡Advertencia #\( {count} para @ \){userId.split('@')[0]}!*\n` +
-                      `Razón: ${reason}\n\n`
-
-            if (count >= 2) {
-                msg += `🚫 *Llegó a 2 advertencias y fue expulsado del grupo...*\n` +
-                       `Vuela lejos darling\~ 💔`
-                await conn.groupParticipantsUpdate(m.chat, [userId], 'remove')
-                delete warnings[groupId][userId] // limpia el registro
-            } else {
-                msg += `💗 Tiene *${count}/2* advertencias. ¡La próxima te vas volando! 🌸`
-            }
-
-            await conn.sendMessage(m.chat, {
-                text: msg,
-                mentions: [userId]
-            }, { quoted: m })
-
-            await m.react('💗')
-            saveWarnings()
+        if (user.endsWith('@lid') || isNaN(user.split('@')[0])) {
+            try {
+                const groupMeta = await conn.groupMetadata(m.chat)
+                const found = groupMeta.participants.find(p => p.id === user || p.lid === user)
+                if (found?.jid) user = found.jid
+            } catch {}
         }
 
-        // #unwarn
-        else if (command === 'unwarn' || command === 'quitarad') {
-            if (!warnings[groupId][userId] || warnings[groupId][userId].count === 0) {
-                return m.reply('🌸 Este usuario no tiene advertencias darling\~')
-            }
-            warnings[groupId][userId].count--
-            if (warnings[groupId][userId].count <= 0) {
-                delete warnings[groupId][userId]
-            } else {
-                warnings[groupId][userId].reasons.pop()
-            }
-            saveWarnings()
-            await conn.sendMessage(m.chat, {
-                text: `💗 *Se quitó una advertencia a @${userId.split('@')[0]}*\nAhora tiene ${warnings[groupId][userId] ? warnings[groupId][userId].count : 0}/2`,
-                mentions: [userId]
-            }, { quoted: m })
-            await m.react('🌸')
+        if (!warns[user] || warns[user].count === 0) {
+            return m.reply('🌸 Este usuario no tiene advertencias darling~')
         }
 
-        // #advertencias o #warnlist
-        else if (command === 'advertencias' || command === 'warnlist') {
-            let text = `🌸 *Lista de advertencias del grupo* 💗\n\n`
-            let hasWarns = false
+        warns[user].count--
+        warns[user].reasons.pop()
 
-            for (let uid in warnings[groupId]) {
-                if (warnings[groupId][uid].count > 0) {
-                    hasWarns = true
-                    text += `👤 @\( {uid.split('@')[0]} → * \){warnings[groupId][uid].count}/2*\n`
-                    text += `   Última razón: ${warnings[groupId][uid].reasons[warnings[groupId][uid].reasons.length-1]}\n\n`
-                }
-            }
-            if (!hasWarns) text += '✨ Nadie tiene advertencias todavía\~ ¡Qué grupo más bueno! 💕'
+        if (warns[user].count <= 0) delete warns[user]
 
-            await conn.sendMessage(m.chat, { text, mentions: Object.keys(warnings[groupId] || {}) }, { quoted: m })
+        await database.save()
+
+        await conn.sendMessage(m.chat, {
+            text:
+                `💗 *Advertencia quitada* 𖤐\n\n` +
+                `ꕦ Usuario: @${user.split('@')[0]}\n` +
+                `ꙮ Advertencias: *${warns[user]?.count || 0}/2*`,
+            mentions: [user]
+        }, { quoted: m })
+
+        await m.react('🌸')
+    }
+
+    else if (['advertencias', 'warnlist'].includes(command)) {
+        const entries = Object.entries(warns).filter(([, v]) => v.count > 0)
+
+        if (!entries.length) {
+            return m.reply('✨ Nadie tiene advertencias todavía~ ¡Qué grupo más bueno! 💕')
         }
 
-    } catch (e) {
-        console.error('❌ ADVERTIR ERROR:', e)
-        await m.react('💔')
-        m.reply('💔 Uy darling... algo falló con las advertencias\~\nInténtalo otra vez no me dejes sola 🌸')
+        const mentions = entries.map(([uid]) => uid)
+        let text = `𖤐 *Lista de Advertencias* 𖤐\n\n`
+
+        for (const [uid, data] of entries) {
+            text += `ꕦ @${uid.split('@')[0]} ✦ *${data.count}/2*\n`
+            text += `  ꙮ ${data.reasons[data.reasons.length - 1]}\n\n`
+        }
+
+        await conn.sendMessage(m.chat, { text, mentions }, { quoted: m })
     }
 }
 
 handler.help = ['advertir @user [razón]', 'unwarn @user', 'advertencias']
-handler.tags = ['group', 'admin']
+handler.tags = ['grupo']
 handler.command = ['advertir', 'warn', 'ad', 'unwarn', 'quitarad', 'advertencias', 'warnlist']
 handler.group = true
 handler.admin = true
