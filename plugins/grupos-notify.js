@@ -5,7 +5,7 @@ const handler = async (m, { conn, args }) => {
 
     try {
         const groupMeta = await conn.groupMetadata(m.chat)
-        const users = groupMeta.participants.map(u => u.id.split(':')[0] + '@s.whatsapp.net')
+        const users = groupMeta.participants.map(u => u.jid || u.id.split(':')[0] + '@s.whatsapp.net')
 
         await conn.sendMessage(m.chat, {
             text: text || m.quoted?.text || m.quoted?.caption || '💗',
