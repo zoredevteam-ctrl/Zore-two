@@ -1,5 +1,17 @@
 import { database } from '../lib/database.js'
 
+const resolveUser = async (user, conn, chat) => {
+    if (!user) return null
+    if (user.endsWith('@lid') || isNaN(user.split('@')[0])) {
+        try {
+            const groupMeta = await conn.groupMetadata(chat)
+            const found = groupMeta.participants.find(p => p.id === user || p.lid === user)
+            if (found?.jid) return found.jid
+        } catch {}
+    }
+    return user
+}
+
 const handler = async (m, { conn, args, who }) => {
     const groupId = m.chat
 
@@ -9,18 +21,9 @@ const handler = async (m, { conn, args, who }) => {
 
     const warns = database.data.groups[groupId].warnings
 
-    let user = who
+    let user = await resolveUser(who, conn, m.chat)
     if (!user) return m.reply('💗 Menciona o responde a alguien darling~')
 
-    if (user.endsWith('@lid') || isNaN(user.split('@')[0])) {
-        try {
-            const groupMeta = await conn.groupMetadata(m.chat)
-            const found = groupMeta.participants.find(p => p.id === user || p.lid === user)
-            if (found?.jid) user = found.jid
-        } catch {}
-    }
-
-    // Proteger owners del bot
     const ownerNums = global.owner.map(o => (Array.isArray(o) ? o[0] : o).replace(/\D/g, ''))
     if (ownerNums.includes(user.split('@')[0])) {
         return m.reply('ꕦ No puedo advertir a un desarrollador de mi staff~ 𖤐')
