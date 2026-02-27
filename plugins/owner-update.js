@@ -34,4 +34,5 @@ handler.help = ['update'];
 handler.tags = ['owner'];
 handler.command = ['update'];
 handler.owner true
+
 export default handler;
