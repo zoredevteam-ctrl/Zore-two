@@ -1,3 +1,5 @@
+import { database } from '../lib/database.js'
+
 const handler = async (m, { conn, args, command, who, db }) => {
   const groupId = m.chat
 
