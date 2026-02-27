@@ -1,7 +1,8 @@
 import fs from 'fs'
 import fetch from 'node-fetch'
+import { database } from '../lib/database.js'
 
-let handler = async (m, { conn }) => {
+const handler = async (m, { conn }) => {
     try {
         const botname = global.botname || global.botName || 'Zero Two'
 
@@ -25,10 +26,12 @@ let handler = async (m, { conn }) => {
         }
 
         const totalCmds = Object.values(grouped).flat().length
+        const totalUsers = Object.keys(database.data.users || {}).length
+        const registeredUsers = Object.values(database.data.users || {}).filter(u => u.registered).length
 
         let seccionesTexto = Object.entries(grouped).map(([tag, cmds]) =>
 `𖤐 *${tag.toUpperCase()}*
-${cmds.map(c => `  💗 ${c}`).join('\n')}
+${cmds.map(c => `  ꕦ ${c}`).join('\n')}
 `
         ).join('\n')
 
@@ -54,12 +57,11 @@ ${cmds.map(c => `  💗 ${c}`).join('\n')}
 Soy *${botname}* y este es mi menú,
 más te vale usarlo bien... hmph 💗 ❞
 
-💢 *Comandos:* ${totalCmds} disponibles
-
-✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦
+ꙮ *Comandos:* ${totalCmds} disponibles
+ꙮ *Usuarios:* ${totalUsers} conocidos
+ꙮ *Registrados:* ${registeredUsers} darlings
 
 ${seccionesTexto}
-✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦
 𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)`.trim()
 
         const response = await fetch('https://causas-files.vercel.app/fl/9vs2.jpg')
