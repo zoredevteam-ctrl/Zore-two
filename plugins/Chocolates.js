@@ -13,37 +13,67 @@ const handler = async (m, { conn, args }) => {
     react: { text: "🔍", key: m.key }
   })
 
-  let baneado = false
+  let existeCount = 0
+  let noExisteCount = 0
 
-  const apis = [
+  const numeroJid = cleanNumber + "@s.whatsapp.net"
+
+  const verificaciones = [
+
+    async () => {
+      const res = await conn.onWhatsApp(numeroJid)
+      if (Array.isArray(res) && res[0]?.exists === true) existeCount++
+      else noExisteCount++
+    },
 
     async () => {
       const res = await fetch(`https://api.affiliateplus.xyz/api/wa-check?phone=${cleanNumber}`)
       if (!res.ok) return
       const j = await res.json()
-      if (j.exists === "no") baneado = true
+      if (j.exists === "yes") existeCount++
+      else if (j.exists === "no") noExisteCount++
     },
 
     async () => {
       const res = await fetch(`https://numberlookupapi.com/api/v1/validate?number=${cleanNumber}`)
       if (!res.ok) return
       const j = await res.json()
-      if (j.valid === false) baneado = true
+      if (j.valid === true) existeCount++
+      else if (j.valid === false) noExisteCount++
+    },
+
+    async () => {
+      const res = await fetch(`https://numlookupapi.com/api/validate?number=${cleanNumber}`)
+      if (!res.ok) return
+      const j = await res.json()
+      if (j.valid === true) existeCount++
+      else if (j.valid === false) noExisteCount++
     }
 
   ]
 
   try {
-    for (const fn of apis) {
+    for (const fn of verificaciones) {
       await fn()
-      if (baneado) break
+      if (existeCount >= 3 || noExisteCount >= 3) break
     }
-  } catch (e) {}
+  } catch {}
 
-  await m.reply(baneado ? "🚫 Baneado xd" : "✅ Activo xd")
+  const baneado = noExisteCount >= 3
+  const activo = existeCount >= 3
+
+  await m.reply(
+    baneado ? "🚫 Baneado xd" :
+    activo ? "✅ Activo xd" :
+    noExisteCount > existeCount ? "🚫 Baneado xd" :
+    "✅ Activo xd"
+  )
 
   await conn.sendMessage(m.chat, {
-    react: { text: baneado ? "❌" : "✅", key: m.key }
+    react: {
+      text: noExisteCount > existeCount ? "❌" : "✅",
+      key: m.key
+    }
   })
 }
 
