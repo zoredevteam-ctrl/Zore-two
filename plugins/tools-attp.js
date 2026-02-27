@@ -1,44 +1,34 @@
 import fetch from 'node-fetch'
 
-let handler = async (m, { conn, text, command }) => {
-    // Sanear texto
-    text = (text || '').toString().trim()
-
+let handler = async (m, { conn, text }) => {
     if (!text) {
-        try { await m.react('🌸') } catch {}
-        return m.reply(`💗 *¿Qué quieres que diga darling?* 🌸\nEjemplo: *#attp Te amo Zero Two*`)
+        await m.react('🌸')
+        return m.reply(`💗 *¿Qué quieres que diga el sticker animado, darling?* 🌸\nEjemplo: *#attp Te quiero Zero Two*`)
     }
 
-    if (text.length > 30) {
-        try { await m.react('💔') } catch {}
-        return m.reply('💔 El texto es muy largo mi amor~ máximo 30 caracteres para que quede bonito~')
+    if (text.length > 35) {
+        await m.react('💔')
+        return m.reply('💔 El texto es muy largo mi amor\~ máximo 35 caracteres para que quede perfecto\~')
     }
 
-    try { await m.react('🍬') } catch {}
+    await m.react('🍬')
 
     try {
-        const url = `https://api.fgmods.xyz/api/maker/attp?text=${encodeURIComponent(text)}`
+        // API estable y rápida (widipe)
+        const url = `https://widipe.com/api/attp?text=${encodeURIComponent(text)}`
         const res = await fetch(url)
+        const buffer = await res.buffer()
 
-        if (!res.ok) {
-            // intenta leer posible mensaje de error del servidor
-            let errText = ''
-            try { errText = await res.text() } catch {}
-            throw new Error(`API responded ${res.status} ${res.statusText} ${errText}`)
-        }
+        await conn.sendMessage(m.chat, { 
+            sticker: buffer 
+        }, { quoted: m })
 
-        const arrayBuffer = await res.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
-
-        // Enviar sticker (webp). Dependiendo de la versión de baileys esto es suficiente.
-        await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m })
-
-        try { await m.react('💗') } catch {}
+        await m.react('💗')
 
     } catch (e) {
-        console.error('❌ ATTP ERROR:', e)
-        try { await m.react('💔') } catch {}
-        m.reply('💔 Uy Mi amor... mi poder rosa falló esta vez~\nInténtalo otra vez no me dejes sola papi 🌸')
+        console.error('❌ ATTP ERROR:', e.message || e)
+        await m.react('💔')
+        m.reply('💔 Uy darling... mi poder rosa falló otra vez\~\nInténtalo de nuevo no me dejes sola 🌸')
     }
 }
 
