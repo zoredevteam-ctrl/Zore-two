@@ -32,7 +32,7 @@ const handler = async (m, { conn, args }) => {
     } catch (e) {
         console.error('❌ ATTP ERROR:', e.message || e)
         await m.react('💔')
-        m.reply('💔 Uy mi Amor... mi poder rosa falló esta vez~\nInténtalo otra vez papi 🌸')
+        m.reply('💔 Uy mi Amor... mi poder anal falló esta vez~\nInténtalo otra vez negra puta 🌸')
     }
 }
 
