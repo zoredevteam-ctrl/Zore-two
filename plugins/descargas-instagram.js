@@ -10,11 +10,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
       { quoted: msg }
     )
 
-    return conn.sendMessage(
-      msg.chat,
-      { text: `✳️ Usa:\n${usedPrefix}ig <URL de Instagram>` },
-      { quoted: msg }
-    )
+    return
   }
 
   await conn.sendMessage(
