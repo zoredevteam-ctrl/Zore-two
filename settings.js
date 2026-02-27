@@ -14,6 +14,7 @@ global.owner = [
 ['5493863447787', 'Dev5'],
 ['573107400303', 'Dev6'],
 ['573229506110', 'Duarte'],
+['5215911153853', 'Angel'],
 ];
 global.mods = [];
 global.suittag = [];
