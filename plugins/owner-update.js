@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 
-let handler = async (m, { conn }) => {
+const handler = async (m, { conn }) => {
     let sentMsg = await m.reply('💢 Actualizando para mi darling... espera un momento~ 🌸');
 
     exec('git pull', (err, stdout, stderr) => {
@@ -14,7 +14,6 @@ let handler = async (m, { conn }) => {
                 }
 
                 if (stderr2) console.warn(stderr2);
-
                 conn.sendMessage(m.chat, { text: `🌸 Lo hice a mi manera y funcionó, darling~\n\n${stdout2}`, edit: sentMsg.key }, { quoted: m });
             });
             return;
@@ -33,6 +32,6 @@ let handler = async (m, { conn }) => {
 handler.help = ['update'];
 handler.tags = ['owner'];
 handler.command = ['update'];
-handler.owner true
+handler.owner = true;
 
 export default handler;
