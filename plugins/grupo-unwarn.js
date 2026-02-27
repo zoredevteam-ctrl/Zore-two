@@ -1,24 +1,27 @@
 import { database } from '../lib/database.js'
 
+const resolveUser = async (user, conn, chat) => {
+    if (!user) return null
+    if (user.endsWith('@lid') || isNaN(user.split('@')[0])) {
+        try {
+            const groupMeta = await conn.groupMetadata(chat)
+            const found = groupMeta.participants.find(p => p.id === user || p.lid === user)
+            if (found?.jid) return found.jid
+        } catch {}
+    }
+    return user
+}
+
 const handler = async (m, { conn, who }) => {
     const groupId = m.chat
+    const warns = database.data.groups?.[groupId]?.warnings
 
-    if (!database.data.groups?.[groupId]?.warnings) {
+    if (!warns || Object.keys(warns).length === 0) {
         return m.reply('🌸 Nadie tiene advertencias en este grupo darling~')
     }
 
-    const warns = database.data.groups[groupId].warnings
-
-    let user = who
+    let user = await resolveUser(who, conn, m.chat)
     if (!user) return m.reply('💗 Menciona o responde a alguien darling~')
-
-    if (user.endsWith('@lid') || isNaN(user.split('@')[0])) {
-        try {
-            const groupMeta = await conn.groupMetadata(m.chat)
-            const found = groupMeta.participants.find(p => p.id === user || p.lid === user)
-            if (found?.jid) user = found.jid
-        } catch {}
-    }
 
     if (!warns[user] || warns[user].count === 0) {
         return m.reply('🌸 Este usuario no tiene advertencias darling~')
