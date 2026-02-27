@@ -1,38 +1,39 @@
 import fetch from 'node-fetch'
 
-let handler = async (m, { conn, text }) => {
-    console.log('🔧 [DEBUG ATTP] Comando recibido')
+let handler = async (m, { conn, args, command }) => {
+    // Extracción 100% compatible con tu bot Zore Two
+    let text = args.join(' ').trim()
 
     if (!text) {
         await m.react('🌸')
-        return m.reply(`💗 *¿Qué texto quieres en el sticker animado, darling?* 🌸\nEjemplo: *#attp Te amo Zero Two*`)
+        return m.reply(`💗 *¿Qué texto quieres en el sticker animado, darling?* 🌸\n\nEjemplo: *#attp Te amo Zero Two 💕*`)
     }
 
     if (text.length > 35) {
         await m.react('💔')
-        return m.reply('💔 Texto demasiado largo mi amor\~ máximo 35 caracteres\~')
+        return m.reply('💔 El texto es muy largo mi amor\~ máximo 35 caracteres para que quede bonito\~')
     }
 
     await m.react('🍬')
-    console.log('🔧 [DEBUG ATTP] Intentando generar con texto:', text)
 
     try {
         const url = `https://widipe.com/api/attp?text=${encodeURIComponent(text)}`
-        console.log('🔧 [DEBUG ATTP] URL:', url)
-
         const res = await fetch(url)
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        
+        if (!res.ok) throw new Error(`API devolvió ${res.status}`)
 
         const buffer = await res.buffer()
 
-        await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m })
+        await conn.sendMessage(m.chat, { 
+            sticker: buffer 
+        }, { quoted: m })
+
         await m.react('💗')
-        console.log('✅ [DEBUG ATTP] Sticker enviado correctamente')
 
     } catch (e) {
-        console.error('❌ [ATTP ERROR]:', e.message || e)
+        console.error('❌ ATTP ERROR:', e.message || e)
         await m.react('💔')
-        m.reply('💔 Dame pene... mi poder rosa falló otra vez\~\nMándenme lo que dice la consola porfa mojones\~ 🌸')
+        m.reply('💔 Uy mi Amor... mi poder rosa falló esta vez\~\nInténtalo otra vez papi🌸')
     }
 }
 
