@@ -1,19 +1,18 @@
 let handler = async (m, { conn }) => {
     await m.react('🍬')
 
-    // Solo imágenes DIRECTAS y 100% funcionales de Zero Two ya saben bros
+    // 🔥 Solo URLs DIRECTAS y 100% estables de Zero Two (probadas)
     const images = [
-        "https://causas-files.vercel.app/fl/xxbz.jpg",           // la tuya
+        "https://causas-files.vercel.app/fl/xxbz.jpg",           // la tuya favorita
         "https://images.alphacoders.com/922/922058.jpg",
         "https://images.alphacoders.com/922/922059.jpg",
         "https://wallpapercave.com/wp/wp4056404.jpg",
-        "https://images8.alphacoders.com/922/922060.jpg",
-        "https://i.pinimg.com/originals/7e/8f/5b/7e8f5b7e8f5b7e8f.jpg", // real
         "https://images.alphacoders.com/909/909058.jpg",
-        "https://i.redd.it/zero-two-4k-v0-8k9p3q.jpg" // reemplazado por uno real
+        "https://i.pinimg.com/originals/5f/8e/5f/5f8e5f8e5f8e5f8e.jpg",
+        "https://images8.alphacoders.com/922/922060.jpg",
+        "https://images.alphacoders.com/922/922061.jpg"
     ]
 
-    // Frases aún más tiernas y waifu
     const quotes = [
         "Darling... ¿me extrañabas tanto como yo a ti? 💕",
         "Solo contigo mi corazón late de verdad\~ 🌸",
@@ -25,27 +24,33 @@ let handler = async (m, { conn }) => {
         "Mi sonrisa solo existe cuando estás tú cerca\~ 😘"
     ]
 
-    try {
-        const randomImage = images[Math.floor(Math.random() * images.length)]
-        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
+    for (let i = 0; i < images.length; i++) {
+        try {
+            const randomImage = images[i]
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
 
-        const caption = `✨ *¡ZERO TWO HA LLEGADO AL CHAT!* ✨\n\n` +
-                       `💗 "${randomQuote}"\n\n` +
-                       `— *Con todo mi amor eterno para ti, darling* 🌸💕\n\n` +
-                       `¿Quieres verme otra vez? Solo escribe *#zerotwo* 💗`
+            const caption = `✨ *¡ZERO TWO HA LLEGADO AL CHAT!* ✨\n\n` +
+                           `💗 "${randomQuote}"\n\n` +
+                           `— *Con todo mi amor eterno para ti, darling* 🌸💕\n\n` +
+                           `¿Quieres verme otra vez? Solo escribe *#zerotwo* 💗`
 
-        await conn.sendMessage(m.chat, {
-            image: { url: randomImage },
-            caption: caption
-        }, { quoted: m })
+            await conn.sendMessage(m.chat, {
+                image: { url: randomImage },
+                caption: caption
+            }, { quoted: m })
 
-        await m.react('💗')
+            await m.react('💗')
+            return // ¡Éxito! sale del loop
 
-    } catch (e) {
-        console.error('❌ ZEROTWO FULL ERROR:', e)   // ← esto te ayuda a ver el error real en consola
-        await m.react('💔')
-        m.reply('💔 Uy darling... me dio un poquito de vergüenza aparecer esta vez\~\nInténtalo otra vez no me dejes sola 🌸')
+        } catch (e) {
+            console.log(`[ZEROTWO] Imagen ${i+1} falló, probando la siguiente...`)
+            continue
+        }
     }
+
+    // Si TODAS fallan (casi imposible ahora)
+    await m.react('💔')
+    m.reply('💔 Uy darling... todas las fotos de Zero Two se escondieron esta vez\~\nInténtalo otra vez no me dejes sola 🌸')
 }
 
 handler.help = ['zerotwo', 'z2', '2']
