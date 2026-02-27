@@ -59,7 +59,7 @@ let handler = async (m, { conn, db }) => {
 
         await conn.sendMessage(m.chat, {
             video: { url: video },
-            gifPlayback: true 
+            gifPlayback: true,
             caption: str,
             mentions: [who]
         }, { quoted: m })
