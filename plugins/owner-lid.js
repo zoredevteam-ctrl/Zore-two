@@ -25,7 +25,7 @@ const handler = async (m, { conn }) => {
 }
 
 handler.help = ["𝖬𝗒𝗅𝗂𝖽"]
-handler.tags = ["𝖮𝖶𝖭𝖤𝖱"]
+handler.tags = ['owner']
 handler.command = ['lid', 'mylid', 'tulid']
 handler.group = true
 export default handler
