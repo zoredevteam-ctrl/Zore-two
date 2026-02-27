@@ -11,7 +11,7 @@ function findParticipantByDigits(parts = [], digits = '') {
 let handler = async (m, { conn, who }) => {
 
     if (!who)
-        return m.reply(`❀ Debes mencionar a un usuario o responder a un mensaje para expulsarlo.`)
+        return m.reply(`𖤐 ~ ᴍɪ ᴅᴀʀʟɪɴɢ~! ᴅᴇʙᴇs ᴍᴇɴᴄɪᴏɴᴀʀ ᴀ  un ᴜsᴜᴀʀɪᴏ o ʀᴇsᴘᴏɴᴅᴇʀ ᴀ ᴜɴ ᴍᴇɴsᴀᴊᴇ ᴘᴀʀᴀ ᴇxᴘᴜʀsᴀʀʟᴏ.`)
 
     const metadata = await conn.groupMetadata(m.chat)
     const participants = Array.isArray(metadata?.participants) ? metadata.participants : []
