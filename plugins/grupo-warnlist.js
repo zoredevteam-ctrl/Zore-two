@@ -18,6 +18,7 @@ const handler = async (m, { conn }) => {
     }
 
     await conn.sendMessage(m.chat, { text, mentions }, { quoted: m })
+    await m.react('💗')
 }
 
 handler.help = ['advertencias']
