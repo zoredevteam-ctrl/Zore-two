@@ -1,6 +1,6 @@
 let handler = async (m, { conn }) => {
     await conn.groupSettingUpdate(m.chat, 'announcement')
-    m.reply('❀ Grupo cerrado.\n> Ahora solo los administradores pueden enviar mensajes.')
+    m.reply('*❀ Grupo cerrado.*\n> Ahora solo los administradores pueden enviar mensajes.')
 }
 
 handler.help = ['close']
