@@ -1,4 +1,4 @@
-let handler = async (m, { conn, db }) => {
+const handler = async (m, { conn, db }) => {
     try {
         await m.react('🫦')
 
