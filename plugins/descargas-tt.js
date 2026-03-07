@@ -12,7 +12,8 @@ let handler = async (m, { conn, args, command }) => {
     await m.react('🍬')
 
     try {
-        const apiUrl = `https://api.tikwm.com/api/?url=${encodeURIComponent(url)}&hd=1`
+        // ←←← TU API PERSONAL rest.apicausas.xyz ←←←
+        const apiUrl = `https://rest.apicausas.xyz/api/tiktok?url=${encodeURIComponent(url)}`
         const res = await fetch(apiUrl)
         const json = await res.json()
 
@@ -36,7 +37,7 @@ let handler = async (m, { conn, args, command }) => {
     } catch (e) {
         console.error('❌ TT TIKTOK ERROR:', e.message || e)
         await m.react('💔')
-        m.reply('💔 Uy darling... este TikTok se resistió\~\nInténtalo otra vez no me dejes sola 🌸')
+        m.reply('💔 Uy darling... este TikTok se resistió con tu API\~\nInténtalo otra vez no me dejes sola 🌸')
     }
 }
 
