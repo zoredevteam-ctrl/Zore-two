@@ -1,4 +1,3 @@
-import { database } from './lib/database.js'
 
 let handler = async (m, { conn, who, prefix, isAdmin, isBotAdmin }) => {
     if (!who) return m.reply(`Menciona o responde a un usuario.\nEjemplo: *${prefix}mute @usuario*`)
