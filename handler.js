@@ -117,6 +117,14 @@ export const handler = async (m, conn, plugins) => {
 
         m = await smsg(conn, m);
 
+        if (m.isGroup) {
+            const muted = database.data?.groups?.[m.chat]?.muted || []
+            if (muted.includes(m.sender)) {
+                await conn.sendMessage(m.chat, { delete: m.key })
+                return
+            }
+        }
+
         await print(m, conn);
 
         if (!m.body) return;
