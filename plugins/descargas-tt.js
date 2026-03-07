@@ -3,16 +3,6 @@ import fetch from 'node-fetch'
 const API_KEY  = 'causa-ec43262f206b3305'
 const API_BASE = 'https://rest.apicausas.xyz/api/tiktok'
 
-async function fetchTikTokData(url) {
-    const res = await fetch(`${API_BASE}?url=${encodeURIComponent(url)}&apikey=${API_KEY}`)
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    return res.json()
-}
-
-async function downloadVideo(videoUrl) {
-    return fetch(videoUrl).then(r => r.buffer())
-}
-
 let handler = async (m, { conn, args }) => {
     let url = (args[0] || '').trim()
     if (m.quoted && m.quoted.text) url = m.quoted.text.trim()
@@ -25,10 +15,12 @@ let handler = async (m, { conn, args }) => {
     await m.react('🍬')
 
     try {
-        const json = await fetchTikTokData(url)
-        if (!json.data?.download?.url) throw new Error('No se encontró video')
+        const res  = await fetch(`${API_BASE}?url=${encodeURIComponent(url)}&apikey=${API_KEY}`)
+        const json = await res.json()
 
-        const videoBuffer = await downloadVideo(json.data.download.url)
+        if (!json.status || !json.data?.download?.url) throw new Error('No se encontró video')
+
+        const videoBuffer = await fetch(json.data.download.url).then(r => r.buffer())
         const caption = `💞 *¡TikTok descargado con éxito darling!* 🌸\n\n` +
                         `✨ *Autor:* ${json.data.autor || 'TikTok'}\n` +
                         `📝 *Título:* ${json.data.titulo || 'Sin descripción'}\n` +
@@ -39,9 +31,9 @@ let handler = async (m, { conn, args }) => {
         await m.react('💗')
 
     } catch (e) {
-        console.error('❌ TT TIKTOK ERROR:', e.message || e)
+        console.error('❌ TT ERROR:', e.message || e)
         await m.react('💔')
-        m.reply('💔 Uy darling... este TikTok se resistió con tu API~\nInténtalo otra vez no me dejes sola 🌸')
+        m.reply('💔 Uy darling... este TikTok se resistió~\nInténtalo otra vez no me dejes sola 🌸')
     }
 }
 
