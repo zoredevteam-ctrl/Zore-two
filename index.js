@@ -23,10 +23,8 @@ import { handler, loadEvents } from './handler.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pluginsDir = path.join(__dirname, 'plugins')
 
-
 const SUBBOTS_DIR = './Sessions/SubBots'
 global.conns = []
-
 
 const log = {
   info: msg => console.log(chalk.bgBlue.white.bold('INFO'), chalk.white(msg)),
@@ -78,7 +76,7 @@ async function loadPlugins () {
     try {
       const filePath = path.join(pluginsDir, file)
       const plugin = (await import(`${filePath}?t=${Date.now()}`)).default
-     if (plugin) {
+      if (plugin) {
         plugins.set(file, plugin)
         log.success(`Plugin cargado: ${file}`)
       }
@@ -95,7 +93,7 @@ async function loadPlugins () {
     try {
       if (fs.existsSync(filePath)) {
         const plugin = (await import(`${filePath}?t=${Date.now()}`)).default
-        if (plugin?.command) {
+        if (plugin) {
           plugins.set(filename, plugin)
           log.success(`Plugin recargado: ${filename}`)
         }
@@ -153,8 +151,6 @@ else if (!fs.existsSync('./Sessions/Owner/creds.json')) {
     phoneNumber = normalizePhone(phoneInput)
   }
 }
-
-
 
 export async function startSubBot (sessionPath) {
   try {
@@ -281,7 +277,6 @@ async function autoConnectSubBots () {
 global.startSubBot = startSubBot
 global.subBotsDir = SUBBOTS_DIR
 
-
 async function startBot () {
   const { state, saveCreds } = await useMultiFileAuthState(global.sessionName)
   const { version } = await fetchLatestBaileysVersion()
@@ -349,7 +344,7 @@ async function startBot () {
       log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`)
       log.info(`Plugins cargados: ${plugins.size}`)
       await loadEvents(conn)
-      await autoConnectSubBots() 
+      await autoConnectSubBots()
     }
 
     if (connection === 'close') {
@@ -409,6 +404,6 @@ async function startBot () {
   await database.read()
   log.success('Base de datos cargada.')
   await loadPlugins()
-  global.plugins = plugins 
+  global.plugins = plugins
   await startBot()
 })()
