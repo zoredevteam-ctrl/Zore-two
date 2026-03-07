@@ -62,6 +62,14 @@ function getPrefix(body) {
     return null
 }
 
+const similarity = (a, b) => {
+    let matches = 0
+    for (let i = 0; i < Math.min(a.length, b.length); i++) {
+        if (a[i] === b[i]) matches++
+    }
+    return Math.floor((matches / Math.max(a.length, b.length)) * 100)
+}
+
 let eventsLoaded = false
 
 export const loadEvents = async (conn) => {
@@ -147,7 +155,30 @@ export const handler = async (m, conn, plugins) => {
             }
         }
 
-        if (!cmd) return;
+        if (!cmd) {
+            const allCommands = []
+            for (const [, plugin] of plugins) {
+                if (!plugin.command) continue
+                const cmds = Array.isArray(plugin.command) ? plugin.command : [plugin.command]
+                for (const c of cmds) {
+                    if (typeof c === 'string') allCommands.push(c)
+                }
+            }
+
+            const similares = allCommands
+                .map(c => ({ cmd: c, score: similarity(commandName, c) }))
+                .filter(o => o.score >= 40)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 3)
+
+            const sugerencias = similares.length
+                ? similares.map(s => `*${prefix + s.cmd}* » *${s.score}%*`).join('\n')
+                : 'Sin resultados'
+
+            return conn.sendMessage(m.chat, {
+                text: `El comando *(${prefix + commandName})* no existe.\n- Use el comando *${prefix}menu* para ver los comandos.\n\n*Similares:*\n${sugerencias}`
+            }, { quoted: m })
+        }
 
         const senderRawFull = m.sender || ''
         const senderCanonical = senderRawFull.replace(/:[0-9A-Za-z]+(?=@s\.whatsapp\.net)/, '')
