@@ -18,6 +18,9 @@ let handler = async (m, { conn, args }) => {
         const res  = await fetch(`${API_BASE}?url=${encodeURIComponent(url)}&apikey=${API_KEY}`)
         const json = await res.json()
 
+        // DEBUG - borra esto cuando funcione
+        await m.reply(`🔍 *DEBUG:*\n\`\`\`${JSON.stringify(json, null, 2)}\`\`\``)
+
         if (!json.status || !json.data?.download?.url) throw new Error('No se encontró video')
 
         const videoBuffer = await fetch(json.data.download.url).then(r => r.buffer())
@@ -31,9 +34,8 @@ let handler = async (m, { conn, args }) => {
         await m.react('💗')
 
     } catch (e) {
-        console.error('❌ TT ERROR:', e.message || e)
         await m.react('💔')
-        m.reply('💔 Uy darling... este TikTok se resistió~\nInténtalo otra vez no me dejes sola 🌸')
+        m.reply(`💔 *ERROR:*\n\`\`\`${e.message}\`\`\``)
     }
 }
 
