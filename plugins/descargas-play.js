@@ -31,7 +31,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
 
     const url = search.videos[0].url
 
-    const api = `https://nexevo-api.vercel.app/download/y?url=${encodeURIComponent(url)}`
+    const api = `https://nexevo.onrender.com/download/y?url=${encodeURIComponent(url)}`
     const { data } = await axios.get(api)
 
     if (!data?.status || !data?.result?.status || !data?.result?.url)
