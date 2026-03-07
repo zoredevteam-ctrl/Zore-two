@@ -1,6 +1,0 @@
-services:
-  - type: worker
-    name: zore-two
-    env: node
-    buildCommand: npm install
-    startCommand: node index.js
