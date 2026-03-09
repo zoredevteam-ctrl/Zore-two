@@ -1,48 +1,41 @@
-import fs from 'fs'
-import path from 'path'
+let handler = m => {
+    if (!m.text) return true  // Ignora si no hay texto
 
-let handler = async (m, { conn }) => {
-    // Detecta cualquier mensaje que empiece con "hola" (o variaciones comunes)
     const texto = m.text.toLowerCase().trim()
-    if (!texto.startsWith('hola')) return
+    if (!texto.startsWith('hola')) return true  // Solo entra si empieza con "hola"
+
+    // Para evitar spam: solo responde si el mensaje es "hola" solo o con poco texto
+    if (texto.length > 20) return true  // Ignora si es "hola qué tal cómo estás bla bla"
 
     try {
-        const audioPath = path.join(process.cwd(), 'media', 'saludo-zero-two.opus')
+        const audioPath = './media/saludo-zero-two.opus'
 
-        if (!fs.existsSync(audioPath)) {
-            await m.react('💔')
-            return m.reply('💔 Uy darling... mi voz se quedó sin batería\~ Inténtalo más tarde 🌸')
+        if (!require('fs').existsSync(audioPath)) {
+            m.react('💔')
+            m.reply('💔 Uy darling... mi voz se quedó sin batería\~')
+            return true
         }
 
-        // Envía el audio como nota de voz (ptt: true)
-        await conn.sendMessage(m.chat, {
-            audio: fs.readFileSync(audioPath),
+        conn.sendMessage(m.chat, {
+            audio: require('fs').readFileSync(audioPath),
             mimetype: 'audio/ogg; codecs=opus',
-            ptt: true,
-            contextInfo: {
-                externalAdReply: {
-                    title: 'Zero Two 💗',
-                    body: '¡Hola darling\~!',
-                    thumbnailUrl: 'https://causas-files.vercel.app/fl/xxbz.jpg',
-                    sourceUrl: 'https://github.com/zoredevteam-ctrl/Zore-two'
-                }
-            }
+            ptt: true
         }, { quoted: m })
 
-        await m.react('💗')
+        m.react('💗')
+        return true
 
     } catch (e) {
-        console.error('VOZ HOLA ERROR:', e)
-        await m.react('💔')
-        m.reply('💔 Uy darling... mi voz se trabó\~ Prueba otra vez no me dejes sola 🌸')
+        console.log('VOZ HOLA ERROR:', e)
+        m.react('💔')
+        m.reply('💔 Uy darling... mi voz se trabó\~')
+        return true
     }
 }
 
-handler.customPrefix = /^(hola)/i
-handler.command = new RegExp  // Para que entre con cualquier "hola..." sin comando específico
-
-handler.help = ['hola']
-handler.tags = ['voz', 'main']
-handler.limit = false  // No consume límite
+handler.before = true  // ← Esto es clave: lo hace correr ANTES de otros comandos
+handler.group = true
+handler.private = true
+handler.limit = false
 
 export default handler
