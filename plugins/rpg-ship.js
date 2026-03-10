@@ -68,8 +68,9 @@ let handler = async (m, { conn, command }) => {
                 `*Compatibilidad:* ${percent}%\n` +
                 `${hearts}\n\n` +
                 `${phrase}\n\n` +
-                `¿Aceptan ser pareja oficial? Jajaja no me dejen sola con la curiosidad~ 💕`
-> ahora responde con #si o #no
+                `¿Aceptan ser pareja oficial? Jajaja no me dejen sola con la curiosidad~ 💕
+> responde con #si o #no`
+
 
   try {
     await conn.sendMessage(m.chat, { text: caption }, { quoted: m })
