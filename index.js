@@ -275,7 +275,9 @@ async function startBot () {
     if (connection === 'open') {
       console.log(zeroBanner)
       await loadEvents(conn)
-      await autoConnectSubBots()
+      setTimeout(() => {
+        autoConnectSubBots().catch(() => {})
+      }, 10000)
     }
 
     if (connection === 'close') {
