@@ -5,7 +5,7 @@ import qrcode from 'qrcode-terminal'
 import fs from 'fs'
 import path from 'path'
 import readlineSync from 'readline-sync'
-import { fileURLToPath } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 import {
   Browsers,
   makeWASocket,
@@ -15,7 +15,6 @@ import {
   jidDecode,
   DisconnectReason
 } from '@whiskeysockets/baileys'
-import { exec } from 'child_process'
 import { smsg } from './lib/simple.js'
 import { database } from './lib/database.js'
 import { handler, loadEvents } from './handler.js'
@@ -67,6 +66,12 @@ ${p3('ꕤ━━━━━━━━━━━━━━━━━━━━━━━�
 
 const plugins = new Map()
 
+function importUrlForFile (filePath) {
+  const u = pathToFileURL(filePath)
+  u.searchParams.set('t', String(Date.now()))
+  return u.href
+}
+
 async function loadPlugins () {
   if (!fs.existsSync(pluginsDir)) fs.mkdirSync(pluginsDir, { recursive: true })
 
@@ -75,9 +80,11 @@ async function loadPlugins () {
   for (const file of files) {
     try {
       const filePath = path.join(pluginsDir, file)
-      const plugin = (await import(`${filePath}?t=${Date.now()}`)).default
+      const plugin = (await import(importUrlForFile(filePath))).default
       if (plugin) plugins.set(file, plugin)
-    } catch {}
+    } catch (e) {
+      log.warn(`[PLUGINS] Error cargando ${file}: ${e?.message || e}`)
+    }
   }
 
   fs.watch(pluginsDir, async (event, filename) => {
@@ -86,18 +93,21 @@ async function loadPlugins () {
 
     try {
       if (fs.existsSync(filePath)) {
-        const plugin = (await import(`${filePath}?t=${Date.now()}`)).default
+        const plugin = (await import(importUrlForFile(filePath))).default
         if (plugin) plugins.set(filename, plugin)
       } else plugins.delete(filename)
-    } catch {}
+    } catch (e) {
+      log.warn(`[PLUGINS] Error recargando ${filename}: ${e?.message || e}`)
+    }
   })
 }
 
 global.sessionName = global.sessionName || './Sessions/Owner'
 fs.mkdirSync(global.sessionName, { recursive: true })
 
-const methodCodeQR = process.argv.includes('--qr')
-const methodCode = process.argv.includes('--code')
+const argsSet = new Set(process.argv.slice(2))
+const methodCodeQR = argsSet.has('--qr') || argsSet.has('qr')
+const methodCode = argsSet.has('--code') || argsSet.has('code')
 const DIGITS = s => String(s).replace(/\D/g, '')
 
 function normalizePhone (input) {
@@ -279,10 +289,16 @@ async function startBot () {
         DisconnectReason.badSession
       ].includes(reason)) startBot()
       else if (reason === DisconnectReason.loggedOut) {
-        exec('rm -rf ./Sessions/Owner/*')
+        try {
+          fs.rmSync(global.sessionName, { recursive: true, force: true })
+          fs.mkdirSync(global.sessionName, { recursive: true })
+        } catch {}
         process.exit(1)
       } else if (reason === DisconnectReason.forbidden) {
-        exec('rm -rf ./Sessions/Owner/*')
+        try {
+          fs.rmSync(global.sessionName, { recursive: true, force: true })
+          fs.mkdirSync(global.sessionName, { recursive: true })
+        } catch {}
         process.exit(1)
       } else startBot()
     }

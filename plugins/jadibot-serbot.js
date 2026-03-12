@@ -13,12 +13,11 @@ import pino from 'pino'
 import chalk from 'chalk'
 import { makeWASocket } from '@whiskeysockets/baileys'
 import { smsg } from '../lib/simple.js'
-import { handler } from '../handler.js'
+import { handler, loadEvents } from '../handler.js'
 import { database } from '../lib/database.js'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 if (!Array.isArray(global.conns)) global.conns = []
 
@@ -225,12 +224,13 @@ async function startSubBot({ m, conn, args, prefix, sessionPath, useCode }) {
         console.log(chalk.cyanBright(`\n◆ ${nombreUsuario} (+${sessionId}) conectado · Método: ${metodoUsado}`))
 
         sock.startTime = Date.now()
+        await loadEvents(sock).catch(() => {})
 
         const idx = global.conns.findIndex(c => c.sessionPath === sessionPath)
         if (idx !== -1) global.conns.splice(idx, 1)
         global.conns.push(sock)
 
-        log.success(`Total subbots activos: ${global.conns.length}`)
+        console.log(chalk.greenBright(`[SUBBOTS] Total subbots activos: ${global.conns.length}`))
 
         await conn.sendMessage(m.chat, {
           text: generarMensajeExito(nombreUsuario, metodoUsado)

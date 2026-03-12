@@ -70,11 +70,12 @@ const similarity = (a, b) => {
     return Math.floor((matches / Math.max(a.length, b.length)) * 100)
 }
 
-let eventsLoaded = false
+const eventsLoadedFor = new WeakSet()
 
 export const loadEvents = async (conn) => {
-    if (eventsLoaded) return
-    eventsLoaded = true
+    if (!conn?.ev?.on) return
+    if (eventsLoadedFor.has(conn)) return
+    eventsLoadedFor.add(conn)
 
     const eventsPath = resolve('./events')
     let files = []

@@ -140,7 +140,7 @@ global.opts = {
 };
 
 // Crear carpetas necesarias
-for (const dir of ['./Sessions', './Sessions/Owner', './Sessions/Subs', global.jadi]) {
+for (const dir of ['./Sessions', './Sessions/Owner', './Sessions/SubBots', './Sessions/Subs', global.jadi]) {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
         console.log(chalk.greenBright(`✅ Carpeta ${dir} creada.`));
