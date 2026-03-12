@@ -78,9 +78,9 @@ ${seccionesTexto}
 ╔═══════════════════════╗
 ║     CANAL OFICIAL     ║
 ╟───────────────────────╢
-║ ID → ${canalId}
+║ ID → ${120363404822730259@newsletter}
 ║
-║ 👉 ${canalLink}
+║💩 ${https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y}
 ║       (toca para ver) 
 ╚═══════════════════════╝
 
