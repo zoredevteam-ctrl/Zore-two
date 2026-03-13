@@ -21,7 +21,7 @@ let handler = async (m, { conn }) => {
 
     // ← Aquí agregamos el botón "Ver Canal" (rcanal)
     let textoCanal = `¿Quieres volver a unirte o ver novedades?`
-    let enlaceCanal = global.rcanal || 'https://whatsapp.com/channel/0029VaXXXXX'  // ← CAMBIA ESTO por tu enlace real del canal
+    let enlaceCanal = global.rcanal || 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y'  // ← CAMBIA ESTO por tu enlace real del canal
 
     const buttons = [
         {
