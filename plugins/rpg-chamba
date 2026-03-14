@@ -1,69 +1,37 @@
-import fs from 'fs'
-import path from 'path'
+let handler = async (m, { conn, usedPrefix, command }) => {
+    // Definimos la base de datos del usuario (usando el sistema nativo del bot)
+    let user = global.db.data.users[m.sender]
+    if (!user) return // Seguridad
 
-const dataDir = './database'
-const dataFile = path.join(dataDir, 'coins.json')
-
-// Crea la carpeta si no existe para evitar errores
-if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true })
-}
-
-// Cargar base de datos
-let coins = {}
-if (fs.existsSync(dataFile)) {
-    try {
-        const data = fs.readFileSync(dataFile, 'utf8').trim()
-        coins = data ? JSON.parse(data) : {}
-    } catch (e) {
-        console.error("Error al leer coins.json, iniciando vacío.")
-        coins = {}
-    }
-}
-
-const saveCoins = () => fs.writeFileSync(dataFile, JSON.stringify(coins, null, 2))
-
-let handler = async (m, { conn }) => {
-    const userId = m.sender
-    
-    // Inicializar usuario si es nuevo
-    if (!coins[userId]) {
-        coins[userId] = { balance: 100, lastRpgChamba: 0 }
-        saveCoins()
-    }
-
-    const moneda = global.moneda || 'monedas'
-
-    // Reacción estética
-    try { await m.react('🍬') } catch (e) {}
-
-    // Cooldown de 15 minutos (900,000 ms)
-    const tiempoEspera = 900000 
-    const ultimoUso = coins[userId].lastRpgChamba || 0
-    const tiempoPasado = Date.now() - ultimoUso
-
-    if (tiempoPasado < tiempoEspera) {
-        const restante = Math.ceil((tiempoEspera - tiempoPasado) / 60000)
-        return m.reply(`💔 *¡Todavía no, darling!* 🌸\n\nYa hiciste tu quest RPG hace poco. Vuelve en *${restante} minutos* para seguir divirtiéndonos juntos~`)
-    }
-
-    // Lógica de recompensa
+    // Si quieres usar una moneda específica, si no, usamos 'money' o 'limit'
+    const moneda = 'monedas' 
     const ganancia = 180
-    coins[userId].balance += ganancia
-    coins[userId].lastRpgChamba = Date.now()
-    saveCoins()
+    const tiempoEspera = 900000 // 15 minutos
 
+    // Reacción inicial
+    await m.react('🍬')
+
+    // Verificar Cooldown
+    if (new Date - user.lastchamba < tiempoEspera) {
+        let tiempo = Math.ceil((user.lastchamba + tiempoEspera - new Date()) / 60000)
+        return m.reply(`💔 *¡Todavía no, darling!* 🌸\n\nYa hiciste tu quest RPG. Vuelve en *${tiempo} minutos* para seguir divirtiéndonos juntos~`)
+    }
+
+    // Entregar recompensa
+    user.money = (user.money || 0) + ganancia
+    user.lastchamba = new Date * 1
+    
     const trollText = `💗 *¡QUEST RPG-CHAMBA COMPLETADA!* 🌸\n\n` +
                      `Entraste a la mazmorra a matar slimes... pero terminaste chupándosela al Slime Rey durante 3 horas seguidas y te dio *${ganancia} ${moneda}* como recompensa 😂\n\n` +
                      `¡Zero Two aprueba esta quest troll! 💕\n` +
-                     `*Saldo actual:* ${coins[userId].balance} ${moneda}`
+                     `*Saldo actual:* ${user.money} ${moneda}`
 
-    return m.reply(trollText)
+    await m.reply(trollText)
 }
 
 handler.help = ['chamba']
-handler.tags = ['rpg', 'economy']
-handler.command = ['chamba', 'work'] // Responde a #chamba y #work
-handler.group = false // AHORA FUNCIONA EN PRIVADO Y GRUPOS ✅
+handler.tags = ['rpg']
+handler.command = ['chamba', 'work'] 
+handler.register = true // Para que funcione si el usuario está registrado
 
 export default handler
