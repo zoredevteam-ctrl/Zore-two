@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 const dataDir = './database'
-const dataFile = path.join(dataDir, 'coins.json')
+const dataFile = path.join(dataDir, 'coins-json')
 
 let coins = {}
 try {
