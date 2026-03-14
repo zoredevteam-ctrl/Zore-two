@@ -45,7 +45,7 @@ let handler = async (m, { conn }) => {
 
 handler.help = ['chamba']
 handler.tags = ['rpg', 'economy']
-handler.command = ['chamba']
+handler.command = /^chamba$/i
 handler.group = true
 
 export default handler
