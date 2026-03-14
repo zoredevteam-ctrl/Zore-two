@@ -1,37 +1,51 @@
-let handler = async (m, { conn, usedPrefix, command }) => {
-    // Definimos la base de datos del usuario (usando el sistema nativo del bot)
-    let user = global.db.data.users[m.sender]
-    if (!user) return // Seguridad
+import fs from 'fs'
+import path from 'path'
 
-    // Si quieres usar una moneda específica, si no, usamos 'money' o 'limit'
-    const moneda = 'monedas' 
-    const ganancia = 180
-    const tiempoEspera = 900000 // 15 minutos
+const dataDir = './database'
+const dataFile = path.join(dataDir, 'coins.json')
 
-    // Reacción inicial
-    await m.react('🍬')
+let coins = {}
+try {
+    if (fs.existsSync(dataFile)) {
+        const data = fs.readFileSync(dataFile, 'utf8').trim()
+        if (data) coins = JSON.parse(data)
+    }
+} catch (e) {}
 
-    // Verificar Cooldown
-    if (new Date - user.lastchamba < tiempoEspera) {
-        let tiempo = Math.ceil((user.lastchamba + tiempoEspera - new Date()) / 60000)
-        return m.reply(`💔 *¡Todavía no, darling!* 🌸\n\nYa hiciste tu quest RPG. Vuelve en *${tiempo} minutos* para seguir divirtiéndonos juntos~`)
+const saveCoins = () => fs.writeFileSync(dataFile, JSON.stringify(coins, null, 2))
+
+let handler = async (m) => {
+    const userId = m.sender
+    if (!coins[userId]) {
+        coins[userId] = { balance: 100, lastRpgChamba: 0 }
+        saveCoins()
     }
 
-    // Entregar recompensa
-    user.money = (user.money || 0) + ganancia
-    user.lastchamba = new Date * 1
-    
-    const trollText = `💗 *¡QUEST RPG-CHAMBA COMPLETADA!* 🌸\n\n` +
+    const moneda = global.moneda || 'monedas'
+
+    await m.react('🍬')
+
+    if (Date.now() - (coins[userId].lastRpgChamba || 0) < 900000) {
+        const tiempo = Math.ceil((900000 - (Date.now() - coins[userId].lastRpgChamba)) / 60000)
+        return m.reply(`💔 Ya hiciste tu quest RPG hoy darling\~\nVuelve en *${tiempo} minutos* no me dejes sola\~`)
+    }
+
+    const ganancia = 180
+    coins[userId].balance += ganancia
+    coins[userId].lastRpgChamba = Date.now()
+    saveCoins()
+
+    const trollText = `💗 *¡QUEST RPG-CHAMBA COMPLETADA DARLING!* 🌸\n\n` +
                      `Entraste a la mazmorra a matar slimes... pero terminaste chupándosela al Slime Rey durante 3 horas seguidas y te dio *${ganancia} ${moneda}* como recompensa 😂\n\n` +
                      `¡Zero Two aprueba esta quest troll! 💕\n` +
-                     `*Saldo actual:* ${user.money} ${moneda}`
+                     `Saldo actual: ${coins[userId].balance} ${moneda}`
 
-    await m.reply(trollText)
+    return m.reply(trollText)
 }
 
 handler.help = ['chamba']
-handler.tags = ['rpg']
-handler.command = ['chamba', 'work'] 
-handler.register = true // Para que funcione si el usuario está registrado
+handler.tags = ['rpg', 'economy']
+handler.command = ['chamba']
+handler.group = true
 
 export default handler
