@@ -323,70 +323,60 @@ export const handler = async (m, conn, plugins) => {
         }
 
         try {
-    await cmd(m, {
-        conn,
-        args,
-        isOwner,
-        isROwner,
-        isPremium,
-        isRegistered,
-        isAdmin,
-        isBotAdmin,
-        isGroup,
-        who,
-        db: database.data,
-        prefix,
-        plugins
-    });
+            await cmd(m, {
+                conn,
+                args,
+                isOwner,
+                isROwner,
+                isPremium,
+                isRegistered,
+                isAdmin,
+                isBotAdmin,
+                isGroup,
+                who,
+                db: database.data,
+                prefix,
+                plugins
+            })
 
-} catch (cmdError) {
+        } catch (cmdError) {
 
-    console.log(chalk.red('[ERROR COMANDO DETECTADO]'));
-    console.log(cmdError);
+            console.log(chalk.red('[ERROR COMANDO DETECTADO]'))
+            console.log(cmdError)
 
-    let errorType = 'Desconocido';
-    let errorMsg = cmdError?.message || String(cmdError);
+            let errorType = 'Desconocido'
+            let errorMsg = cmdError?.message || String(cmdError)
 
-    try {
+            try {
 
-        if (cmdError.response) {
-            errorType = 'API / HTTP';
-            errorMsg = `Status: ${cmdError.response.status}\nData: ${JSON.stringify(cmdError.response.data).slice(0,300)}`;
-        }
+                if (cmdError.response) {
+                    errorType = 'API / HTTP'
+                    errorMsg = `Status: ${cmdError.response.status}\nData: ${JSON.stringify(cmdError.response.data).slice(0,300)}`
+                }
 
-        else if (errorMsg.includes('<html') || errorMsg.includes('<!DOCTYPE html')) {
-            errorType = 'Respuesta HTML inesperada (posible API caída)';
-        }
+                else if (errorMsg.includes('<html') || errorMsg.includes('<!DOCTYPE html')) {
+                    errorType = 'Respuesta HTML inesperada (posible API caída)'
+                }
 
-        else if (errorMsg.includes('Unexpected token') || errorMsg.includes('JSON')) {
-            errorType = 'Error de JSON';
-        }
+                else if (errorMsg.includes('Unexpected token') || errorMsg.includes('JSON')) {
+                    errorType = 'Error de JSON'
+                }
 
-        else if (errorMsg.includes('Cannot find module') || errorMsg.includes('ERR_MODULE_NOT_FOUND')) {
-            errorType = 'Error de Import / Módulo faltante';
-        }
+                else if (errorMsg.includes('Cannot find module') || errorMsg.includes('ERR_MODULE_NOT_FOUND')) {
+                    errorType = 'Error de Import / Módulo faltante'
+                }
 
-        else if (errorMsg.includes('SyntaxError')) {
-            errorType = 'Error de Sintaxis';
-        }
+                else if (errorMsg.includes('ECONNREFUSED') || errorMsg.includes('ENOTFOUND')) {
+                    errorType = 'Error de conexión / API caída'
+                }
 
-        else if (errorMsg.includes('ECONNREFUSED') || errorMsg.includes('ENOTFOUND')) {
-            errorType = 'Error de conexión / API caída';
-        }
+                else if (errorMsg.includes('timeout')) {
+                    errorType = 'Timeout / API muy lenta'
+                }
 
-        else if (errorMsg.includes('timeout')) {
-            errorType = 'Timeout / API muy lenta';
-        }
+            } catch {}
 
-        else if (errorMsg.includes('ENOENT')) {
-            errorType = 'Archivo no encontrado (FS)';
-        }
-
-    } catch (detectError) {
-        console.log(chalk.yellow('[ERROR AL ANALIZAR ERROR]'), detectError);
-    }
-
-    let debug = `
+            let debug = `
 ❌ *ERROR AL EJECUTAR COMANDO*
 
 📌 Tipo: ${errorType}
@@ -396,29 +386,22 @@ ${errorMsg.slice(0,500)}
 
 ⚙️ Comando:
 ${m.text}
+`.trim()
 
-`.trim();
+            console.log(chalk.red(debug))
 
-    console.log(chalk.red(debug));
+            if (m?.reply) m.reply(debug)
+        }
 
-    m.reply(debug);
+    } catch (e) {
 
-}
+        console.log(chalk.red('[ERROR HANDLER GLOBAL]'), e)
 
-} catch (e) {
+        let msg = e?.message || String(e)
 
-    console.log(chalk.red('[ERROR HANDLER GLOBAL]'), e);
+        if (m?.reply) {
+            m.reply(`❌ *ERROR GLOBAL*\n\n🧾 ${msg.slice(0,400)}`)
+        }
 
-    let msg = e?.message || String(e);
-
-    if (m?.reply) {
-        m.reply(`❌ *ERROR GLOBAL*
-
-🧾 ${msg.slice(0,400)}
-`);
-    } else {
-        console.log(msg);
     }
-
-}
 }
