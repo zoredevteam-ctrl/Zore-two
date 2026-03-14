@@ -2,7 +2,7 @@ let handler = async (m, { conn }) => {
     await m.react('🍬')
 
     const creatorMsg = `💗 *¡Mi creador darling!* 🌸\n\n` +
-                       `Aarommendez 💕\n` +
+                       `Creador Supremo 💕\n` +
                        `Contacto: wa.me/573107400303\n\n` +
                        `───────────────\n\n` +
                        `BOT PRINCIPAL\n` +
