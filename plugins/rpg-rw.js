@@ -152,4 +152,53 @@ const comboMode = (text = '', options = {}) => {
   return parts.filter(Boolean).join(separator);
 };
 
-/* ----------------
+/* -------------------- Guardar / Cargar respuestas románticas (fs) -------------------- */
+const saveRomanticResponsesToFile = async (filePath = './romanticResponses.json') => {
+  const data = JSON.stringify(romanticResponses, null, 2);
+  await fs.writeFile(filePath, data, 'utf8');
+  return filePath;
+};
+
+const loadRomanticResponsesFromFile = async (filePath = './romanticResponses.json') => {
+  try {
+    const raw = await fs.readFile(filePath, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      romanticResponses = parsed;
+      return romanticResponses;
+    } else {
+      throw new Error('File does not contain an array.');
+    }
+  } catch (e) {
+    throw e;
+  }
+};
+
+/* -------------------- Exports -------------------- */
+export {
+  getRandomEmoji,
+  addEmoji,
+  removeEmoji,
+  rewriteText,
+  getRandomRomanticResponse,
+  addRomanticResponse,
+  removeRomanticResponse,
+  listRomanticResponses,
+  comboMode,
+  saveRomanticResponsesToFile,
+  loadRomanticResponsesFromFile
+};
+
+export default {
+  getRandomEmoji,
+  addEmoji,
+  removeEmoji,
+  rewriteText,
+  getRandomRomanticResponse,
+  addRomanticResponse,
+  removeRomanticResponse,
+  listRomanticResponses,
+  comboMode,
+  saveRomanticResponsesToFile,
+  loadRomanticResponsesFromFile
+};
