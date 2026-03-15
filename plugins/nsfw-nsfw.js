@@ -1,6 +1,9 @@
 import axios from 'axios'
 import { database } from '../lib/database.js'
 
+const hotw = '⚠️ El contenido NSFW está desactivado en este grupo.\n> Ve a jalartela a otro lado 😡'
+const dev = '> No te la jales 😏'
+
 const API_MAP = {
   'neko': 'https://api.waifu.pics/nsfw/neko',
   'trap': 'https://api.waifu.pics/nsfw/trap',
@@ -20,57 +23,75 @@ const API_MAP = {
   '4k': 'https://nekobot.xyz/api/image?type=4k'
 }
 
+const NSFW_COMMANDS = Object.keys(API_MAP)
+
 let handler = async (m, { conn, command }) => {
   try {
 
-    if (!database.data?.groups?.[m.chat]?.nsfw) {
-      return m.reply('🚫 El contenido NSFW está desactivado.\n> Ve a jalartela a otro lado 😡')
+    if (!database.data?.groups?.[m.chat]?.nsfw && m.isGroup) {
+      return m.reply(hotw)
     }
 
     const apiUrl = API_MAP[command]
     if (!apiUrl) return
 
-    await m.react('🕑')
+    const { data } = await axios.get(apiUrl)
 
-    const res = await axios.get(apiUrl)
-    const data = res.data
+    const imageUrl =
+      data.url ||
+      data.message ||
+      (data.images && data.images.length ? data.images[0].url : null)
 
-    let imageUrl = null
+    if (!imageUrl) throw 'Error'
 
-    if (data?.images?.length) {
-      imageUrl = data.images[0].url
-    }
+    await conn.sendMessage(m.chat, {
+      image: { url: imageUrl },
+      caption: `🥵 ${command}`,
+      footer: dev,
+      buttons: [
+        { buttonId: `next_${command}`, buttonText: { displayText: 'Siguiente' }, type: 1 }
+      ],
+      headerType: 4
+    }, { quoted: m })
 
-    if (!imageUrl && data?.url) {
-      imageUrl = data.url
-    }
-
-    if (!imageUrl && data?.message) {
-      imageUrl = data.message
-    }
-
-    if (!imageUrl) throw 'No image'
-
-    await conn.sendMessage(
-      m.chat,
-      {
-        image: { url: imageUrl },
-        caption: `🥵 *${command.toUpperCase()}*\n> No te la jales 😏`
-      },
-      { quoted: m }
-    )
-
-    await m.react('✅')
-
-  } catch (e) {
-    console.log(e)
-    await m.react('✖️')
+  } catch {
     m.reply('❌ Error al obtener contenido.')
   }
 }
 
-handler.help = Object.keys(API_MAP)
-handler.command = Object.keys(API_MAP)
+handler.before = async (m, { conn }) => {
+  const id = m.message?.buttonsResponseMessage?.selectedButtonId
+  if (!id) return
+
+  try {
+    const [action, command] = id.split('_')
+
+    if (action === 'next' && API_MAP[command]) {
+
+      const { data } = await axios.get(API_MAP[command])
+
+      const imageUrl =
+        data.url ||
+        data.message ||
+        (data.images && data.images.length ? data.images[0].url : null)
+
+      if (!imageUrl) return
+
+      await conn.sendMessage(m.chat, {
+        image: { url: imageUrl },
+        caption: `🥵 ${command}`,
+        footer: dev,
+        buttons: [
+          { buttonId: `next_${command}`, buttonText: { displayText: 'Siguiente' }, type: 1 }
+        ],
+        headerType: 4
+      }, { quoted: m })
+    }
+
+  } catch {}
+}
+
+handler.help = handler.command = NSFW_COMMANDS
 handler.tags = ['nsfw']
 handler.group = true
 
