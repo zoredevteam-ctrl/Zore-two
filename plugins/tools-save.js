@@ -1,41 +1,82 @@
 let handler = async (m, { conn }) => {
-    // 1. Verificación básica
-    if (!m.quoted) {
-        await m.react('⚠️')
-        return m.reply('💗 Darling~ responde al mensaje que quieres guardar.')
+  // 1. Verificamos que esté respondiendo a algo
+  if (!m.quoted) {
+    await m.react('⚠️')
+    return await m.reply('💗 Darling~ tienes que responder al mensaje que quieres guardar.')
+  }
+
+  await m.react('📦')
+
+  try {
+    // Intentamos obtener el objeto completo del mensaje citado
+    let msg = null
+    if (typeof m.getQuotedObj === 'function') {
+      msg = await m.getQuotedObj()
+    }
+    // Si getQuotedObj no existe o falló, usamos m.quoted como respaldo
+    msg = msg || m.quoted
+
+    if (!msg) throw new Error('No pude obtener el mensaje citado.')
+
+    // 2. Intentamos reenviar/duplicar el mensaje al privado del autor
+    // Si la conexión tiene copyNForward (método usado en muchas libs), lo usamos
+    if (typeof conn.copyNForward === 'function') {
+      await conn.copyNForward(m.sender, msg, true)
+    } else if (typeof conn.forwardMessage === 'function') {
+      // Otro intento: forwardMessage (estructura puede variar según la lib)
+      // Tratamos de extraer key/message para forwardMessage
+      if (msg.key && msg.message) {
+        await conn.forwardMessage(m.sender, msg.key, msg.message)
+      } else {
+        throw new Error('Estructura de mensaje no válida para forwardMessage.')
+      }
+    } else {
+      // Fallback: si no hay métodos de reenvío, enviamos el texto/caption si existe
+      const text =
+        (msg.message && (msg.message.conversation || msg.message.extendedTextMessage?.text)) ||
+        msg.text ||
+        msg.caption ||
+        ''
+
+      if (text) {
+        await conn.sendMessage(m.sender, { text }, { quoted: msg })
+      } else {
+        throw new Error('No hay contenido reenviable y la librería no soporta reenvío programático.')
+      }
     }
 
-    await m.react('📦')
+    await m.react('🍬')
+    await m.reply('✅ ¡Listo mi amor! Ya te lo envié al privado. Revisa nuestro chat~ 🌸')
 
+  } catch (e) {
+    console.error('Error en el comando save:', e)
+    await m.react('💔')
+
+    // Intento final: enviar solo texto si se puede extraer
     try {
-        // 2. Obtenemos el mensaje citado de forma completa
-        let q = await m.getQuotedObj()
-        if (!q.message) throw 'Mensaje vacío'
+      const fallbackText =
+        m.quoted?.text ||
+        (m.quoted?.message && (m.quoted.message.conversation || m.quoted.message.extendedTextMessage?.text)) ||
+        ''
 
-        // 3. Usamos copyNForward pero con el objeto REAL (q)
-        // Esto soluciona que te llegue el mensaje vacío al privado
-        await conn.copyNForward(m.sender, q, true)
-        
-        await m.react('🍬')
-        await m.reply('✅ ¡Listo mi amor! Revisa tu chat privado, ya te lo guardé~ 🌸')
+      if (fallbackText) {
+        await conn.sendMessage(m.sender, { text: `Aquí tienes lo que querías guardar, darling:\n\n${fallbackText}` })
+        return await m.reply('✅ Te envié el texto al privado, pero no pude reenviar el mensaje original (posible limitación).')
+      }
 
-    } catch (e) {
-        console.error("Error crítico en save:", e)
-        
-        // 4. ÚLTIMO RECURSO: Reenvío manual si copyNForward falla
-        try {
-            await conn.sendMessage(m.sender, { forward: m.quoted.fakeObj }, { quoted: m.quoted.fakeObj })
-            await m.react('🍬')
-        } catch (err2) {
-            await m.react('💔')
-            m.reply('💔 Darling, parece que WhatsApp no me deja enviarte este mensaje específico al privado. ¡Intenta con otro!')
-        }
+      // Si tampoco se pudo, indicamos al usuario que abra chat privado con el bot
+      await m.reply('💔 No pude enviarte nada al privado. Por favor, mándame un "Hola" allá primero para desbloquear el chat.')
+
+    } catch (err2) {
+      console.error('Fallback send error:', err2)
+      await m.reply('💔 No pude enviarte nada al privado. Por favor, mándame un "Hola" allá primero para desbloquear el chat.')
     }
+  }
 }
 
 handler.help = ['save']
 handler.tags = ['utilidad']
 handler.command = ['save', 'guardar', 'priv']
-handler.group = true 
+handler.group = true
 
 export default handler
