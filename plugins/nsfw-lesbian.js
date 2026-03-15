@@ -2,21 +2,15 @@ import { database } from '../lib/database.js'
 
 let handler = async (m, { conn }) => {
     if (!database.data.groups?.[m.chat]?.nsfw) {
-        await m.react('💔')
-        return m.reply('🚫 El contenido NSFW está desactivado en este grupo.\n\nUn admin puede activarlo con *#nable nsfw on* darling\~')
+        return m.reply('🚫 El contenido NSFW está desactivado en este grupo.\n\nUn admin puede activarlo con *#nable nsfw on*')
     }
 
-    await m.react('🍬')
-
-    let img = 'https://api.delirius.store/nsfw/lesbian'
-    let text = '💗 *LESBIAN* 🌸\n\n¡Disfrútalo mi amor\~ no me dejes sola! 💕'
+    let img = 'https://nekobot.xyz/api/image?type=lesbian'
 
     await conn.sendMessage(m.chat, {
         image: { url: img },
-        caption: text
+        caption: '*LESBIAN*'
     }, { quoted: m })
-
-    await m.react('💗')
 }
 
 handler.help = ['lesbian']
