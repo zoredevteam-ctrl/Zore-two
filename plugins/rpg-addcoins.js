@@ -1,32 +1,34 @@
-let handler = async (m, { conn, args, text, usedPrefix, command, db }) => {
-    let who
-    if (m.isGroup) who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : false
-    else who = m.chat
+let handler = async (m, { conn, args, text, prefix, command, db }) => {
+    // 1. Determinar quién recibe las monedas
+    let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : (m.quoted ? m.quoted.sender : null)
     
-    if (!who) return m.reply(`*⚠️ ¿A quién quieres darle monedas?*\n\nEjemplo:\n*${usedPrefix + command} @user 500*`)
-    
-    // Extraer la cantidad del texto
-    let txt = text.replace('@' + who.split`@` [0], '').trim()
-    let count = parseInt(txt)
-    if (isNaN(count)) return m.reply('*🔢 Por favor, ingresa una cantidad válida de monedas.*')
+    if (!who) return m.reply(`*⚠️ ¿A quién quieres darle monedas?*\n\nEjemplo:\n*${prefix + command} @user 500*`)
 
-    // Asegurar que el usuario existe en la DB
-    if (!db.users[who]) db.users[who] = { coin: 0, exp: 0, limit: 20 }
+    // 2. Extraer el número de los argumentos de forma segura
+    // Buscamos el primer argumento que sea un número
+    let amount = args.find(a => !isNaN(parseInt(a)) && !a.includes('@'))
+    let count = parseInt(amount)
+
+    if (!amount || isNaN(count)) {
+        return m.reply(`*🔢 Por favor, ingresa una cantidad válida.*\nEjemplo: *${prefix + command} @${who.split('@')[0]} 1000*`, null, { mentions: [who] })
+    }
+
+    // 3. INICIACIÓN FORZADA (Igual que en el PVP)
+    if (!db.users) db.users = {}
+    if (!db.users[who]) db.users[who] = { coin: 0, exp: 0, limit: 20, name: conn.getName(who) }
     if (db.users[who].coin === undefined) db.users[who].coin = 0
 
-    // Sumar las monedas
+    // 4. Sumar monedas y guardar
     db.users[who].coin += count
-    await global.database.save() // Guardar cambios en el JSON
+    await global.database.save()
 
     let name = conn.getName(who)
-    m.reply(`*✅ MONEDAS AÑADIDAS*\n\n*👤 Usuario:* ${name}\n*💰 Cantidad:* ${count} Coins\n*👛 Total ahora:* ${db.users[who].coin}`)
+    m.reply(`*✅ ECONOMÍA ACTUALIZADA*\n\n*👤 Usuario:* ${name}\n*💰 Añadido:* ${count} Coins\n*👛 Total:* ${db.users[who].coin} Coins`)
 }
 
-handler.help = ['addcoins @user <cantidad>']
+handler.help = ['addcoins']
 handler.tags = ['owner']
 handler.command = ['addcoins', 'añadircoins', 'darcoins']
-
-// REGLA DE SEGURIDAD: Solo el dueño puede usarlo
-handler.owner = true 
+handler.owner = true // Solo tú puedes usarlo
 
 export default handler
