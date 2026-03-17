@@ -1,36 +1,25 @@
-let handler = async (m, { conn, args, isOwner }) => {
-    if (!isOwner) {
-        await m.react('💔')
-        return m.reply('💔 Solo mi owner puede usar este comando darling\~')
-    }
+let linkRegex = /chat.whatsapp.com\/([0-9A-Za-z]{20,24})( [0-9]{1,3})?/i
 
-    let link = args[0]
-    if (!link || !link.includes('chat.whatsapp.com')) {
-        await m.react('🌸')
-        return m.reply('💗 Envía el link de invitación del grupo después del comando darling\~\nEjemplo: *#join https://chat.whatsapp.com/xxxxxx*')
-    }
+let handler = async (m, { conn, text, isOwner, usedPrefix, command }) => {
 
-    await m.react('🍬')
-
-    try {
-        let result = await conn.groupAcceptInvite(link)
-        
-        await m.reply(`✅ *¡Me uní al grupo correctamente darling!* 💕\n\n` +
-                      `📍 Grupo: ${result}\n` +
-                      `¡Ya estoy dentro\~ no me dejes sola ahí! 🌸`)
-        
-        await m.react('💗')
-
-    } catch (e) {
-        console.error(e)
-        await m.react('💔')
-        m.reply('💔 No pude unirme al grupo darling...\nEl link puede estar vencido, inválido o el bot ya está en el grupo.')
-    }
+        if (!text) return m.reply(`☆ Ingresa el enlace del Grupo.`)
+    let [_, code, expired] = text.match(linkRegex) || []
+    if (!code) return m.reply('☆ Enlace invalido.')
+    let res = await conn.groupAcceptInvite(code)
+    expired = Math.floor(Math.min(999, Math.max(1, isOwner ? isNumber(expired) ? parseInt(expired) : 0 : 3)))
+    m.reply(`☆ Me uní correctamente al Grupo *${res}${expired ? `* Durante *${expired}* días.` : ''}`)
+    let chats = global.db.data.chats[res]
+    if (!chats) chats = global.db.data.chats[res] = {}
+    if (expired) chats.expired = +new Date() + expired * 1000 * 60 * 60 * 24
+    let pp = 'https://files.catbox.moe/sjak3i.jpg'
+   await conn.sendMessage(res, { video: { url: pp }, gifPlayback: true, caption: 'Ya llego el mejor Bot de todo WhatsApp.', mentions: [m.sender] }, { quoted: estilo })
 }
-
-handler.help = ['join <link>']
+handler.help = ['join *<link> <días>*']
 handler.tags = ['owner']
-handler.command = ['join', 'unirse']
+
+handler.command = ['join', 'entrar'] 
 handler.owner = true
 
 export default handler
+
+const isNumber = (x) => (x = parseInt(x), typeof x === 'number' && !isNaN(x))
