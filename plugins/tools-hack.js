@@ -1,5 +1,5 @@
 let handler = async (m, { conn, text }) => {
-    await m.react('🤖')
+    await m.react('⌛')
 
     let target = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : m.sender)
     let shortName = '@' + target.split('@')[0]
