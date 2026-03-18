@@ -16,7 +16,7 @@ const poemas = [
 
 let handler = async (m, { conn }) => {
     // Reacción inicial
-    await m.react('🍬')
+    await m.react('✍🏻')
 
     const poemaRandom = poemas[Math.floor(Math.random() * poemas.length)]
 
