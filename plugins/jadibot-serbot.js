@@ -48,6 +48,4 @@ pluginHandler.command = ['code', 'serbot']
 
 export default pluginHandler
 
-// (El resto del código original queda aquí pero NO se usa mientras esté en mantenimiento)
-// Puedes dejar las funciones startSubBot, cleanPhoneNumber, etc. abajo si quieres,
-// pero como el comando ya no las llama, no afectará.
+// (bros yo tengo el código guardado por si lo necesitan
