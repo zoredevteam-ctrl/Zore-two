@@ -1,6 +1,6 @@
 import { database } from '../lib/database.js'
 
-// Poemas mejorados y con fuente cursiva elegante
+// Poemas elegantes
 const poemas = [
     "𝓔𝓷 𝓮𝓵 𝓼𝓲𝓵𝓮𝓷𝓬𝓲𝓸 𝓭𝓮 𝓽𝓾𝓼 𝓸𝓳𝓸𝓼 𝓮𝓷𝓬𝓸𝓷𝓽𝓻𝓮́ 𝓮𝓵 𝓾𝓷𝓲𝓿𝓮𝓻𝓼𝓸 𝓺𝓾𝓮 𝓷𝓾𝓷𝓬𝓪 𝓼𝓾𝓹𝓮 𝓫𝓾𝓼𝓬𝓪𝓻.",
     "𝓔𝓻𝓮𝓼 𝓮𝓵 𝓿𝓮𝓻𝓼𝓸 𝓶𝓪́𝓼 𝓮𝔁𝓺𝓾𝓲𝓼𝓲𝓽𝓸 𝓺𝓾𝓮 𝓵𝓪 𝓿𝓲𝓭𝓪 𝓮𝓼𝓬𝓻𝓲𝓫𝓲𝓸́ 𝓮𝓷 𝓼𝓮𝓬𝓻𝓮𝓽𝓸 𝓹𝓪𝓻𝓪 𝓶𝓲́.",
@@ -14,25 +14,37 @@ const poemas = [
     "𝓔𝓵 𝓪𝓶𝓸𝓻 𝓷𝓸 𝓼𝓮 𝓶𝓲𝓭𝓮 𝓮𝓷 𝓮𝓵 𝓽𝓲𝓮𝓶𝓹𝓸, 𝓼𝓲𝓷𝓸 𝓮𝓷 𝓵𝓪 𝓯𝓸𝓻𝓶𝓪 𝓮𝓷 𝓺𝓾𝓮 𝓶𝓮 𝓶𝓲𝓻𝓪𝓼."
 ]
 
+// Lista de imágenes de Zero Two (Puedes añadir más enlaces que terminen en .jpg o .png)
+const imagenesZeroTwo = [
+    "https://i.pinimg.com/736x/83/80/c8/8380c8eb4ca83c3bd29b8c2d7bcf05be.jpg",
+    "https://i.pinimg.com/736x/21/cd/11/21cd11726c04fdf89e1a8bb1611ec5a4.jpg",
+    "https://i.pinimg.com/736x/fc/55/f0/fc55f05df57eb7a37ec068ea0289edaa.jpg",
+    "https://i.pinimg.com/736x/95/ab/49/95ab496cb8db0563b7e7dbcc64e2978d.jpg",
+    "https://i.pinimg.com/736x/28/7a/a8/287aa859942a420ed6dc972bc5df8a5a.jpg"
+]
+
 let handler = async (m, { conn }) => {
     // Reacción inicial
     await m.react('🍬')
 
+    // Seleccionamos un poema y una imagen al azar
     const poemaRandom = poemas[Math.floor(Math.random() * poemas.length)]
+    const imagenRandom = imagenesZeroTwo[Math.floor(Math.random() * imagenesZeroTwo.length)]
 
     const mensajeElegante = `✦ *Poemas para ti* ✦\n\n` +
                            `“${poemaRandom}”\n\n` +
                            `— 𝓩𝓮𝓻𝓸 𝓣𝔀𝓸 💕`
 
-    // Enviar al chat con el botón incrustado del canal (ContextInfo)
+    // Enviar la imagen con el poema de descripción y el botón del canal incrustado
     await conn.sendMessage(m.chat, {
-        text: mensajeElegante,
+        image: { url: imagenRandom },
+        caption: mensajeElegante,
         contextInfo: {
             forwardingScore: 9999,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '0029Vb6p68rF6smrH4Jeay3Y@newsletter',
-                newsletterName: '🌸 𝐙𝐞𝐫𝐨 𝐓𝐰𝐨 𝐎𝐟𝐢𝐜𝐢𝐚𝐥 🌸', // <- Aquí pones el nombre de tu canal
+                newsletterJid: '0029Vb6p68rF6smrH4Jeay3Y@newsletter', // El ID de tu canal
+                newsletterName: '🌸 𝐙𝐞𝐫𝐨 𝐓𝐰𝐨 𝐎𝐟𝐢𝐜𝐢𝐚𝐥 🌸', // El nombre que aparecerá arriba
                 serverMessageId: -1
             }
         }
