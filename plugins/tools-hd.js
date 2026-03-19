@@ -1,5 +1,3 @@
-import { writeFileSync, existsSync, unlinkSync, readFileSync } from 'fs'
-import path from 'path'
 import { randomUUID } from 'crypto'
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36'
@@ -97,7 +95,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
   m.react('⏳')
 
   try {
-    let media = await q.download()
+    let media = await conn.downloadMediaMessage(q)
     let filename = `upscale_${Date.now()}.jpg`
 
     const resultBuffer = await iloveimgUpscale(media, filename)
