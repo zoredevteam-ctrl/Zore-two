@@ -1,104 +1,44 @@
 import fetch from 'node-fetch'
 
-function isTikTok(url = '') {
-  return /tiktok\.com/i.test(url)
-}
-
-function clean(str) {
-  return str?.replace(/\\u0026/g, '&').replace(/\\\//g, '/')
-}
-
-async function resolveURL(url) {
-  const res = await fetch(url, {
-    method: 'GET',
-    redirect: 'follow',
-    headers: {
-      "User-Agent": "Mozilla/5.0"
-    }
-  })
-  return res.url
-}
-
-async function fetchHTML(url) {
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-      "Accept": "text/html,application/xhtml+xml",
-      "Accept-Language": "es-ES,es;q=0.9,en;q=0.8"
-    }
-  })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return await res.text()
-}
-
-function extractVideo(html) {
-  let download = html.match(/"downloadAddr":"([^"]+)"/g)
-  if (download && download.length > 0) {
-    return clean(download[0].split('"')[3])
-  }
-
-  let play = html.match(/"playAddr":"([^"]+)"/g)
-  if (play && play.length > 0) {
-    return clean(play[0].split('"')[3])
-  }
-
-  let fallback = html.match(/https:\/\/[^"]+\.tiktokcdn\.com[^"]+\.mp4[^"]*/g)
-  if (fallback && fallback.length > 0) {
-    return clean(fallback[0])
-  }
-
-  return null
-}
+const API_KEY  = 'causa-ec43262f206b3305'
+const API_BASE = 'https://rest.apicausas.xyz/api/v1/descargas/tiktok'
 
 let handler = async (m, { conn, args }) => {
-  let url = args[0]
+    let url = (args[0] || '').trim()
+    if (m.quoted && m.quoted.text) url = m.quoted.text.trim()
 
-  if (!url) return m.reply('⚠️ Ingresa un link de TikTok')
-  if (!isTikTok(url)) return m.reply('❌ Link inválido')
-
-  try {
-    await conn.sendMessage(m.chat, {
-      react: { text: '🕒', key: m.key }
-    })
-
-    if (/vm\.tiktok\.com|vt\.tiktok\.com/i.test(url)) {
-      url = await resolveURL(url)
+    if (!url || !url.includes('tiktok.com')) {
+        await m.react('🌸')
+        return m.reply(`💗 *Pega el link de TikTok darling~* 🌸\n\nEjemplo:\n*#tt https://vm.tiktok.com/xxxxxx/*\n\nO responde a un mensaje con el link`)
     }
 
-    const html = await fetchHTML(url)
-    const video = extractVideo(html)
+    await m.react('🍬')
 
-    if (video) {
-      await conn.sendMessage(m.chat, {
-        video: { url: video },
-        caption: '✅ Video descargado'
-      }, { quoted: m })
+    try {
+        const res  = await fetch(`${API_BASE}?url=${encodeURIComponent(url)}&apikey=${API_KEY}`)
+        const json = await res.json()
 
-      await conn.sendMessage(m.chat, {
-        react: { text: '✅', key: m.key }
-      })
 
-      return
+        if (!json.status || !json.data?.download?.url) throw new Error('No se encontró video')
+
+        const videoBuffer = await fetch(json.data.download.url).then(r => r.buffer())
+        const caption = `💞 *¡TikTok descargado con éxito darling!* 🌸\n\n` +
+                        `✨ *Autor:* ${json.data.autor || 'TikTok'}\n` +
+                        `📝 *Título:* ${json.data.titulo || 'Sin descripción'}\n` +
+                        `👁️ *Vistas:* ${json.data.vistas?.toLocaleString() || '?'} | ❤️ ${json.data.likes?.toLocaleString() || '?'}\n\n` +
+                        `¡Disfrútalo mi amor~ 💗 No me dejes sola sin ver el video!`
+
+        await conn.sendMessage(m.chat, { video: videoBuffer, caption }, { quoted: m })
+        await m.react('💗')
+
+    } catch (e) {
+        await m.react('💔')
+        m.reply(`💔 *ERROR:*\n\`\`\`${e.message}\`\`\``)
     }
-
-    throw new Error('NO_VIDEO_FOUND')
-
-  } catch (e) {
-    let msg = '❌ Error\n\n'
-
-    if (e.message.includes('HTTP')) {
-      msg += '🌐 Error de conexión\n' + e.message
-    } else if (e.message === 'NO_VIDEO_FOUND') {
-      msg += '🚫 No se encontró el video\n'
-      msg += '💡 Puede ser privado o restringido'
-    } else {
-      msg += '⚠️ Error inesperado\n' + e.message
-    }
-
-    await m.reply(msg)
-  }
 }
 
-handler.command = ['tt', 'tiktok']
+handler.help    = ['tt <url>', 'tiktok <url>']
+handler.tags    = ['descargas']
+handler.command = ['tt', 'tiktok', 'tiktokdl']
 
 export default handler
