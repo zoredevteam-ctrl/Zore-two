@@ -47,37 +47,43 @@ let handler = async (m, { conn, args }) => {
   if (!isFacebook(url)) return m.reply('❌ Link inválido')
 
   try {
-    await m.reply('🧪 DEBUG: Iniciando scraping avanzado...')
+    await conn.sendMessage(m.chat, {
+      react: { text: '🕒', key: m.key }
+    })
 
     const html = await fetchHTML(url)
-    await m.reply(`🧪 DEBUG: HTML cargado (${html.length})`)
-
     const videos = extractAll(html)
 
     if (videos.length > 0) {
-      await m.reply(`🧪 DEBUG: ${videos.length} URLs encontradas`)
       await conn.sendMessage(m.chat, {
         video: { url: videos[0] },
         caption: '✅ Video descargado'
       }, { quoted: m })
+
+      await conn.sendMessage(m.chat, {
+        react: { text: '✅', key: m.key }
+      })
+
       return
     }
-
-    await m.reply('🧪 DEBUG: Intentando fbcdn directo...')
 
     let direct = html.match(/https:\/\/video\.[^"]+\.fbcdn\.net[^"]+/)
 
     if (direct) {
       let vid = clean(direct[0])
-      await m.reply('🧪 DEBUG: URL encontrada en fbcdn')
+
       await conn.sendMessage(m.chat, {
         video: { url: vid },
         caption: '✅ Video descargado'
       }, { quoted: m })
+
+      await conn.sendMessage(m.chat, {
+        react: { text: '✅', key: m.key }
+      })
+
       return
     }
 
-    await m.reply('🧪 DEBUG: No se encontró nada en ningún método')
     throw new Error('NO_VIDEO_FOUND')
 
   } catch (e) {
