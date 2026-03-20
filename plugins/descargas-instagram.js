@@ -16,29 +16,26 @@ function isValidVideo(url = '') {
   return url.includes('.mp4') && url.includes('cdninstagram')
 }
 
-function headers() {
+function getHeaders() {
   return {
-    "User-Agent": "Mozilla/5.0 (Linux; Android 11)",
+    "User-Agent": "Instagram 300.0.0.0 Android",
     "Accept": "*/*",
     "Accept-Language": "es-ES,es;q=0.9",
+    "X-IG-App-ID": "936619743392459",
+    "X-Requested-With": "XMLHttpRequest",
     "Referer": "https://www.instagram.com/"
   }
 }
 
-async function fetchText(url) {
-  const res = await fetch(url, { headers: headers() })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return await res.text()
+function getShortcode(url) {
+  let match = url.match(/\/(reel|p)\/([^\/]+)/)
+  return match ? match[2] : null
 }
 
-async function fetchJSON(url) {
-  const res = await fetch(url, { headers: headers() })
-  if (!res.ok) return null
-  try {
-    return await res.json()
-  } catch {
-    return null
-  }
+async function fetchHTML(url) {
+  const res = await fetch(url, { headers: getHeaders() })
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return await res.text()
 }
 
 function extractFromHTML(html) {
@@ -49,19 +46,23 @@ function extractFromHTML(html) {
 
   let json = html.match(/"video_url":"([^"]+)"/g)
   if (json) {
-    json.forEach(x => {
-      results.push(clean(x.split('"')[3]))
-    })
+    json.forEach(x => results.push(clean(x.split('"')[3])))
   }
 
   return [...new Set(results)]
 }
 
-async function tryEmbed(url) {
+async function tryInternalAPI(shortcode) {
   try {
-    let api = `https://api.instagram.com/oembed/?url=${encodeURIComponent(url)}`
-    let data = await fetchJSON(api)
-    return data?.thumbnail_url || null
+    let url = `https://www.instagram.com/api/v1/media/${shortcode}/info/`
+
+    let res = await fetch(url, { headers: getHeaders() })
+    if (!res.ok) return null
+
+    let json = await res.json()
+
+    let video = json?.items?.[0]?.video_versions?.[0]?.url
+    return video || null
   } catch {
     return null
   }
@@ -70,9 +71,10 @@ async function tryEmbed(url) {
 async function tryA1(url) {
   try {
     let api = url.split('?')[0] + '?__a=1&__d=dis'
-    let data = await fetchJSON(api)
+    let res = await fetch(api, { headers: getHeaders() })
+    let json = await res.json()
 
-    let media = data?.graphql?.shortcode_media
+    let media = json?.graphql?.shortcode_media
 
     if (media?.video_url) return media.video_url
 
@@ -111,8 +113,12 @@ let handler = async (m, { conn, args }) => {
 
     let videos = []
 
-    let html = await fetchText(url)
-    videos.push(...extractFromHTML(html))
+    const shortcode = getShortcode(url)
+
+    if (shortcode) {
+      let internal = await tryInternalAPI(shortcode)
+      if (internal) videos.push(internal)
+    }
 
     if (videos.length === 0) {
       let a1 = await tryA1(url)
@@ -120,8 +126,8 @@ let handler = async (m, { conn, args }) => {
     }
 
     if (videos.length === 0) {
-      let embed = await tryEmbed(url)
-      if (embed) videos.push(embed)
+      let html = await fetchHTML(url)
+      videos.push(...extractFromHTML(html))
     }
 
     videos = videos.filter(v => isValidVideo(v))
@@ -139,7 +145,7 @@ let handler = async (m, { conn, args }) => {
 
     await conn.sendMessage(m.chat, {
       video: { url: valid },
-      caption: '✅ Video descargado AUTO'
+      caption: '✅ Video descargado (C avanzado)'
     }, { quoted: m })
 
     await conn.sendMessage(m.chat, {
@@ -153,7 +159,7 @@ let handler = async (m, { conn, args }) => {
       msg += '🌐 Error de conexión\n' + e.message
     } else {
       msg += '🚫 Instagram bloqueó el scraping\n'
-      msg += '💡 Intenta otro link o más tarde'
+      msg += '💡 Algunos reels no se pueden sin sesión'
     }
 
     await m.reply(msg)
