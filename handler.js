@@ -118,6 +118,25 @@ export const handler = async (m, conn, plugins) => {
 
         m = await smsg(conn, m);
 
+        // ====================== SOPORTE PARA BOTONES QUICK REPLY ======================
+        // Esto hace que los botones de .kira funcionen correctamente
+        if (!m.body && (m.message || m.msg)) {
+            const msgObj = m.msg || m.message;
+            if (msgObj?.interactiveResponseMessage?.nativeFlowResponseMessage?.paramsJson) {
+                try {
+                    const json = JSON.parse(msgObj.interactiveResponseMessage.nativeFlowResponseMessage.paramsJson);
+                    if (json?.id) {
+                        m.body = json.id;
+                        m.text = json.id;
+                        console.log(chalk.cyan(`[BOTÓN CLICK] → ${m.body}`));
+                    }
+                } catch (e) {
+                    console.log(chalk.red('[ERROR PARSE BOTÓN]'), e.message);
+                }
+            }
+        }
+        // =============================================================================
+
         if (m.isGroup) {
             const muted = database.data?.groups?.[m.chat]?.muted || []
             if (muted.includes(m.sender)) {
@@ -181,11 +200,11 @@ export const handler = async (m, conn, plugins) => {
                 .slice(0, 3)
 
             const sugerencias = similares.length
-                ? similares.map(s => `*${prefix + s.cmd}* » *${s.score}%*`).join('\n')
+                ? similares.map(s => `*\( {prefix + s.cmd}* » * \){s.score}%*`).join('\n')
                 : 'Sin resultados'
 
             return conn.sendMessage(m.chat, {
-                text: `El comando *(${prefix + commandName})* no existe.\n- Use el comando *${prefix}menu* para ver los comandos.\n\n*Similares:*\n${sugerencias}`
+                text: `El comando *(\( {prefix + commandName})* no existe.\n- Use el comando * \){prefix}menu* para ver los comandos.\n\n*Similares:*\n${sugerencias}`
             }, { quoted: m })
         }
 
@@ -258,7 +277,6 @@ export const handler = async (m, conn, plugins) => {
             if (isLid && m.isGroup) {
                 try {
                     const groupMeta = await conn.groupMetadata(m.chat)
-                    // Buscar si algún participante tiene jid @s.whatsapp.net con este lid
                     const found = groupMeta.participants.find(p =>
                         p.id?.split('@')[0] === rawNum
                     )
@@ -294,7 +312,7 @@ export const handler = async (m, conn, plugins) => {
         }
 
         if (cmd.register && !isRegistered) {
-            return m.reply(`📝 *REGISTRO REQUERIDO*\nDebes registrarte para usar este comando.\n\n> Usa: *${prefix}reg nombre.edad*\n> Ejemplo: *${prefix}reg Juan.25*`);
+            return m.reply(`📝 *REGISTRO REQUERIDO*\nDebes registrarte para usar este comando.\n\n> Usa: *\( {prefix}reg nombre.edad*\n> Ejemplo: * \){prefix}reg Juan.25*`);
         }
 
         if (cmd.group && !isGroup) {
