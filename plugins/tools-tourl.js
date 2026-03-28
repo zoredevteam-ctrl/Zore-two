@@ -18,6 +18,19 @@ function getMedia(msg) {
   return null
 }
 
+async function downloadMedia(conn, media, type) {
+  const stream = await conn.wa.downloadContentFromMessage(
+    media,
+    type === 'sticker' ? 'sticker' : type
+  )
+
+  let buffer = Buffer.from([])
+  for await (const chunk of stream) {
+    buffer = Buffer.concat([buffer, chunk])
+  }
+  return buffer
+}
+
 async function upload(buffer) {
   const { ext, mime } = await fileTypeFromBuffer(buffer) || {}
   const name = crypto.randomBytes(5).toString('hex') + '.' + (ext || 'bin')
@@ -48,7 +61,8 @@ let handler = async (m, { conn }) => {
 
     await m.react('☁️')
 
-    const buffer = await quoted.download()
+    const buffer = await downloadMedia(conn, media.data, media.type)
+
     if (!buffer) throw 'No se pudo descargar'
 
     if (buffer.length > 200 * 1024 * 1024) throw 'Archivo mayor a 200MB'
