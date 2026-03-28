@@ -8,7 +8,7 @@ const sessions = new Map()
 
 function getMedia(msg) {
   if (!msg) return null
-  if (msg.imageMessage) return { type: 'imagen', data: msg.imageMessage }
+  if (msg.imageMessage) return { type: 'image', data: msg.imageMessage }
   if (msg.videoMessage) return { type: 'video', data: msg.videoMessage }
   if (msg.stickerMessage) return { type: 'sticker', data: msg.stickerMessage }
   if (msg.audioMessage) return { type: 'audio', data: msg.audioMessage }
@@ -43,7 +43,7 @@ async function uploadCatbox(buffer) {
     headers: form.getHeaders()
   })
 
-  if (!res.data) throw new Error('Catbox sin respuesta')
+  if (!res.data) throw new Error('Catbox error')
   return res.data.trim()
 }
 
@@ -64,60 +64,62 @@ async function uploadCausas(buffer, mime) {
   )
 
   const url = data?.files?.[0]?.publicUrl
-  if (!url) throw new Error('Causas sin respuesta')
-
+  if (!url) throw new Error('Causas error')
   return url
 }
 
-let handler = async (m, { conn, command }) => {
+let handler = async (m, { conn }) => {
   try {
-    const user = m.sender
+    const body = m.body || ''
 
-    // 🔥 RESPUESTA A LA PREGUNTA
-    if (m.quoted && sessions.has(user)) {
-      const session = sessions.get(user)
+    if (m.quoted && sessions.has(m.sender)) {
+      const session = sessions.get(m.sender)
 
-      const isReplyToBot = m.quoted?.sender === conn.user.id.split(':')[0] + '@s.whatsapp.net'
+      if (body.startsWith('.catbox') || body.startsWith('#catbox')) {
+        sessions.delete(m.sender)
 
-      if (isReplyToBot && (command === 'catbox' || command === 'causas')) {
+        await m.react('⏳')
 
-        sessions.delete(user)
+        const buffer = await downloadMedia(session.media.data, session.type)
+        const url = await uploadCatbox(buffer)
+
+        await conn.sendMessage(m.chat, {
+          text: `✅ Subido a catbox\n\n${url}`
+        }, { quoted: m })
+
+        return m.react('✅')
+      }
+
+      if (body.startsWith('.causas') || body.startsWith('#causas')) {
+        sessions.delete(m.sender)
 
         await m.react('⏳')
 
         const buffer = await downloadMedia(session.media.data, session.type)
         const mime = session.media.data.mimetype || 'application/octet-stream'
-
-        let url
-
-        if (command === 'catbox') {
-          url = await uploadCatbox(buffer)
-        } else {
-          url = await uploadCausas(buffer, mime)
-        }
+        const url = await uploadCausas(buffer, mime)
 
         await conn.sendMessage(m.chat, {
-          text: `✅ Subido a *${command}*\n\n${url}`
+          text: `✅ Subido a causas\n\n${url}`
         }, { quoted: m })
 
         return m.react('✅')
       }
     }
 
-    // 🔥 COMANDO PRINCIPAL
-    if (command === 'tourl') {
+    if (body.startsWith('.tourl') || body.startsWith('#tourl')) {
       const msg = m.quoted ? m.quoted : m
       const media = getMedia(msg.message)
 
       if (!media)
         return m.reply('❌ Responde a un archivo')
 
-      sessions.set(user, {
+      sessions.set(m.sender, {
         media,
-        type: media.type === 'sticker' ? 'sticker' : media.type
+        type: media.type
       })
 
-      await m.reply(
+      return m.reply(
         `📤 Detectado: *${media.type}*\n\n` +
         `Responde a este mensaje con:\n\n` +
         `👉 *.catbox*\n` +
