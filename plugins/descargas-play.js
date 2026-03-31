@@ -1,7 +1,7 @@
 import fetch from "node-fetch"
 import yts from "yt-search"
 
-const newsletterJid = '120363424677971125@newsletter''
+const newsletterJid = '120363424677971125@newsletter'
 const newsletterName = 'ver canal uwu'
 const API_KEY = 'causa-f8289f3a4ffa44bb'
 const API_BASE = 'https://rest.apicausas.xyz/api/v1/descargas/youtube'
