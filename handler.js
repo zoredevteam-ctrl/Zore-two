@@ -354,53 +354,111 @@ export const handler = async (m, conn, plugins) => {
                 plugins
             })
 
-        } catch (cmdError) {
+        } catch (e) {
 
-            console.log(chalk.red('[ERROR COMANDO DETECTADO]'))
-            console.log(cmdError)
+            console.log(chalk.red('[ERROR COMANDO DETECTADO]'), e)
 
-            let errorType = 'Desconocido'
-            let errorMsg = cmdError?.message || String(cmdError)
+            const name = e?.name || 'Error'
+            const message = e?.message || String(e)
 
+            const stackLines = e?.stack?.split('\n') || []
+            const stack = stackLines.slice(0, 8).join('\n')
+
+            let file = null
+            let line = null
+            let column = null
+
+            for (const l of stackLines) {
+                const match = l.match(/\((.*plugins.*):(\d+):(\d+)\)/)
+                if (match) {
+                    file = match[1]
+                    line = match[2]
+                    column = match[3]
+                    break
+                }
+            }
+
+            const status = e?.response?.status || e?.status || null
+            const statusText = e?.response?.statusText || ''
+
+            const data = e?.response?.data || e?.data || null
+            const headers = e?.response?.headers || null
+
+            const url =
+                e?.config?.url ||
+                e?.request?.path ||
+                e?.request?.url ||
+                null
+
+            const method =
+                e?.config?.method?.toUpperCase() ||
+                e?.request?.method ||
+                null
+
+            let domain = null
             try {
-
-                if (cmdError.response) {
-                    errorType = 'API / HTTP'
-                    errorMsg = `Status: ${cmdError.response.status}\nData: ${JSON.stringify(cmdError.response.data).slice(0,300)}`
+                if (url) {
+                    const u = new URL(url)
+                    domain = u.hostname
                 }
-
-                else if (errorMsg.includes('<html') || errorMsg.includes('<!DOCTYPE html')) {
-                    errorType = 'Respuesta HTML inesperada (posible API caída)'
-                }
-
-                else if (errorMsg.includes('Unexpected token') || errorMsg.includes('JSON')) {
-                    errorType = 'Error de JSON'
-                }
-
-                else if (errorMsg.includes('Cannot find module') || errorMsg.includes('ERR_MODULE_NOT_FOUND')) {
-                    errorType = 'Error de Import / Módulo faltante'
-                }
-
-                else if (errorMsg.includes('ECONNREFUSED') || errorMsg.includes('ENOTFOUND')) {
-                    errorType = 'Error de conexión / API caída'
-                }
-
-                else if (errorMsg.includes('timeout')) {
-                    errorType = 'Timeout / API muy lenta'
-                }
-
             } catch {}
 
-            let debug = `
-❌ *ERROR AL EJECUTAR COMANDO*
+            let flags = []
 
-📌 Tipo: ${errorType}
+            if (status === 401 || /unauthorized|invalid api key/i.test(message)) flags.push('API_KEY')
+            if (status === 403) flags.push('FORBIDDEN')
+            if (status === 404) flags.push('NOT_FOUND')
+            if (status === 429) flags.push('RATE_LIMIT')
+            if (status >= 500) flags.push('SERVER_ERROR')
+
+            if (/timeout/i.test(message)) flags.push('TIMEOUT')
+            if (/ENOTFOUND|ECONNREFUSED|EAI_AGAIN/i.test(message)) flags.push('NETWORK')
+            if (/MODULE_NOT_FOUND|ERR_MODULE_NOT_FOUND/i.test(message)) flags.push('MODULE')
+            if (/permission|denied/i.test(message)) flags.push('PERMISSION')
+
+            if (typeof message === 'string') {
+                if (message.includes('<html') || message.includes('<!DOCTYPE html')) flags.push('HTML')
+                if (/Unexpected token|JSON/i.test(message)) flags.push('BAD_JSON')
+            }
+
+            let extra = ''
+
+            if (status) extra += `🌐 HTTP: ${status} ${statusText}\n`
+            if (method || url) extra += `📡 Request: ${method || 'GET'} ${url || 'desconocido'}\n`
+            if (domain) extra += `🌍 API: ${domain}\n`
+
+            if (headers) {
+                try {
+                    extra += `📨 Headers:\n${JSON.stringify(headers).slice(0,200)}\n`
+                } catch {}
+            }
+
+            if (data) {
+                try {
+                    extra += `📦 Response:\n${JSON.stringify(data).slice(0,400)}\n`
+                } catch {}
+            }
+
+            let debug = `
+❌ *ERROR EN COMANDO*
+
+📌 Comando: ${prefix + commandName}
+📂 Plugin: ${file ? file.split('/').pop() : (cmd?.name || 'desconocido')}
+
+📛 Nombre: ${name}
 
 🧾 Mensaje:
-${errorMsg.slice(0,500)}
+${message.slice(0,500)}
 
-⚙️ Comando:
-${m.text}
+${extra.trim()}
+
+🏷️ Flags: ${flags.join(', ') || 'NINGUNO'}
+
+📍 Archivo: ${file || 'desconocido'}
+📍 Línea: ${line || '?'} | Columna: ${column || '?'}
+
+📍 Stack:
+${stack}
 `.trim()
 
             console.log(chalk.red(debug))
@@ -419,4 +477,3 @@ ${m.text}
         }
 
     }
-}
