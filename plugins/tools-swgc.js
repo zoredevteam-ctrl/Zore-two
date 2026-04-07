@@ -1,10 +1,10 @@
 import * as baileys from "@whiskeysockets/baileys";
 import crypto from "node:crypto";
-import { Readable, PassThrough } from 'stream';
+import { PassThrough } from 'stream';
 import ffmpeg from 'fluent-ffmpeg';
 
 let handler = async (m, { conn, text }) => {
-  let [textoEntrada, colorTexto, url] = text.split('|');
+  let [textoEntrada = '', colorTexto = '', url = ''] = (text || '').split('|');
 
   let id;
   if (url) {
@@ -16,7 +16,7 @@ let handler = async (m, { conn, text }) => {
   }
 
   let citado = m.quoted || m;
-  let caption = citado.caption || textoEntrada;
+  let caption = citado.caption || textoEntrada || '';
 
   let q = citado;
   let mime = q?.mimetype || q?.msg?.mimetype || '';
@@ -27,8 +27,9 @@ let handler = async (m, { conn, text }) => {
 
     const estado = await enviarEstadoGrupo(conn, id, {
       image: buffer,
-      caption: caption
+      caption
     });
+
     return conn.reply(m.chat, '✅ Estado subido correctamente.', estado);
   }
 
@@ -38,8 +39,9 @@ let handler = async (m, { conn, text }) => {
 
     const estado = await enviarEstadoGrupo(conn, id, {
       video: buffer,
-      caption: caption
+      caption
     });
+
     return conn.reply(m.chat, '✅ Estado subido correctamente.', estado);
   }
 
@@ -64,16 +66,16 @@ let handler = async (m, { conn, text }) => {
     if (!caption) return m.reply('⚠️ No hay texto para subir al estado del grupo.');
 
     const coloresWA = new Map([
-      ['azul',    '#34B7F1'],
-      ['verde',   '#25D366'],
-      ['amarillo','#FFD700'],
+      ['azul', '#34B7F1'],
+      ['verde', '#25D366'],
+      ['amarillo', '#FFD700'],
       ['naranja', '#FF8C00'],
-      ['rojo',    '#FF3B30'],
-      ['morado',  '#9C27B0'],
-      ['gris',    '#9E9E9E'],
-      ['negro',   '#000000'],
-      ['blanco',  '#FFFFFF'],
-      ['cian',    '#00BCD4']
+      ['rojo', '#FF3B30'],
+      ['morado', '#9C27B0'],
+      ['gris', '#9E9E9E'],
+      ['negro', '#000000'],
+      ['blanco', '#FFFFFF'],
+      ['cian', '#00BCD4']
     ]);
 
     const textoColor = colorTexto.toLowerCase();
@@ -187,11 +189,11 @@ async function generarFormaOnda(inputBuffer, barras = 64) {
 
         for (let i = 0; i < barras; i++) {
           let bloque = amplitudes.slice(i * tamañoBloque, (i + 1) * tamañoBloque);
-          promedio.push(bloque.reduce((a, b) => a + b, 0) / bloque.length);
+          promedio.push(bloque.reduce((a, b) => a + b, 0) / (bloque.length || 1));
         }
 
         let max = Math.max(...promedio);
-        let normalizado = promedio.map(v => Math.floor((v / max) * 100));
+        let normalizado = promedio.map(v => Math.floor((v / (max || 1)) * 100));
 
         let buffer = Buffer.from(new Uint8Array(normalizado));
         resolve(buffer.toString("base64"));
