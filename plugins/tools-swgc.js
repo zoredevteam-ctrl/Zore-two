@@ -1,7 +1,7 @@
 import * as baileys from "@whiskeysockets/baileys";
 import crypto from "node:crypto";
-import { PassThrough } from 'stream';
-import ffmpeg from 'fluent-ffmpeg';
+import { PassThrough } from "stream";
+import ffmpeg from "fluent-ffmpeg";
 
 let handler = async (m, { conn, text }) => {
   let [textoEntrada = '', colorTexto = '', url = ''] = (text || '').split('|');
@@ -15,14 +15,14 @@ let handler = async (m, { conn, text }) => {
     id = m.chat;
   }
 
-  let citado = m.quoted || m;
-  let caption = citado.caption || textoEntrada || '';
+  let q = m.quoted || m;
+  let caption = q?.caption || textoEntrada || '';
 
-  let q = citado;
-  let mime = q?.mimetype || q?.msg?.mimetype || '';
+  let mime = q?.mimetype || '';
 
-  if (/image/.test(mime)) {
-    const buffer = await citado.download().catch(() => null);
+  const buffer = await conn.downloadMediaMessage(q).catch(() => null);
+
+  if (mime.includes('image')) {
     if (!buffer) return m.reply('⚠️ Error al obtener la imagen.');
 
     const estado = await enviarEstadoGrupo(conn, id, {
@@ -33,8 +33,7 @@ let handler = async (m, { conn, text }) => {
     return conn.reply(m.chat, '✅ Estado subido correctamente.', estado);
   }
 
-  else if (/video/.test(mime)) {
-    const buffer = await citado.download().catch(() => null);
+  if (mime.includes('video')) {
     if (!buffer) return m.reply('⚠️ Error al obtener el video.');
 
     const estado = await enviarEstadoGrupo(conn, id, {
@@ -45,8 +44,7 @@ let handler = async (m, { conn, text }) => {
     return conn.reply(m.chat, '✅ Estado subido correctamente.', estado);
   }
 
-  else if (/audio/.test(mime)) {
-    const buffer = await citado.download().catch(() => null);
+  if (mime.includes('audio')) {
     if (!buffer) return m.reply('⚠️ Error al obtener el audio.');
 
     const audioVoz = await convertirAVoz(buffer);
@@ -62,7 +60,7 @@ let handler = async (m, { conn, text }) => {
     return conn.reply(m.chat, '✅ Estado subido correctamente.', estado);
   }
 
-  else if (colorTexto) {
+  if (colorTexto || (!mime && caption)) {
     if (!caption) return m.reply('⚠️ No hay texto para subir al estado del grupo.');
 
     const coloresWA = new Map([
@@ -78,7 +76,7 @@ let handler = async (m, { conn, text }) => {
       ['cian', '#00BCD4']
     ]);
 
-    const textoColor = colorTexto.toLowerCase();
+    const textoColor = (colorTexto || '').toLowerCase();
     let color = null;
 
     for (const [nombre, codigo] of coloresWA.entries()) {
@@ -98,9 +96,7 @@ let handler = async (m, { conn, text }) => {
     return conn.reply(m.chat, '✅ Estado publicado correctamente.', estado);
   }
 
-  else {
-    return m.reply('⚠️ Responde a un medio (imagen/video/audio) o envía texto con color. También puedes usar un link de grupo.');
-  }
+  return m.reply('⚠️ Responde a un medio (imagen/video/audio) o envía texto con color. También puedes usar un link de grupo.');
 };
 
 async function enviarEstadoGrupo(conn, jid, contenido) {
@@ -127,11 +123,6 @@ async function enviarEstadoGrupo(conn, jid, contenido) {
   await conn.relayMessage(jid, mensaje.message, { messageId: mensaje.key.id });
   return mensaje;
 }
-
-handler.help = ["swgc", "upswgc"];
-handler.command = ["swgc", "upswgc"];
-handler.tags = ["tools"];
-handler.admin = true;
 
 async function convertirAVoz(inputBuffer) {
   return new Promise((resolve, reject) => {
