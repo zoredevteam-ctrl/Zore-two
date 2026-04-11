@@ -164,6 +164,28 @@ global.getNewsletterCtx = (thumbnail, title = global.botName, body = global.botT
     return ctx
 }
 
+// ─── FUNCIÓN: Enviar mensaje al canal con botón automático ───────────────────
+// Uso: await global.sendToChannel(conn, texto, db)
+global.sendToChannel = async (conn, text, db) => {
+    const jid   = global.newsletterJid
+    if (!jid) throw new Error('global.newsletterJid no configurado')
+    const thumb = await global.getBannerBuffer(db)
+    const ctx   = global.getNewsletterCtx(thumb, global.botName, text)
+    return conn.sendMessage(jid, { text, contextInfo: ctx })
+}
+
+// ─── FUNCIÓN: Enviar cualquier mensaje con tag del canal ──────────────────────
+// Uso: await global.sendWithCtx(conn, chat, { text: 'hola' }, db, { quoted: m })
+global.sendWithCtx = async (conn, jid, content, db, options = {}) => {
+    const thumb = await global.getBannerBuffer(db)
+    const ctx   = global.getNewsletterCtx(thumb, global.botName, global.botText)
+    content.contextInfo = {
+        ...(content.contextInfo || {}),
+        ...ctx
+    }
+    return conn.sendMessage(jid, content, options)
+}
+
 // ─── APIs ────────────────────────────────────────────────────────────────────
 global.apiConfigs = {
     stellar:   { baseUrl: 'https://api.stellarwa.xyz',   key: 'YukiWaBot', extraKey: '1bcd4698ce6c75217275c9607f01fd99' },
