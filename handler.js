@@ -1,29 +1,16 @@
-import './settings.js';
-import chalk from 'chalk';
-import print from './lib/print.js';
-import { smsg } from './lib/simple.js';
-import { database } from './lib/database.js';
-import { readdirSync } from 'fs';
-import { join, resolve } from 'path';
-import { pathToFileURL } from 'url';
+import './settings.js'
+import chalk from 'chalk'
+import print from './lib/print.js'
+import { smsg } from './lib/simple.js'
+import { database } from './lib/database.js'
+import { readdirSync } from 'fs'
+import { join, resolve } from 'path'
+import { pathToFileURL } from 'url'
+import { resolveWho } from './lib/Who.js'
 
 const toNum = v => (v + '').replace(/[^0-9]/g, '')
-const localPart = v => (v + '').split('@')[0].split(':')[0].split('/')[0].split(',')[0]
+const localPart = v => (v + '').split('@')[0].split(':')[0].split('/')[0].split(',')[0].split(':')[0]
 const normalizeCore = v => toNum(localPart(v))
-
-const normalizeJid = v => {
-    if (!v) return ''
-    if (typeof v === 'number') v = String(v)
-    v = (v + '').trim()
-    if (v.startsWith('@')) v = v.slice(1)
-    if (v.endsWith('@g.us')) return v
-    if (v.includes('@s.whatsapp.net')) {
-        const n = toNum(v.split('@')[0])
-        return n ? n + '@s.whatsapp.net' : v
-    }
-    const n = toNum(v)
-    return n ? n + '@s.whatsapp.net' : v
-}
 
 function pickOwners() {
     const arr = Array.isArray(global.owner) ? global.owner : []
@@ -49,7 +36,7 @@ function isPremiumJid(jid) {
     const num = normalizeCore(jid)
     const prems = Array.isArray(global.prems) ? global.prems.map(normalizeCore) : []
     if (prems.includes(num)) return true
-    const u = database.data?.users?.[normalizeJid(jid)]
+    const u = database.data?.users?.[jid]
     return !!u?.premium
 }
 
@@ -92,10 +79,7 @@ export const loadEvents = async (conn) => {
             const url = pathToFileURL(join(eventsPath, file)).href
             const mod = await import(url)
 
-            if (!mod.event || !mod.run) {
-                console.log(chalk.yellow(`[EVENTS] Saltando ${file}, falta event o run`))
-                continue
-            }
+            if (!mod.event || !mod.run) continue
 
             conn.ev.on(mod.event, (data) => {
                 const id = data?.id || data?.key?.remoteJid || null
@@ -103,55 +87,54 @@ export const loadEvents = async (conn) => {
                 mod.run(conn, data)
             })
 
-            console.log(chalk.green(`[EVENTS] ✦ ${file} → ${mod.event}`))
         } catch (e) {
-            console.log(chalk.red(`[EVENTS ERROR] ${file}:`), e.message)
+            console.log(chalk.red('[EVENTS ERROR]'), e.message)
         }
     }
 }
 
 export const handler = async (m, conn, plugins) => {
     try {
-        if (!m) return;
+        if (!m) return
 
         await loadEvents(conn)
 
-        m = await smsg(conn, m);
+        m = await smsg(conn, m)
 
-const btn =
-    m.message?.buttonsResponseMessage ||
-    m.message?.templateButtonReplyMessage ||
-    m.message?.listResponseMessage
+        const btn =
+            m.message?.buttonsResponseMessage ||
+            m.message?.templateButtonReplyMessage ||
+            m.message?.listResponseMessage
 
-if (btn) {
-    const cmd =
-        btn.selectedButtonId ||
-        btn.singleSelectReply?.selectedRowId
+        if (btn) {
+            const cmd =
+                btn.selectedButtonId ||
+                btn.singleSelectReply?.selectedRowId
 
-    if (cmd && typeof cmd === 'string') {
-        const clean = cmd.trim()
+            if (cmd && typeof cmd === 'string') {
+                const clean = cmd.trim()
 
-        if (clean) {
-            m.message = { conversation: clean }
-            m.text = clean
-            m.body = clean
+                if (clean) {
+                    m.message = { conversation: clean }
+                    m.text = clean
+                    m.body = clean
 
-            const senderId =
-                m.participant ||
-                m.key?.participant ||
-                m.key?.remoteJid ||
-                ''
+                    const senderId =
+                        m.participant ||
+                        m.key?.participant ||
+                        m.key?.remoteJid ||
+                        ''
 
-            if (m.sender !== senderId) {
-                Object.defineProperty(m, 'sender', {
-                    value: senderId,
-                    writable: true,
-                    configurable: true
-                })
+                    if (m.sender !== senderId) {
+                        Object.defineProperty(m, 'sender', {
+                            value: senderId,
+                            writable: true,
+                            configurable: true
+                        })
+                    }
+                }
             }
         }
-    }
-}
 
         if (m.isGroup) {
             const muted = database.data?.groups?.[m.chat]?.muted || []
@@ -161,18 +144,18 @@ if (btn) {
             }
         }
 
-        await print(m, conn);
+        await print(m, conn)
 
-        if (!m.body) return;
+        if (!m.body) return
 
         const prefix = getPrefix(m.body)
-        if (!prefix) return;
+        if (!prefix) return
 
         const body = m.body.slice(prefix.length).trim()
         const args = body.split(/ +/)
         const commandName = args.shift().toLowerCase()
 
-        if (!commandName) return;
+        if (!commandName) return
 
         let cmd = null
 
@@ -236,13 +219,13 @@ if (btn) {
         const isPremium = isOwner || isPremiumJid(m.sender)
         const isRegistered = isOwner || database.data.users?.[m.sender]?.registered || false
 
-        const isGroup = m.isGroup;
-        let isAdmin = false;
-        let isBotAdmin = false;
+        const isGroup = m.isGroup
+        let isAdmin = false
+        let isBotAdmin = false
 
         if (isGroup) {
             try {
-                const groupMeta = await conn.groupMetadata(m.chat);
+                const groupMeta = await conn.groupMetadata(m.chat)
                 const participant = groupMeta.participants.find(p =>
                     p.jid === m.sender || p.id === m.sender
                 )
@@ -253,14 +236,11 @@ if (btn) {
                     p.jid === botJid || p.id === botJid
                 )
                 isBotAdmin = !!botParticipant?.admin
-            } catch (err) {
-                console.log(chalk.red('[ERROR GROUP META]'), err.message);
-            }
+            } catch {}
         }
 
-        // 🟢 INICIALIZACIÓN SEGURA DE BASE DE DATOS 🟢
-        if (!database.data.users) database.data.users = {};
-        if (!database.data.groups) database.data.groups = {};
+        if (!database.data.users) database.data.users = {}
+        if (!database.data.groups) database.data.groups = {}
 
         if (!database.data.users[m.sender]) {
             database.data.users[m.sender] = {
@@ -275,101 +255,67 @@ if (btn) {
                 registered_time: 0,
                 name: m.pushName || '',
                 age: null
-            };
-            await database.save();
+            }
+            await database.save()
         }
 
         if (isGroup && !database.data.groups[m.chat]) {
             database.data.groups[m.chat] = {
                 modoadmin: false,
                 muted: []
-            };
-            await database.save();
-        }
-
-        // Resolución who con soporte LID → JID real
-        let who = null;
-
-        if (m.mentionedJid && m.mentionedJid[0]) {
-            who = m.mentionedJid[0];
-        } else if (m.quoted?.sender) {
-            who = m.quoted.sender;
-        }
-
-        if (who) {
-            const rawNum = who.split('@')[0].split(':')[0]
-            const isLid = who.endsWith('@lid') || rawNum.length > 13
-
-            if (isLid && m.isGroup) {
-                try {
-                    const groupMeta = await conn.groupMetadata(m.chat)
-                    // Buscar si algún participante tiene jid @s.whatsapp.net con este lid
-                    const found = groupMeta.participants.find(p =>
-                        p.id?.split('@')[0] === rawNum
-                    )
-                    if (found?.jid && found.jid.endsWith('@s.whatsapp.net')) {
-                        who = found.jid.includes(':') ? found.jid.split(':')[0] + '@s.whatsapp.net' : found.jid
-                    } else if (found?.id && found.id.endsWith('@s.whatsapp.net')) {
-                        who = found.id
-                    } else {
-                        who = rawNum + '@lid'
-                    }
-                } catch {
-                    who = rawNum + '@lid'
-                }
-            } else {
-                who = rawNum + '@s.whatsapp.net'
             }
+            await database.save()
         }
 
-        // 🛑 INTERCEPTOR DE MODO ADMIN 🛑
+        const who = await resolveWho(m, conn, args)
+
         if (isGroup && database.data.groups[m.chat]?.modoadmin && !isAdmin && !isOwner) {
-            return m.reply('⚙️ *𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾*\n\n🔒 *MODO ADMIN ACTIVO*\n_Zero Two está temporalmente restringida. Solo los administradores pueden usar comandos en este grupo._');
+            return m.reply('⚙️ *𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾*\n\n🔒 *MODO ADMIN ACTIVO*\n_Zero Two está temporalmente restringida. Solo los administradores pueden usar comandos en este grupo._')
         }
 
         if (database.data.users[m.sender]?.banned && !isOwner) {
-            return m.reply('🚫 *ESTÁS BANEADO*\nNo puedes usar los comandos del bot.');
+            return m.reply('🚫 *ESTÁS BANEADO*\nNo puedes usar los comandos del bot.')
         }
 
         if (cmd.rowner && !isROwner) {
-            return m.reply('👑 *ACCESO DENEGADO*\nEste comando solo puede ser ejecutado por el creador principal.');
+            return m.reply('👑 *ACCESO DENEGADO*\nEste comando solo puede ser ejecutado por el creador principal.')
         }
 
         if (cmd.owner && !isOwner) {
-            return m.reply('👑 *ACCESO RESTRINGIDO*\nEste comando solo puede ser ejecutado por mi creador.');
+            return m.reply('👑 *ACCESO RESTRINGIDO*\nEste comando solo puede ser ejecutado por mi creador.')
         }
 
         if (cmd.premium && !isPremium) {
-            return m.reply('💎 *USUARIO PREMIUM*\nEste comando es exclusivo para miembros Premium.');
+            return m.reply('💎 *USUARIO PREMIUM*\nEste comando es exclusivo para miembros Premium.')
         }
 
         if (cmd.register && !isRegistered) {
-            return m.reply(`📝 *REGISTRO REQUERIDO*\nDebes registrarte para usar este comando.\n\n> Usa: *${prefix}reg nombre.edad*\n> Ejemplo: *${prefix}reg Juan.25*`);
+            return m.reply(`📝 *REGISTRO REQUERIDO*\nDebes registrarte para usar este comando.\n\n> Usa: *${prefix}reg nombre.edad*\n> Ejemplo: *${prefix}reg Juan.25*`)
         }
 
         if (cmd.group && !isGroup) {
-            return m.reply('🏢 *SOLO GRUPOS*\nEste comando solo está habilitado para grupos.');
+            return m.reply('🏢 *SOLO GRUPOS*\nEste comando solo está habilitado para grupos.')
         }
 
         if (cmd.admin && !isAdmin) {
-            return m.reply('👮 *ERES ADMIN?*\nEste comando es solo para administradores del grupo.');
+            return m.reply('👮 *ERES ADMIN?*\nEste comando es solo para administradores del grupo.')
         }
 
         if (cmd.botAdmin && !isBotAdmin) {
-            return m.reply('🤖 *ERROR DE PERMISOS*\nNecesito ser administrador del grupo para ejecutar esta acción.');
+            return m.reply('🤖 *ERROR DE PERMISOS*\nNecesito ser administrador del grupo para ejecutar esta acción.')
         }
 
         if (cmd.private && isGroup) {
-            return m.reply('💬 *CHAT PRIVADO*\nEscríbeme al privado para usar este comando.');
+            return m.reply('💬 *CHAT PRIVADO*\nEscríbeme al privado para usar este comando.')
         }
 
         if (cmd.limit && !isPremium && !isOwner) {
-            const userLimit = database.data.users[m.sender].limit || 0;
+            const userLimit = database.data.users[m.sender].limit || 0
             if (userLimit < 1) {
-                return m.reply(`⚠️ *SIN LÍMITES*\nSe han agotado tus límites diarios.\n💎 Los usuarios premium tienen límites ilimitados.`);
+                return m.reply(`⚠️ *SIN LÍMITES*\nSe han agotado tus límites diarios.\n💎 Los usuarios premium tienen límites ilimitados.`)
             }
-            database.data.users[m.sender].limit -= 1;
-            await database.save();
+            database.data.users[m.sender].limit -= 1
+            await database.save()
         }
 
         try {
@@ -388,9 +334,7 @@ if (btn) {
                 prefix,
                 plugins
             })
-
         } catch (e) {
-
             console.log(chalk.red('[ERROR COMANDO DETECTADO]'), e)
 
             const name = e?.name || 'Error'
@@ -439,18 +383,15 @@ if (btn) {
             } catch {}
 
             let flags = []
-
             if (status === 401 || /unauthorized|invalid api key/i.test(message)) flags.push('API_KEY')
             if (status === 403) flags.push('FORBIDDEN')
             if (status === 404) flags.push('NOT_FOUND')
             if (status === 429) flags.push('RATE_LIMIT')
             if (status >= 500) flags.push('SERVER_ERROR')
-
             if (/timeout/i.test(message)) flags.push('TIMEOUT')
             if (/ENOTFOUND|ECONNREFUSED|EAI_AGAIN/i.test(message)) flags.push('NETWORK')
             if (/MODULE_NOT_FOUND|ERR_MODULE_NOT_FOUND/i.test(message)) flags.push('MODULE')
             if (/permission|denied/i.test(message)) flags.push('PERMISSION')
-
             if (typeof message === 'string') {
                 if (message.includes('<html') || message.includes('<!DOCTYPE html')) flags.push('HTML')
                 if (/Unexpected token|JSON/i.test(message)) flags.push('BAD_JSON')
@@ -502,7 +443,6 @@ ${stack}
         }
 
     } catch (e) {
-
         console.log(chalk.red('[ERROR HANDLER GLOBAL]'), e)
 
         let msg = e?.message || String(e)
@@ -510,6 +450,5 @@ ${stack}
         if (m?.reply) {
             m.reply(`❌ *ERROR GLOBAL*\n\n🧾 ${msg.slice(0,400)}`)
         }
-
     }
 }
