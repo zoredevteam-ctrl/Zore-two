@@ -1,5 +1,3 @@
-import { downloadMediaMessage } from '@whiskeysockets/baileys'
-
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     let q = m.quoted ? m.quoted : m
     let mime = (q.msg || q).mimetype || q.mimetype || ''
@@ -9,29 +7,24 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         return m.reply(`🌸 ¿Y mi media darling? 💗\nResponde a una imagen o video con\n*${usedPrefix}${command}*`)
     }
 
+    if (!/image|video|webp/.test(mime)) {
+        await m.react('💔')
+        return m.reply('💔 Solo imágenes, videos y gifs, mi amor\~')
+    }
+
     await m.react('🍬')
 
     try {
-        let media = await downloadMediaMessage(q, 'buffer', {}, {
-            reuploadRequest: conn.updateMediaMessage
-        })
-
-        if (!media) throw new Error('Error al descargar')
+        let media = await q.download?.()
+        if (!media) return m.reply('💔 No pude descargar la media, darling...')
 
         let packname = global.packname || '💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 💗'
         let author = global.author || '© Zore Two'
 
         await conn.sendMessage(m.chat, { 
             sticker: media, 
-            contextInfo: {
-                externalAdReply: {
-                    title: packname,
-                    body: author,
-                    mediaType: 1,
-                    showAdAttribution: false,
-                    renderLargerThumbnail: false
-                }
-            }
+            packname: packname, 
+            author: author 
         }, { quoted: m })
         
         await m.react('💗')
@@ -39,7 +32,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('💔 Darling, no pude enviarte el sticker. Inténtalo de nuevo.')
+        m.reply('💔 Darling, mi sistema falló al crear el sticker... prueba de nuevo~')
     }
 }
 
