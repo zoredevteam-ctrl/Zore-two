@@ -1,4 +1,5 @@
 import { Sticker, StickerTypes } from 'wa-sticker-formatter'
+import { downloadContentFromMessage } from '@whiskeysockets/baileys'
 
 const handler = async (m, { conn, args, command, usedPrefix }) => {
     let q = m.quoted ? m.quoted : m
@@ -17,27 +18,32 @@ const handler = async (m, { conn, args, command, usedPrefix }) => {
     await m.react('🍬')
 
     try {
-        let media = await q.download()
+        let mediaType = mime.split('/')[0]
+        let stream = await downloadContentFromMessage(q.msg || q, mediaType)
+        let buffer = Buffer.from([])
+        for await (const chunk of stream) {
+            buffer = Buffer.concat([buffer, chunk])
+        }
+
         let pack = args.length ? args.join(' ') : (global.packname || '💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 💗')
         let author = global.author || '© Zore Two'
 
-        const sticker = new Sticker(media, {
+        const sticker = new Sticker(buffer, {
             pack: pack,
             author: author,
             type: StickerTypes.FULL,
             categories: ['💗'],
-            quality: 75,
+            quality: 70
         })
 
-        const buffer = await sticker.toBuffer()
-
-        await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m })
+        const stikerBuffer = await sticker.toBuffer()
+        await conn.sendMessage(m.chat, { sticker: stikerBuffer }, { quoted: m })
         await m.react('💗')
 
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply(`💔 Uy papiii... mi poder de waifu falló otra vez\n\nInténtalo de nuevo no me dejes sola\~ 🌸`)
+        m.reply(`💔 Uy papiii... mi poder de waifu falló otra vez~`)
     }
 }
 
