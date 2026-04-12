@@ -6,7 +6,7 @@ import { database } from './lib/database.js'
 import { readdirSync } from 'fs'
 import { join, resolve } from 'path'
 import { pathToFileURL } from 'url'
-import { resolveWho } from './lib/Who.js'
+import { resolveWho } from './lib/who.js'
 
 const toNum = v => (v + '').replace(/[^0-9]/g, '')
 const localPart = v => (v + '').split('@')[0].split(':')[0].split('/')[0].split(',')[0].split(':')[0]
