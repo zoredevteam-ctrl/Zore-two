@@ -1,6 +1,6 @@
 import { Sticker, StickerTypes } from 'wa-sticker-formatter'
 
-let handler = async (m, { conn, args, command, usedPrefix }) => {
+const handler = async (m, { conn, args, command, usedPrefix }) => {
     let q = m.quoted ? m.quoted : m
     let mime = (q.msg || q).mimetype || q.mimetype || ''
 
@@ -18,7 +18,6 @@ let handler = async (m, { conn, args, command, usedPrefix }) => {
 
     try {
         let media = await q.download()
-        
         let pack = args.length ? args.join(' ') : (global.packname || '💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 💗')
         let author = global.author || '© Zore Two'
 
