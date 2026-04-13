@@ -1,46 +1,40 @@
-import { sticker } from '../lib/sticker.js'
+const handler = async (m, { conn, args, usedPrefix, command }) => {
+    let q = m.quoted ? m.quoted : m
+    let mime = (q.msg || q).mimetype || q.mediaType || ''
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
-    let stiker = false
+    if (!/image|video|webp/.test(mime)) {
+        await m.react('🌸')
+        return m.reply(`🌸 ¿Y mi media darling? 💗\nResponde a una imagen o video con\n*${usedPrefix}${command}*`)
+    }
+
+    await m.react('🕓')
+
     try {
-        let q = m.quoted ? m.quoted : m
-        let mime = (q.msg || q).mimetype || q.mediaType || ''
+        let media = await q.download()
+        let packname = global.packname || '💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 💗'
+        let author = global.author || '© Shadow'
 
-        if (/webp|image|video/g.test(mime)) {
-            if (/video/.test(mime) && (q.msg || q).seconds > 15) return m.reply('✨ El video no puede durar más de 15 segundos.')
-            
-            await m.react('🕓')
-            let img = await q.download()
-            
-            let packname = args.join(' ').split('|')[0] || global.packname || '💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 💗'
-            let author = args.join(' ').split('|')[1] || global.author || '© Shadow'
-            
-            stiker = await sticker(img, false, packname, author)
-        } else if (args[0] && isUrl(args[0])) {
-            stiker = await sticker(false, args[0], global.packname, global.author)
-        } else {
-            return m.reply(`🌸 ¿Y mi media darling? 💗\nResponde a una imagen/video con *${usedPrefix}${command}*`)
-        }
+        await conn.sendImageAsSticker(m.chat, media, m, { 
+            packname: packname, 
+            author: author 
+        })
+        
+        await m.react('✅')
+
     } catch (e) {
         console.error(e)
-        await m.react('✖️')
-    } finally {
-        if (stiker) {
-            await conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
+        try {
+            await conn.sendMessage(m.chat, { sticker: await q.download() }, { quoted: m })
             await m.react('✅')
-        } else {
-            await m.react('💔')
-            m.reply('💔 Darling, no pude crear el sticker. Intenta de nuevo.')
+        } catch (e2) {
+            await m.react('✖️')
+            m.reply('💔 Darling, no pude procesar el sticker. Asegúrate de que no sea un video muy largo.')
         }
     }
 }
 
-handler.help = ['s', 'sticker']
+handler.help = ['s', 'sticker', 'stiker']
 handler.tags = ['sticker']
 handler.command = ['s', 'sticker', 'stiker']
 
 export default handler
-
-function isUrl(text) {
-    return text.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)(jpe?g|gif|png)/, 'gi'))
-                }
