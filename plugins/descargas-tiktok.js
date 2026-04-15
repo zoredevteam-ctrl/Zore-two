@@ -4,6 +4,10 @@ function isTikTok(url = '') {
   return /tiktok\.com/i.test(url)
 }
 
+function toMobile(url = '') {
+  return url.replace('www.tiktok.com', 'm.tiktok.com')
+}
+
 const agents = [
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
   "Mozilla/5.0 (Linux; Android 10)",
@@ -88,17 +92,36 @@ let handler = async (m, { conn, args }) => {
 
     await m.reply('📡 DEBUG\nURL:\n' + url)
 
-    const page = await fetchHTML(url)
+    let page = await fetchHTML(url)
 
     await m.reply(`📡 DEBUG\nStatus: ${page.status}\nOK: ${page.ok}`)
     await m.reply(`📡 DEBUG\nUser-Agent:\n${page.headers['User-Agent']}`)
     await m.reply(`📡 DEBUG\nHTML length: ${page.html.length}`)
 
-    const { urls, debug } = extractTikTok(page.html)
+    let { urls, debug } = extractTikTok(page.html)
 
     await m.reply(
       `📡 DEBUG\nSIGI_STATE: ${debug.sigi}\nItems: ${debug.items}\nVideos detectados: ${debug.videos}`
     )
+
+    if (!urls.length) {
+      await m.reply('📡 DEBUG\nIntentando versión móvil...')
+
+      const mobileUrl = toMobile(url)
+      const page2 = await fetchHTML(mobileUrl)
+
+      await m.reply(`📡 DEBUG\nMobile Status: ${page2.status}`)
+      await m.reply(`📡 DEBUG\nMobile HTML length: ${page2.html.length}`)
+
+      const retry = extractTikTok(page2.html)
+
+      urls = retry.urls
+      debug = retry.debug
+
+      await m.reply(
+        `📡 DEBUG (MOBILE)\nSIGI_STATE: ${debug.sigi}\nItems: ${debug.items}\nVideos: ${debug.videos}`
+      )
+    }
 
     if (!urls.length) {
       throw new Error('NO_VIDEO_FOUND')
