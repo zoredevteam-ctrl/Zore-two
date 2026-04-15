@@ -4,8 +4,11 @@ function isFacebook(url = '') {
   return /facebook\.com|fb\.watch/i.test(url)
 }
 
-function clean(str) {
-  return str?.replace(/\\u0025/g, '%').replace(/\\\//g, '/')
+function clean(str = '') {
+  return str
+    .replace(/\\u0025/g, '%')
+    .replace(/\\\//g, '/')
+    .replace(/&amp;/g, '&')
 }
 
 async function fetchHTML(url) {
@@ -19,33 +22,39 @@ async function fetchHTML(url) {
     }
   })
 
-  return {
-    status: res.status,
-    ok: res.ok,
-    html: await res.text()
-  }
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+
+  return await res.text()
 }
 
-function extractAll(html) {
-  let results = []
-
-  let hd = html.match(/"playable_url_quality_hd":"([^"]+)"/g)
-  let sd = html.match(/"playable_url":"([^"]+)"/g)
-  let browser = html.match(/"browser_native_hd_url":"([^"]+)"/g)
-  let fallback = html.match(/https:\/\/video\.[^"]+\.fbcdn\.net[^"]+/g)
-
-  return {
-    hd: hd || [],
-    sd: sd || [],
-    browser: browser || [],
-    fallback: fallback || [],
-    all: [
-      ...(hd || []).map(x => clean(x.split('"')[3])),
-      ...(sd || []).map(x => clean(x.split('"')[3])),
-      ...(browser || []).map(x => clean(x.split('"')[3])),
-      ...(fallback || []).map(x => clean(x))
-    ]
+function extractAll(html = '') {
+  const results = {
+    browser: [],
+    hd: [],
+    sd: [],
+    fallback: []
   }
+
+  const extract = (regex) => {
+    let arr = []
+    let match
+    while ((match = regex.exec(html)) !== null) {
+      arr.push(clean(match[1] || match[0]))
+    }
+    return arr
+  }
+
+  results.browser = extract(/"browser_native_hd_url":"([^"]+)"/g)
+  results.hd = extract(/"playable_url_quality_hd":"([^"]+)"/g)
+  results.sd = extract(/"playable_url":"([^"]+)"/g)
+  results.fallback = extract(/(https:\/\/video\.[^"]+\.fbcdn\.net[^"]+)/g)
+
+  return [
+    ...results.browser,
+    ...results.hd,
+    ...results.sd,
+    ...results.fallback
+  ].filter(v => /^https?:\/\//.test(v))
 }
 
 let handler = async (m, { conn, args }) => {
@@ -59,79 +68,32 @@ let handler = async (m, { conn, args }) => {
       react: { text: '🕒', key: m.key }
     })
 
-    await m.reply('📡 DEBUG\nURL:\n' + url)
+    const html = await fetchHTML(url)
+    const videos = [...new Set(extractAll(html))]
 
-    const { status, ok, html } = await fetchHTML(url)
-
-    await m.reply(`📡 DEBUG\nHTTP Status: ${status}\nOK: ${ok}`)
-
-    await m.reply(`📡 DEBUG\nHTML length: ${html.length}`)
-
-    const blocked = /login|checkpoint|error|unsupported browser/i.test(html)
-    await m.reply(`📡 DEBUG\nBlocked detect: ${blocked}`)
-
-    const data = extractAll(html)
-
-    await m.reply(
-      `📡 DEBUG\n` +
-      `HD: ${data.hd.length}\n` +
-      `SD: ${data.sd.length}\n` +
-      `Browser: ${data.browser.length}\n` +
-      `Fallback: ${data.fallback.length}`
-    )
-
-    let videos = [...new Set(data.all)]
-
-    await m.reply(`📡 DEBUG\nVideos encontrados: ${videos.length}`)
-
-    if (videos.length > 0) {
-      await m.reply(`📡 DEBUG\nPrimer video:\n${videos[0]}`)
-
-      await conn.sendMessage(m.chat, {
-        video: { url: videos[0] },
-        caption: '✅ Video descargado'
-      }, { quoted: m })
-
-      await conn.sendMessage(m.chat, {
-        react: { text: '✅', key: m.key }
-      })
-
-      return
+    if (!videos.length) {
+      throw new Error('NO_VIDEO_FOUND')
     }
 
-    let direct = html.match(/https:\/\/video\.[^"]+\.fbcdn\.net[^"]+/)
+    const video = videos[0]
 
-    await m.reply(`📡 DEBUG\nDirect fallback: ${direct ? 'SI' : 'NO'}`)
+    await conn.sendMessage(m.chat, {
+      video: { url: video },
+      caption: '✅ Video descargado'
+    }, { quoted: m })
 
-    if (direct) {
-      let vid = clean(direct[0])
-
-      await m.reply(`📡 DEBUG\nDirect URL:\n${vid}`)
-
-      await conn.sendMessage(m.chat, {
-        video: { url: vid },
-        caption: '✅ Video descargado'
-      }, { quoted: m })
-
-      await conn.sendMessage(m.chat, {
-        react: { text: '✅', key: m.key }
-      })
-
-      return
-    }
-
-    throw new Error('NO_VIDEO_FOUND')
+    await conn.sendMessage(m.chat, {
+      react: { text: '✅', key: m.key }
+    })
 
   } catch (e) {
-    await m.reply(`📡 DEBUG ERROR\n${e.stack || e.message}`)
-
     let msg = '❌ Error\n\n'
 
     if (e.message.includes('HTTP')) {
       msg += '🌐 Error de conexión\n' + e.message
     } else if (e.message === 'NO_VIDEO_FOUND') {
-      msg += '🚫 Facebook bloqueó el scraping\n'
-      msg += '💡 Probablemente es reel o requiere login'
+      msg += '❌ No se encontró el video\n'
+      msg += '💡 Puede ser privado, reel o requiere login'
     } else {
       msg += '⚠️ Error inesperado\n' + e.message
     }
