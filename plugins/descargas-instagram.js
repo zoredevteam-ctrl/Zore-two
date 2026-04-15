@@ -97,11 +97,22 @@ let handler = async (m, { conn, args }) => {
         caption: '✅ Video de Instagram descargado'
       }, { quoted: m })
     } else if (images.length) {
-      await conn.sendMessage(m.chat, {
-        image: { url: images[0] },
-        caption: '✅ Imagen de Instagram descargada'
-      }, { quoted: m })
-    } else {
+  const res = await fetch(images[0], {
+    headers: {
+      "User-Agent": agents[Math.floor(Math.random() * agents.length)],
+      "Referer": "https://www.instagram.com/"
+    }
+  })
+
+  if (!res.ok) throw new Error(`IMG_HTTP ${res.status}`)
+
+  const buffer = await res.arrayBuffer()
+
+  await conn.sendMessage(m.chat, {
+    image: Buffer.from(buffer),
+    caption: '✅ Imagen de Instagram descargada'
+  }, { quoted: m })
+} else {
       throw new Error('NO_MEDIA_FOUND')
     }
 
