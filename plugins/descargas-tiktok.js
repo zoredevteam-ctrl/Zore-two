@@ -4,10 +4,6 @@ function isTikTok(url = '') {
   return /tiktok\.com/i.test(url)
 }
 
-function toMobile(url = '') {
-  return url.replace('www.tiktok.com', 'm.tiktok.com')
-}
-
 const agents = [
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
   "Mozilla/5.0 (Linux; Android 10)",
@@ -15,61 +11,51 @@ const agents = [
 ]
 
 function getHeaders() {
-  const agent = agents[Math.floor(Math.random() * agents.length)]
   return {
-    "User-Agent": agent,
+    "User-Agent": agents[Math.floor(Math.random() * agents.length)],
     "Accept": "text/html",
     "Accept-Language": "es-ES,es;q=0.9,en;q=0.8"
   }
 }
 
 async function fetchHTML(url) {
-  const headers = getHeaders()
   const res = await fetch(url, {
-    headers,
+    headers: getHeaders(),
     redirect: 'follow'
   })
 
   return {
     status: res.status,
     ok: res.ok,
-    headers,
     finalUrl: res.url,
     html: await res.text()
   }
 }
 
-function extractTikTok(html = '') {
+function extractUniversal(html = '') {
   let results = []
   let debug = {
-    sigi: false,
-    items: 0,
+    found: false,
     videos: 0
   }
 
-  const match = html.match(/<script id="SIGI_STATE" type="application\/json">(.*?)<\/script>/)
+  const match = html.match(/<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__" type="application\/json">(.*?)<\/script>/)
 
   if (match) {
-    debug.sigi = true
+    debug.found = true
 
     try {
       const json = JSON.parse(match[1])
-      const items = json?.ItemModule || {}
+      const item = json?.__DEFAULT_SCOPE__?.["webapp.video-detail"]?.itemInfo?.itemStruct
 
-      debug.items = Object.keys(items).length
+      if (item?.video?.playAddr) {
+        results.push(item.video.playAddr)
+        debug.videos++
+      }
 
-      for (let key in items) {
-        const video = items[key]?.video
-
-        if (video?.playAddr) {
-          results.push(video.playAddr)
-          debug.videos++
-        }
-
-        if (video?.downloadAddr) {
-          results.push(video.downloadAddr)
-          debug.videos++
-        }
+      if (item?.video?.downloadAddr) {
+        results.push(item.video.downloadAddr)
+        debug.videos++
       }
 
     } catch (e) {
@@ -96,38 +82,17 @@ let handler = async (m, { conn, args }) => {
 
     await m.reply('📡 DEBUG\nURL:\n' + url)
 
-    let page = await fetchHTML(url)
+    const page = await fetchHTML(url)
 
-    await m.reply(`📡 DEBUG\nStatus: ${page.status}\nOK: ${page.ok}`)
-    await m.reply(`📡 DEBUG\nUser-Agent:\n${page.headers['User-Agent']}`)
     await m.reply(`📡 DEBUG\nFinal URL:\n${page.finalUrl}`)
+    await m.reply(`📡 DEBUG\nStatus: ${page.status}`)
     await m.reply(`📡 DEBUG\nHTML length: ${page.html.length}`)
 
-    let { urls, debug } = extractTikTok(page.html)
+    const { urls, debug } = extractUniversal(page.html)
 
     await m.reply(
-      `📡 DEBUG\nSIGI_STATE: ${debug.sigi}\nItems: ${debug.items}\nVideos detectados: ${debug.videos}`
+      `📡 DEBUG\nUNIVERSAL_DATA: ${debug.found}\nVideos: ${debug.videos}`
     )
-
-    if (!urls.length) {
-      await m.reply('📡 DEBUG\nIntentando versión móvil...')
-
-      const mobileUrl = toMobile(page.finalUrl)
-      const page2 = await fetchHTML(mobileUrl)
-
-      await m.reply(`📡 DEBUG\nMobile URL:\n${mobileUrl}`)
-      await m.reply(`📡 DEBUG\nMobile Status: ${page2.status}`)
-      await m.reply(`📡 DEBUG\nMobile HTML length: ${page2.html.length}`)
-
-      const retry = extractTikTok(page2.html)
-
-      urls = retry.urls
-      debug = retry.debug
-
-      await m.reply(
-        `📡 DEBUG (MOBILE)\nSIGI_STATE: ${debug.sigi}\nItems: ${debug.items}\nVideos: ${debug.videos}`
-      )
-    }
 
     if (!urls.length) {
       throw new Error('NO_VIDEO_FOUND')
@@ -149,11 +114,9 @@ let handler = async (m, { conn, args }) => {
 
     let msg = '❌ Error\n\n'
 
-    if (e.message.includes('HTTP')) {
-      msg += '🌐 Error de conexión\n' + e.message
-    } else if (e.message === 'NO_VIDEO_FOUND') {
-      msg += '❌ No se encontró el video\n'
-      msg += '💡 TikTok cambió el formato o está protegido'
+    if (e.message === 'NO_VIDEO_FOUND') {
+      msg += '❌ TikTok bloqueó el scraping\n'
+      msg += '💡 Requiere método avanzado (API interna)'
     } else {
       msg += '⚠️ Error inesperado\n' + e.message
     }
