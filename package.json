@@ -25,6 +25,7 @@
     "chalk": "^5.3.0",
     "node-fetch": "2.7.0",
     "form-data": "^4.0.1",
+"@vitalets/google-translate-api":"^9.2.0",
     "performance-now": "^2.1.0",
     "cheerio": "^1.0.0-rc.12",
     "lowdb": "^3.0.0",
