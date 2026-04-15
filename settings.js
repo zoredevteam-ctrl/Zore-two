@@ -22,7 +22,7 @@ global.owner = [
     ['573107400303', 'Dev8', false],
     ['573133374132', 'Dev9', false],
     ['5214444854390','Dev10',false],
-    ['5355699866',   'Hola', false],
+    ['595987301197',   'Hola', false],
     ['573135180876', 'duarte soporte', false]
 ]
 global.mods       = []
