@@ -1,44 +1,138 @@
 import fetch from 'node-fetch'
 
-const API_KEY  = 'causa-ec43262f206b3305'
-const API_BASE = 'https://rest.apicausas.xyz/api/v1/descargas/tiktok'
-
-let handler = async (m, { conn, args }) => {
-    let url = (args[0] || '').trim()
-    if (m.quoted && m.quoted.text) url = m.quoted.text.trim()
-
-    if (!url || !url.includes('tiktok.com')) {
-        await m.react('🌸')
-        return m.reply(`💗 *Pega el link de TikTok darling~* 🌸\n\nEjemplo:\n*#tt https://vm.tiktok.com/xxxxxx/*\n\nO responde a un mensaje con el link`)
-    }
-
-    await m.react('🍬')
-
-    try {
-        const res  = await fetch(`${API_BASE}?url=${encodeURIComponent(url)}&apikey=${API_KEY}`)
-        const json = await res.json()
-
-
-        if (!json.status || !json.data?.download?.url) throw new Error('No se encontró video')
-
-        const videoBuffer = await fetch(json.data.download.url).then(r => r.buffer())
-        const caption = `💞 *¡TikTok descargado con éxito darling!* 🌸\n\n` +
-                        `✨ *Autor:* ${json.data.autor || 'TikTok'}\n` +
-                        `📝 *Título:* ${json.data.titulo || 'Sin descripción'}\n` +
-                        `👁️ *Vistas:* ${json.data.vistas?.toLocaleString() || '?'} | ❤️ ${json.data.likes?.toLocaleString() || '?'}\n\n` +
-                        `¡Disfrútalo mi amor~ 💗 No me dejes sola sin ver el video!`
-
-        await conn.sendMessage(m.chat, { video: videoBuffer, caption }, { quoted: m })
-        await m.react('💗')
-
-    } catch (e) {
-        await m.react('💔')
-        m.reply(`💔 *ERROR:*\n\`\`\`${e.message}\`\`\``)
-    }
+function isTikTok(url = '') {
+  return /tiktok\.com/i.test(url)
 }
 
-handler.help    = ['tt <url>', 'tiktok <url>']
-handler.tags    = ['descargas']
-handler.command = ['tt', 'tiktok', 'tiktokdl']
+const agents = [
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+  "Mozilla/5.0 (Linux; Android 10)",
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)"
+]
+
+function getHeaders() {
+  const agent = agents[Math.floor(Math.random() * agents.length)]
+  return {
+    "User-Agent": agent,
+    "Accept": "text/html",
+    "Accept-Language": "es-ES,es;q=0.9,en;q=0.8"
+  }
+}
+
+async function fetchHTML(url) {
+  const headers = getHeaders()
+  const res = await fetch(url, { headers })
+
+  return {
+    status: res.status,
+    ok: res.ok,
+    headers,
+    html: await res.text()
+  }
+}
+
+function extractTikTok(html = '') {
+  let results = []
+  let debug = {
+    sigi: false,
+    items: 0,
+    videos: 0
+  }
+
+  const match = html.match(/<script id="SIGI_STATE" type="application\/json">(.*?)<\/script>/)
+
+  if (match) {
+    debug.sigi = true
+
+    try {
+      const json = JSON.parse(match[1])
+      const items = json?.ItemModule || {}
+
+      debug.items = Object.keys(items).length
+
+      for (let key in items) {
+        const video = items[key]?.video
+
+        if (video?.playAddr) {
+          results.push(video.playAddr)
+          debug.videos++
+        }
+
+        if (video?.downloadAddr) {
+          results.push(video.downloadAddr)
+          debug.videos++
+        }
+      }
+
+    } catch (e) {
+      debug.parseError = true
+    }
+  }
+
+  return {
+    urls: [...new Set(results)],
+    debug
+  }
+}
+
+let handler = async (m, { conn, args }) => {
+  const url = args[0]
+
+  if (!url) return m.reply('⚠️ Ingresa un link de TikTok')
+  if (!isTikTok(url)) return m.reply('❌ Link inválido')
+
+  try {
+    await conn.sendMessage(m.chat, {
+      react: { text: '🕒', key: m.key }
+    })
+
+    await m.reply('📡 DEBUG\nURL:\n' + url)
+
+    const page = await fetchHTML(url)
+
+    await m.reply(`📡 DEBUG\nStatus: ${page.status}\nOK: ${page.ok}`)
+    await m.reply(`📡 DEBUG\nUser-Agent:\n${page.headers['User-Agent']}`)
+    await m.reply(`📡 DEBUG\nHTML length: ${page.html.length}`)
+
+    const { urls, debug } = extractTikTok(page.html)
+
+    await m.reply(
+      `📡 DEBUG\nSIGI_STATE: ${debug.sigi}\nItems: ${debug.items}\nVideos detectados: ${debug.videos}`
+    )
+
+    if (!urls.length) {
+      throw new Error('NO_VIDEO_FOUND')
+    }
+
+    await m.reply(`📡 DEBUG\nVideo final:\n${urls[0]}`)
+
+    await conn.sendMessage(m.chat, {
+      video: { url: urls[0] },
+      caption: '✅ Video de TikTok descargado'
+    }, { quoted: m })
+
+    await conn.sendMessage(m.chat, {
+      react: { text: '✅', key: m.key }
+    })
+
+  } catch (e) {
+    await m.reply(`📡 DEBUG ERROR\n${e.stack || e.message}`)
+
+    let msg = '❌ Error\n\n'
+
+    if (e.message.includes('HTTP')) {
+      msg += '🌐 Error de conexión\n' + e.message
+    } else if (e.message === 'NO_VIDEO_FOUND') {
+      msg += '❌ No se encontró el video\n'
+      msg += '💡 TikTok cambió el formato o está protegido'
+    } else {
+      msg += '⚠️ Error inesperado\n' + e.message
+    }
+
+    await m.reply(msg)
+  }
+}
+
+handler.command = ['tt', 'tiktok']
 
 export default handler
