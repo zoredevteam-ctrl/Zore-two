@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import cheerio from 'cheerio'
+import * as cheerio from 'cheerio'
 
 let handler = async (m, { args, usedPrefix }) => {
     if (!global.db.data.chats[m.chat].nsfw) {
