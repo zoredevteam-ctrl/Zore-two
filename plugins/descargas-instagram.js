@@ -97,29 +97,8 @@ let handler = async (m, { conn, args }) => {
         caption: '✅ Video de Instagram descargado'
       }, { quoted: m })
     } else if (images.length) {
-      const fullHeaders = {
-        "User-Agent": agents[Math.floor(Math.random() * agents.length)],
-        "Referer": "https://www.instagram.com/",
-        "Origin": "https://www.instagram.com",
-        "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
-        "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
-        "Connection": "keep-alive"
-      }
-
-      let buffer
-
-      try {
-        const res = await fetch(images[0], { headers: fullHeaders })
-        if (!res.ok) throw new Error()
-        buffer = await res.arrayBuffer()
-      } catch {
-        const res2 = await fetch(images[0])
-        if (!res2.ok) throw new Error(`IMG_HTTP ${res2.status}`)
-        buffer = await res2.arrayBuffer()
-      }
-
       await conn.sendMessage(m.chat, {
-        image: Buffer.from(buffer),
+        image: { url: images[0] },
         caption: '✅ Imagen de Instagram descargada'
       }, { quoted: m })
     } else {
