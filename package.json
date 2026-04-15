@@ -26,6 +26,7 @@
     "node-fetch": "2.7.0",
     "form-data": "^4.0.1",
     "performance-now": "^2.1.0",
+    "cheerio": "^1.0.0-rc.12",
     "lowdb": "^3.0.0",
     "syntax-error": "^1.4.0",
     "file-type": "^18.0.0",
