@@ -1,53 +1,20 @@
-const DIGITS = (s = '') => String(s || '').replace(/\D/g, '')
+const handler = async (m, { conn, who }) => {
+    if (!who) return m.reply('⚠️ *MENCIONA O RESPONDE A UN USUARIO*')
 
-function findParticipantByDigits(parts = [], digits = '') {
-    if (!digits) return null
-    return parts.find(p =>
-        DIGITS(p?.id || '') === digits ||
-        DIGITS(p?.jid || '') === digits
-    ) || null
-}
+    if (who === m.sender) return m.reply('⚠️ No puedes expulsarte a ti mismo')
 
-let handler = async (m, { conn, who }) => {
-
-    if (!who)
-        return m.reply(`𖤐 ~ ᴍɪ ᴅᴀʀʟɪɴɢ~! ᴅᴇʙᴇs ᴍᴇɴᴄɪᴏɴᴀʀ ᴀ  un ᴜsᴜᴀʀɪᴏ o ʀᴇsᴘᴏɴᴅᴇʀ ᴀ ᴜɴ ᴍᴇɴsᴀᴊᴇ ᴘᴀʀᴀ ᴇxᴘᴜʀsᴀʀʟᴏ.`)
-
-    const metadata = await conn.groupMetadata(m.chat)
-    const participants = Array.isArray(metadata?.participants) ? metadata.participants : []
-
-    const senderNum = DIGITS(m.sender)
-    const botNum = DIGITS(conn.user.id.split(':')[0])
-    const targetNum = DIGITS(who)
-
-    if (!targetNum)
-        return m.reply(`❀ Debes mencionar a un usuario o responder a un mensaje para expulsarlo.`)
-
-    if (targetNum === botNum)
-        return m.reply(`ꕥ No puedo eliminarme a mí mismo del grupo.`)
-
-    const ownerGroup = DIGITS(metadata.owner || m.chat.split`-`[0])
-    if (targetNum === ownerGroup)
-        return m.reply(`ꕥ No puedo eliminar al creador del grupo (está protegido).`)
-
-    const targetP = findParticipantByDigits(participants, targetNum)
-
-    if (!targetP)
-        return m.reply(`⚠︎ No pude completar la acción. Asegúrate de que sigo siendo administrador.\n> Usa *.report* si el error persiste.`)
-
-    const targetGroupId = targetP.id || targetP.jid
+    const botJid = conn.user.id.split(':')[0] + '@s.whatsapp.net'
+    if (who === botJid) return m.reply('⚠️ No puedo expulsarme a mí mismo')
 
     try {
-        await conn.groupParticipantsUpdate(m.chat, [targetGroupId], 'remove')
-    } catch {
-        m.reply(`⚠︎ No pude completar la acción. Asegúrate de que sigo siendo administrador.\n> Usa *.report* si el error persiste.`)
+        await conn.groupParticipantsUpdate(m.chat, [who], 'remove')
+        m.reply('✅ Usuario eliminado del grupo')
+    } catch (e) {
+        m.reply('❌ No se pudo expulsar al usuario')
     }
 }
 
-handler.help = ['kick']
-handler.tags = ['grupo']
 handler.command = ['kick', 'echar', 'hechar', 'sacar', 'ban']
-
 handler.admin = true
 handler.group = true
 handler.botAdmin = true
