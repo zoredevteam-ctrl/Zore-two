@@ -1,199 +1,146 @@
 import fetch from 'node-fetch'
 
-function isYouTube(url = '') {
-  return /youtube\.com|youtu\.be/i.test(url)
-}
-
-function getID(url = '') {
-  let m = url.match(/v=([^&]+)/)
-  if (m) return m[1]
-  m = url.match(/youtu\.be\/([^?]+)/)
+function getVideoID(url = '') {
+  let m = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
   return m ? m[1] : null
 }
 
+function cleanJSON(str = '') {
+  return str.replace(/\u0026/g, '&')
+}
+
 async function fetchHTML(url) {
-  const r = await fetch(url, {
+  const res = await fetch(url, {
     headers: {
       "User-Agent": "Mozilla/5.0",
-      "Accept-Language": "es-ES,es;q=0.9"
+      "Accept-Language": "en-US,en;q=0.9"
     }
   })
-  return await r.text()
+  return await res.text()
 }
 
-function extractConfig(html = '') {
-  const key = html.match(/"INNERTUBE_API_KEY":"([^"]+)"/)?.[1]
-  const sts = html.match(/"signatureTimestamp":(\d+)/)?.[1]
-  return { key, sts }
+function extractPlayer(html = '') {
+  let match = html.match(/ytInitialPlayerResponse\s*=\s*(\{.+?\});/)
+  if (!match) return null
+  return JSON.parse(match[1])
 }
 
-async function fetchPlayer(id, key, sts, mode = 'ANDROID') {
-  let body
-  let headers
+function parseFormats(player = {}) {
+  let formats = [
+    ...(player?.streamingData?.formats || []),
+    ...(player?.streamingData?.adaptiveFormats || [])
+  ]
+  return formats
+}
 
-  if (mode === 'ANDROID') {
-    headers = {
-      "Content-Type": "application/json",
-      "User-Agent": "com.google.android.youtube/19.09.37",
-      "X-YouTube-Client-Name": "3",
-      "X-YouTube-Client-Version": "19.09.37",
-      "Origin": "https://www.youtube.com"
-    }
-
-    body = {
-      context: {
-        client: {
-          clientName: "ANDROID",
-          clientVersion: "19.09.37",
-          androidSdkVersion: 30,
-          hl: "es",
-          gl: "MX"
-        }
-      },
-      playbackContext: {
-        contentPlaybackContext: {
-          signatureTimestamp: Number(sts || 0)
-        }
-      },
-      videoId: id
-    }
-  } else {
-    headers = {
-      "Content-Type": "application/json",
-      "User-Agent": "com.google.ios.youtube/19.09.3",
-      "X-YouTube-Client-Name": "5",
-      "X-YouTube-Client-Version": "19.09.3",
-      "Origin": "https://www.youtube.com"
-    }
-
-    body = {
-      context: {
-        client: {
-          clientName: "IOS",
-          clientVersion: "19.09.3",
-          deviceModel: "iPhone14,3",
-          hl: "es",
-          gl: "MX"
-        }
-      },
-      videoId: id
-    }
-  }
-
-  const r = await fetch(`https://www.youtube.com/youtubei/v1/player?key=${key}`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(body)
-  })
-
+function parseCipher(str = '') {
+  let params = new URLSearchParams(str)
   return {
-    status: r.status,
-    json: await r.json()
+    url: params.get('url'),
+    s: params.get('s'),
+    sp: params.get('sp')
   }
 }
 
-function analyze(json = {}) {
-  const f = json?.streamingData?.formats || []
-  const a = json?.streamingData?.adaptiveFormats || []
+async function getBaseJS(html = '') {
+  let match = html.match(/"jsUrl":"([^"]+)"/)
+  if (!match) return null
+  return 'https://www.youtube.com' + match[1]
+}
 
-  const direct = []
-  const cipher = []
+async function fetchJS(url) {
+  const res = await fetch(url)
+  return await res.text()
+}
 
-  f.forEach(x => {
-    if (x.url) direct.push(x.url)
-    if (x.signatureCipher) cipher.push(x.signatureCipher)
-  })
+function extractDecryptFunc(js = '') {
+  let fnName = js.match(/\.sig\|\|([a-zA-Z0-9$]+)\(/)
+  if (!fnName) return null
 
-  a.forEach(x => {
-    if (x.url) direct.push(x.url)
-    if (x.signatureCipher) cipher.push(x.signatureCipher)
-  })
+  let name = fnName[1]
 
-  return {
-    direct,
-    cipher,
-    f: f.length,
-    a: a.length
-  }
+  let fnBody = js.match(new RegExp(`${name}=function\\(a\\){([^}]+)}`))
+  if (!fnBody) return null
+
+  let helperName = fnBody[1].match(/;([A-Za-z0-9$]{2})\./)
+  if (!helperName) return null
+
+  let helper = js.match(new RegExp(`var ${helperName[1]}=\\{([^}]+)\\}`))
+
+  return `
+    function decrypt(a){
+      var ${helperName[1]}={${helper ? helper[1] : ''}};
+      ${fnBody[0]};
+      return ${name}(a);
+    }
+  `
+}
+
+async function decryptSignature(s, jsCode) {
+  const fn = new Function(jsCode + `return decrypt("${s}")`)
+  return fn()
 }
 
 let handler = async (m, { conn, args }) => {
   const url = args[0]
 
-  if (!url) return m.reply('⚠️ Ingresa un link de YouTube')
-  if (!isYouTube(url)) return m.reply('❌ Link inválido')
+  if (!url) return m.reply('⚠️ URL requerida')
 
   try {
-    await conn.sendMessage(m.chat, {
-      react: { text: '🕒', key: m.key }
-    })
+    await m.reply('📡 DEBUG\nProcesando...')
 
-    await m.reply('📡 DEBUG\nURL:\n' + url)
-
-    const id = getID(url)
+    const id = getVideoID(url)
     await m.reply('📡 DEBUG\nVideo ID:\n' + id)
 
-    if (!id) throw new Error('NO_ID')
+    const watch = `https://www.youtube.com/watch?v=${id}`
 
-    const html = await fetchHTML(`https://www.youtube.com/watch?v=${id}`)
-    const cfg = extractConfig(html)
+    const html = await fetchHTML(watch)
 
-    await m.reply(`📡 DEBUG\nAPI KEY: ${!!cfg.key}`)
-    await m.reply(`📡 DEBUG\nSTS: ${cfg.sts || 'null'}`)
+    await m.reply('📡 DEBUG\nHTML OK')
 
-    if (!cfg.key) throw new Error('NO_KEY')
+    const player = extractPlayer(html)
 
-    let api = await fetchPlayer(id, cfg.key, cfg.sts, 'ANDROID')
+    if (!player) throw new Error('NO_PLAYER')
 
-    await m.reply(`📡 DEBUG\nANDROID Status: ${api.status}`)
+    let formats = parseFormats(player)
 
-    let data = analyze(api.json)
+    await m.reply(`📡 DEBUG\nFormats: ${formats.length}`)
 
-    await m.reply(`📡 DEBUG\nA Formats: ${data.f} | A Adaptive: ${data.a}`)
+    let format = formats.find(f => f.url || f.signatureCipher)
 
-    if (!data.direct.length && !data.cipher.length) {
-      await m.reply('📡 DEBUG\nFallback a IOS...')
+    if (!format) throw new Error('NO_FORMAT')
 
-      api = await fetchPlayer(id, cfg.key, cfg.sts, 'IOS')
+    let finalURL = format.url
 
-      await m.reply(`📡 DEBUG\nIOS Status: ${api.status}`)
+    if (!finalURL && format.signatureCipher) {
+      await m.reply('📡 DEBUG\nCipher detectado')
 
-      data = analyze(api.json)
+      const cipher = parseCipher(format.signatureCipher)
 
-      await m.reply(`📡 DEBUG\nI Formats: ${data.f} | I Adaptive: ${data.a}`)
+      const jsUrl = await getBaseJS(html)
+      await m.reply('📡 DEBUG\nJS URL:\n' + jsUrl)
+
+      const js = await fetchJS(jsUrl)
+
+      const fnCode = extractDecryptFunc(js)
+
+      if (!fnCode) throw new Error('NO_DECRYPT_FUNC')
+
+      const sig = await decryptSignature(cipher.s, fnCode)
+
+      finalURL = cipher.url + '&' + cipher.sp + '=' + sig
     }
 
-    await m.reply(`📡 DEBUG\nDirect: ${data.direct.length} | Cipher: ${data.cipher.length}`)
-
-    if (data.direct.length) {
-      await m.reply('📡 DEBUG\nURL:\n' + data.direct[0])
-
-      await conn.sendMessage(m.chat, {
-        video: { url: data.direct[0] },
-        caption: '✅ Video descargado'
-      }, { quoted: m })
-    } else if (data.cipher.length) {
-      throw new Error('CIPHER')
-    } else {
-      throw new Error('NO_VIDEO')
-    }
+    await m.reply('📡 DEBUG\nURL final:\n' + finalURL)
 
     await conn.sendMessage(m.chat, {
-      react: { text: '✅', key: m.key }
-    })
+      video: { url: finalURL },
+      caption: '✅ Video descargado'
+    }, { quoted: m })
 
   } catch (e) {
-    await m.reply(`📡 DEBUG ERROR\n${e.stack || e.message}`)
-
-    let msg = '❌ Error\n\n'
-
-    if (e.message === 'NO_ID') msg += 'ID inválido'
-    else if (e.message === 'NO_KEY') msg += 'Sin API KEY'
-    else if (e.message === 'CIPHER') msg += '⚠️ Requiere descifrado'
-    else if (e.message === 'NO_VIDEO') msg += '❌ No se encontró video'
-    else msg += e.message
-
-    await m.reply(msg)
+    await m.reply('📡 DEBUG ERROR\n' + (e.stack || e.message))
+    await m.reply('❌ Falló scraping hardcore')
   }
 }
 
