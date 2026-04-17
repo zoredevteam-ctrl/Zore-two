@@ -1,15 +1,14 @@
 const handler = async (m, { conn, who }) => {
     if (!who) return m.reply('⚠️ *MENCIONA O RESPONDE A UN USUARIO*')
 
-    if (who === m.sender) return m.reply('⚠️ No puedes expulsarte a ti mismo')
-
     const botJid = conn.user.id.split(':')[0] + '@s.whatsapp.net'
+
     if (who === botJid) return m.reply('⚠️ No puedo expulsarme a mí mismo')
 
     try {
         await conn.groupParticipantsUpdate(m.chat, [who], 'remove')
         m.reply('✅ Usuario eliminado del grupo')
-    } catch (e) {
+    } catch {
         m.reply('❌ No se pudo expulsar al usuario')
     }
 }
