@@ -3,8 +3,12 @@ import fs from 'fs'
 import { database } from '../lib/database.js'
 import {
     makeWASocket,
-    useMultiFileAuthState
+    useMultiFileAuthState,
+    fetchLatestBaileysVersion,
+    makeCacheableSignalKeyStore,
+    Browsers
 } from '@whiskeysockets/baileys'
+import pino from 'pino'
 
 if (!Array.isArray(global.conns)) global.conns = []
 
@@ -49,10 +53,22 @@ const handler = async (m, { conn, prefix }) => {
 
     try {
         const { state } = await useMultiFileAuthState(sessionPath)
+        const { version } = await fetchLatestBaileysVersion()
+        const logger = pino({ level: 'silent' })
 
         const sock = makeWASocket({
-            auth: state,
-            printQRInTerminal: false
+            version,
+            logger,
+            browser: Browsers.macOS('Chrome'),
+            auth: {
+                creds: state.creds,
+                keys: makeCacheableSignalKeyStore(state.keys, logger)
+            },
+            printQRInTerminal: false,
+            markOnlineOnConnect: false,
+            syncFullHistory: false,
+            generateHighQualityLinkPreview: true,
+            keepAliveIntervalMs: 20000
         })
 
         setTimeout(async () => {
