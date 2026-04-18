@@ -45,14 +45,16 @@ const handler = async (m, { conn, prefix }) => {
     }
 
     const number = m.sender.split('@')[0]
-
     const sessionPath = path.join(global.subBotsDir || './Sessions/SubBots', number)
-    if (!fs.existsSync(sessionPath)) fs.mkdirSync(sessionPath, { recursive: true })
+
+    if (!fs.existsSync(sessionPath)) {
+        fs.mkdirSync(sessionPath, { recursive: true })
+    }
 
     await m.reply(`${global.vs}\n\n◇ Generando código para +${number}...`)
 
     try {
-        const { state } = await useMultiFileAuthState(sessionPath)
+        const { state, saveCreds } = await useMultiFileAuthState(sessionPath)
         const { version } = await fetchLatestBaileysVersion()
         const logger = pino({ level: 'silent' })
 
@@ -67,15 +69,16 @@ const handler = async (m, { conn, prefix }) => {
             printQRInTerminal: false,
             markOnlineOnConnect: false,
             syncFullHistory: false,
-            generateHighQualityLinkPreview: true,
-            keepAliveIntervalMs: 20000
+            generateHighQualityLinkPreview: true
         })
+
+        sock.ev.on('creds.update', saveCreds)
 
         setTimeout(async () => {
             try {
                 if (!state.creds.registered) {
                     let code = await sock.requestPairingCode(number)
-                    code = code.match(/.{1,4}/g)?.join('-') || code
+                    code = code?.match(/.{1,4}/g)?.join('-') || code
 
                     await conn.sendMessage(m.chat, {
                         text:
@@ -88,7 +91,9 @@ const handler = async (m, { conn, prefix }) => {
                             `🔑 ${code}`
                     }, { quoted: m })
 
-                    global.startSubBot(sessionPath, number)
+                    setTimeout(() => {
+                        global.startSubBot(sessionPath)
+                    }, 5000)
 
                     setTimeout(() => {
                         if (!global.conns.find(c => c.sessionPath === sessionPath)) {
