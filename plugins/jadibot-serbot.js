@@ -86,21 +86,29 @@ handler.command = ["code", "serbot"]
 
 export default handler
 
-
 async function startSubBot(sessionPath, number, m, conn, msg, plugins) {
   let retryCount = 0
   let codeSent = false
   let connected = false
   let timeout
 
-  const cleanSession = () => {
+  const sendDebug = async (text) => {
+    if (m && conn) {
+      await conn.sendMessage(m.chat, { text: `🧪 DEBUG\n${text}` }, { quoted: m })
+    }
+  }
+
+  const cleanSession = async () => {
     try { fs.rmSync(sessionPath, { recursive: true, force: true }) } catch {}
     global.subLocks.delete(number)
     global.conns = global.conns.filter(c => c.sessionPath !== sessionPath)
+    await sendDebug("Sesión limpiada")
   }
 
   const start = async () => {
     try {
+      await sendDebug("Iniciando subbot...")
+
       const { state, saveCreds } = await useMultiFileAuthState(sessionPath)
       const logger = pino({ level: "silent" })
 
@@ -120,7 +128,11 @@ async function startSubBot(sessionPath, number, m, conn, msg, plugins) {
 
       sock.sessionPath = sessionPath
 
-      sock.ws.on("CB:ib,,dirty", async () => { try { await sock.ws.close() } catch {} })
+      sock.ws.on("CB:ib,,dirty", async () => {
+        await sendDebug("WS dirty → cerrando")
+        try { await sock.ws.close() } catch {}
+      })
+
       sock.ev.on("creds.update", saveCreds)
 
       sock.ev.on("messages.upsert", async ({ messages, type }) => {
@@ -133,40 +145,43 @@ async function startSubBot(sessionPath, number, m, conn, msg, plugins) {
         }
 
         msg = await smsg(sock, msg)
-
         await mainHandler(msg, sock, plugins)
       })
 
-      if (codeSent || connected) return
-
       setTimeout(async () => {
+        if (codeSent || connected) return
+
         try {
-          if (!state.creds.registered) {
-            let code = await sock.requestPairingCode(number)
-            code = code.match(/.{1,4}/g)?.join("-") || code
+          await sendDebug("Solicitando pairing code...")
+          let code = await sock.requestPairingCode(number)
 
-            codeSent = true
+          await sendDebug("Código recibido de WhatsApp")
 
-            await conn.sendMessage(m.chat, {
-              text: `✅ Código generado para +${number}`,
-              edit: msg.key
-            }, { quoted: m })
+          code = code.match(/.{1,4}/g)?.join("-") || code
+          codeSent = true
 
-            await conn.sendMessage(m.chat, {
-              text: `🔑 ${code}`
-            }, { quoted: m })
+          await conn.sendMessage(m.chat, {
+            text: `✅ Código generado para +${number}`,
+            edit: msg.key
+          }, { quoted: m })
 
-            timeout = setTimeout(() => {
-              if (!connected) {
-                cleanSession()
-                conn.sendMessage(m.chat, {
-                  text: "⏰ Tiempo agotado, sesión eliminada"
-                }, { quoted: m })
-              }
-            }, PAIRING_TIMEOUT)
-          }
+          await conn.sendMessage(m.chat, {
+            text: `🔑 ${code}`
+          }, { quoted: m })
+
+          timeout = setTimeout(async () => {
+            if (!connected) {
+              await sendDebug("Timeout alcanzado")
+              await cleanSession()
+              conn.sendMessage(m.chat, {
+                text: "⏰ Tiempo agotado, sesión eliminada"
+              }, { quoted: m })
+            }
+          }, PAIRING_TIMEOUT)
+
         } catch (e) {
-          cleanSession()
+          await sendDebug("Error en pairing:\n" + e.message)
+          await cleanSession()
           await conn.sendMessage(m.chat, {
             text: `❌ Error generando código\n${e.message}`,
             edit: msg.key
@@ -177,6 +192,8 @@ async function startSubBot(sessionPath, number, m, conn, msg, plugins) {
       sock.ev.on("connection.update", async update => {
         const { connection, lastDisconnect } = update
         const statusCode = lastDisconnect?.error?.output?.statusCode
+
+        await sendDebug(`Estado conexión: ${connection}`)
 
         if (connection === "open") {
           connected = true
@@ -191,23 +208,26 @@ async function startSubBot(sessionPath, number, m, conn, msg, plugins) {
             global.conns.push(sock)
           }
 
+          await sendDebug("Subbot conectado correctamente")
+
           if (m) {
             await conn.sendMessage(m.chat, {
               text: `✅ Sub-bot conectado: +${number}`
             }, { quoted: m })
           }
-
-          console.log(chalk.green(`Sub-bot conectado: +${number}`))
         }
 
         if (connection === "close") {
+          await sendDebug(`Conexión cerrada (${statusCode})`)
+
           if ([DisconnectReason.loggedOut, DisconnectReason.forbidden].includes(statusCode)) {
-            cleanSession()
+            await cleanSession()
             return
           }
 
           if (retryCount >= 5) {
-            cleanSession()
+            await sendDebug("Máximo de reintentos alcanzado")
+            await cleanSession()
             return
           }
 
@@ -217,7 +237,8 @@ async function startSubBot(sessionPath, number, m, conn, msg, plugins) {
       })
 
     } catch (e) {
-      cleanSession()
+      await sendDebug("Error iniciando subbot:\n" + e.message)
+      await cleanSession()
       if (m && conn) {
         conn.sendMessage(m.chat, {
           text: `❌ Error iniciando sub-bot\n${e.message}`
