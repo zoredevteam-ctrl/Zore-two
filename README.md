@@ -66,6 +66,6 @@ Escanea el QR o usa el código de emparejamiento para vincular.
 
 <div align="center">
 
-𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 💗 — *No me dejes sola, ¿eh?*
+𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 🥵 — *No me dejes sola, ¿eh?*
 
 </div>
