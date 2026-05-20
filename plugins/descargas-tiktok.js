@@ -61,7 +61,8 @@ const searchTikTok = async (query) => {
 
 // ─── HANDLER PRINCIPAL ───────────────────────────────────────────────────────
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
+let handler = async (m, { conn, args, prefix, command }) => {
+    const text = args.join(' ')
     const query = (text || '').trim()
 
     if (!query) {
@@ -69,7 +70,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
                   `🌸 *¡Oye, Darling!* Necesito que me digas qué buscar~\n` +
                   `¿Crees que puedo leer tu mente? _(bueno, casi... pero no)_ 💕\n\n` +
-                  `⟡ Uso correcto: *${usedPrefix + command} <lo que buscas>*`
+                  `⟡ Uso correcto: *${prefix + command} <lo que buscas>*`
         }, { quoted: m })
     }
 
