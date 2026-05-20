@@ -1,5 +1,3 @@
-import fetch from 'node-fetch'
-
 const handler = async (m, { conn, args }) => {
     let text = args.join(' ').trim()
 
@@ -21,7 +19,7 @@ const handler = async (m, { conn, args }) => {
 
         if (!res.ok) throw new Error(`API devolvió ${res.status}`)
 
-        const buffer = await res.buffer()
+        const buffer = Buffer.from(await res.arrayBuffer())
 
         await conn.sendMessage(m.chat, {
             sticker: buffer
