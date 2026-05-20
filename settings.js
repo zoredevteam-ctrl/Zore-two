@@ -98,7 +98,7 @@ global.rcanal         = 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y'
 
 // JID del canal — formato: 120363XXXXXXXXX@newsletter
 // Cómo obtenerlo: WhatsApp Web → F12 → Network → busca "newsletter"
-global.newsletterJid  = '120363401404146384@newsletter'
+global.newsletterJid  = '120363404822730259@newsletter'
 global.newsletterName = '💗 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 💗'
 
 // Compatibilidad con settings anterior
