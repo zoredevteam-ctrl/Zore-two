@@ -56,7 +56,7 @@ const downloadTikTok = async (url) => {
 
 // ─── HANDLER PRINCIPAL ───────────────────────────────────────────────────────
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
+let handler = async (m, { conn, args, prefix, command }) => {
     const url = args[0] || (m.quoted?.text ? m.quoted.text.trim() : '')
 
     if (!url || !url.includes('tiktok.com')) {
@@ -64,7 +64,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
             text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
                   `🌸 *¡Darling!* Eso no parece un link de TikTok~ 😤\n` +
                   `Dame un enlace válido, ¿sí? No soy adivina... _o casi_ 💕\n\n` +
-                  `⟡ Uso correcto: *${usedPrefix + command} <link de tiktok>*`
+                  `⟡ Uso correcto: *${prefix + command} <link de tiktok>*`
         }, { quoted: m })
     }
 
