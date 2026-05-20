@@ -1,45 +1,84 @@
 export default {
-    before: async function (m, { conn, isAdmin, isOwner }) {
+    before: async function (m, { conn, isAdmin, isOwner, isBotAdmin }) {
         if (!m.isGroup) return true
         if (!m.text) return true
         if (isAdmin || isOwner) return true
 
-        let user = global.db.data.users[m.sender]
-        if (!user) {
+        // Inicializar usuario si no existe
+        if (!global.db.data.users[m.sender]) {
             global.db.data.users[m.sender] = { toxicWarn: 0 }
-            user = global.db.data.users[m.sender]
         }
+        let user = global.db.data.users[m.sender]
+        if (typeof user.toxicWarn !== 'number') user.toxicWarn = 0
 
         const toxicRegex = /\b(puta|puto|mierda|joder|pendejo|gilipollas|cabrón|zorra|verga|coño|culo|maricón|hdp|hijo de puta|negro|negra|estúpido|idiota|imbécil)\b/i
 
-        if (toxicRegex.test(m.text.toLowerCase())) {
-            console.log('[ANTI-TOXIC] Detectado en:', m.sender) // Para ver en consola si entra
+        if (!toxicRegex.test(m.text)) return true
 
+        console.log('[ANTI-TOXIC] Detectado en:', m.sender)
+
+        // ─── BORRAR MENSAJE ──────────────────────────────────────────────
+        if (isBotAdmin) {
             try {
-                await conn.sendMessage(m.chat, { delete: m.key })
-            } catch (e) {}
-
-            user.toxicWarn = (user.toxicWarn || 0) + 1
-
-            const name = `@${m.sender.split('@')[0]}`
-
-            if (user.toxicWarn === 1) {
-                await conn.reply(m.chat, `⚠️ *¡Primera advertencia darling!* 🌸\nNo uses palabras tóxicas o te saco del grupo.`, m, { mentions: [m.sender] })
-                await m.react('⚠️')
-            } else if (user.toxicWarn === 2) {
-                await conn.reply(m.chat, `⚠️ *¡Segunda advertencia!* ${name}\nYa van dos... la próxima te echo 😡`, m, { mentions: [m.sender] })
-                await m.react('😡')
-            } else if (user.toxicWarn >= 3) {
-                await conn.reply(m.chat, `💥 *¡TERCERA Y ÚLTIMA!* ${name}\nLo siento darling, pero te tengo que sacar... 💔`, m, { mentions: [m.sender] })
-                await m.react('💀')
-
-                await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-                user.toxicWarn = 0
+                await conn.sendMessage(m.chat, {
+                    delete: {
+                        remoteJid: m.chat,
+                        fromMe: false,
+                        id: m.key.id,
+                        participant: m.sender
+                    }
+                })
+            } catch (e) {
+                console.log('[ANTI-TOXIC] Error al borrar:', e.message)
             }
-
-            return false // Bloquea que otros comandos procesen este mensaje
         }
 
-        return true
+        // ─── INCREMENTAR ADVERTENCIAS ────────────────────────────────────
+        user.toxicWarn += 1
+        const warns = user.toxicWarn
+        const mention = [m.sender]
+        const name = `@${m.sender.split('@')[0]}`
+
+        // ─── ADVERTENCIA 1 ───────────────────────────────────────────────
+        if (warns === 1) {
+            await conn.sendMessage(m.chat, {
+                text: `⚠️ *¡Primera advertencia darling!* 🌸\nNo uses palabras tóxicas ${name} o te saco del grupo.`,
+                mentions: mention
+            }, { quoted: m })
+            await m.react('⚠️')
+
+        // ─── ADVERTENCIA 2 ───────────────────────────────────────────────
+        } else if (warns === 2) {
+            await conn.sendMessage(m.chat, {
+                text: `⚠️ *¡Segunda advertencia!* ${name}\nYa van dos... la próxima te echo 😡`,
+                mentions: mention
+            }, { quoted: m })
+            await m.react('😡')
+
+        // ─── ADVERTENCIA 3 → EXPULSAR ────────────────────────────────────
+        } else if (warns >= 3) {
+            await conn.sendMessage(m.chat, {
+                text: `💥 *¡TERCERA Y ÚLTIMA!* ${name}\nLo siento darling, pero te tengo que sacar... 💔`,
+                mentions: mention
+            }, { quoted: m })
+            await m.react('💀')
+
+            if (isBotAdmin) {
+                try {
+                    await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+                } catch (e) {
+                    console.log('[ANTI-TOXIC] Error al expulsar:', e.message)
+                }
+            } else {
+                await conn.sendMessage(m.chat, {
+                    text: `⚠️ No puedo expulsar a ${name} porque no soy administrador.`,
+                    mentions: mention
+                })
+            }
+
+            user.toxicWarn = 0
+        }
+
+        return false
     }
 }
