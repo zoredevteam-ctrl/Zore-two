@@ -181,37 +181,47 @@ const handler = async (m, { conn, args }) => {
             url = meta.download.url
 
             buffer =
-    await fastDownload(
-        url,
-        conn,
-        m
-    )
+                await fastDownload(url)
+        }
 
-await dbg(
-    conn,
-    m.chat,
-    `Audio bytes: ${buffer.length}
+        const downloadTime =
+            Date.now() - downloadStart
+
+        await dbg(
+            conn,
+            m.chat,
+            `Download: ${downloadTime}ms (${(buffer.length / 1024 / 1024).toFixed(2)}MB)`,
+            m
+        )
+
+        await dbg(
+            conn,
+            m.chat,
+            `Audio bytes: ${buffer.length}
 Header: ${buffer.subarray(0,16).toString('hex')}`,
-    m
-)
+            m
+        )
 
-await dbg(
-    conn,
-    m.chat,
-    `📤 SENDING AUDIO...`,
-    m
-)
+        await dbg(
+            conn,
+            m.chat,
+            `📤 SENDING AUDIO...`,
+            m
+        )
 
-await conn.sendMessage(
-    m.chat,
-    {
-        audio: buffer,
-        mimetype: 'audio/mp4',
-        fileName: `${id}.m4a`,
-        ptt: false
-    },
-    { quoted: m }
-)
+        const sendStart =
+            Date.now()
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                audio: buffer,
+                mimetype: 'audio/mp4',
+                fileName: `${id}.m4a`,
+                ptt: false
+            },
+            { quoted: m }
+        )
 
         const sendTime =
             Date.now() - sendStart
@@ -222,7 +232,8 @@ await conn.sendMessage(
         await dbg(
             conn,
             m.chat,
-            `Send: ${sendTime}ms\nTotal: ${totalTime}ms`,
+            `Send: ${sendTime}ms
+Total: ${totalTime}ms`,
             m
         )
 
