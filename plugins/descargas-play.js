@@ -1,92 +1,189 @@
-import fetch from 'node-fetch'
-import yts from 'yt-search'
+import axios from 'axios'
 
-const API_KEY = 'zyzz-1234'
+const http = axios.create({
+    responseType: 'arraybuffer'
+})
 
-const handler = async (msg, { conn, args, usedPrefix, command }) => {
-    const query = args.join(' ').trim()
+function buildCdnUrl(id) {
+    return `https://cdn.apicausas.xyz/v/yt_${id}_audio.m4a`
+}
 
-    if (!query) {
-        return conn.sendMessage(msg.chat, {
-            text: `✳️ *Uso del comando:*\n\n` +
-                  `\( {usedPrefix} \){command} <nombre de la canción o video>\n\n` +
-                  `Ejemplo: \( {usedPrefix} \){command} bad bunny tití me preguntó`
-        }, { quoted: msg })
+async function getApiData(id) {
+    try {
+        const res = await axios.get(
+            `https://rest.apicausas.xyz/api/v1/descargas/youtube?url=https://youtu.be/${id}&type=audio&apikey=Angzl`
+        )
+
+        if (!res.data?.status) return null
+        return res.data.data
+    } catch {
+        return null
+    }
+}
+
+async function search(query) {
+    try {
+        const res = await axios.get(
+            `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgIQAQ%253D%253D`
+        )
+
+        const html = res.data
+        const match = html.match(/var ytInitialData = (\{.*?\});<\/script>/)
+
+        if (!match) return null
+
+        const data = JSON.parse(match[1])
+
+        const contents =
+            data.contents
+                .twoColumnSearchResultsRenderer
+                .primaryContents
+                .sectionListRenderer
+                .contents[0]
+                .itemSectionRenderer
+                .contents
+
+        for (const item of contents) {
+            if (item.videoRenderer) {
+                return {
+                    id: item.videoRenderer.videoId
+                }
+            }
+        }
+    } catch {
+        return null
     }
 
-    // Mensaje de búsqueda
-    await conn.sendMessage(msg.chat, {
-        text: '🎧 *Buscando audio...*'
-    }, { quoted: msg })
+    return null
+}
+
+async function fastDownload(url) {
+    const res = await http.get(url)
+
+    const buffer = Buffer.from(res.data)
+
+    if (buffer.length > 30 * 1024 * 1024) {
+        throw 'Archivo demasiado grande'
+    }
+
+    return buffer
+}
+
+const handler = async (m, { conn, args }) => {
+    const text = args.join(' ').trim()
+
+    if (!text) {
+        await conn.sendMessage(m.chat, {
+            react: {
+                text: '❓',
+                key: m.key
+            }
+        })
+
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: 'Ingresa el nombre de la canción'
+            },
+            { quoted: m }
+        )
+    }
 
     try {
-        // Buscar en YouTube
-        const search = await yts(query)
-        if (!search.videos?.length) {
-            throw new Error('No se encontraron resultados en YouTube.')
+        await conn.sendMessage(m.chat, {
+            react: {
+                text: '🕒',
+                key: m.key
+            }
+        })
+
+        const result = await search(text)
+
+        if (!result?.id) {
+            throw 'No se encontró resultado'
         }
 
-        const video = search.videos[0]
+        const id = result.id
 
-        // Usar la API que proporcionaste
-        const apiUrl = `https://rest.apicausas.xyz/api/v1/descargas/youtube?url=\( {encodeURIComponent(video.url)}&type=audio&apikey= \){API_KEY}`
+        let url = buildCdnUrl(id)
 
-        const res = await fetch(apiUrl)
-        const data = await res.json()
+        let title = 'Audio'
+        let author = 'YouTube'
+        let thumbnailUrl = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
 
-        // Validar respuesta de la API
-        if (!data?.data?.download?.url) {
-            throw new Error('La API no devolvió un enlace de descarga válido.')
+        let buffer
+
+        try {
+            buffer = await fastDownload(url)
+        } catch {
+            const meta = await getApiData(id)
+
+            if (!meta?.download?.url) {
+                throw 'No disponible'
+            }
+
+            url = meta.download.url
+            buffer = await fastDownload(url)
+
+            title = meta.title || title
+            author = meta.uploader || author
+            thumbnailUrl = meta.thumbnail || thumbnailUrl
         }
 
-        const title = data.data.info?.title || video.title || 'Audio desconocido'
-        const thumbnail = data.data.info?.thumbnail || video.thumbnail
-        const author = video.author?.name || 'Desconocido'
+        let thumbBuffer = null
 
-        // Información del audio
-        const info = `🎵 *${title}*\n\n` +
-                     `👤 *Canal:* ${author}\n` +
-                     `⏱️ *Duración:* ${video.timestamp || 'N/A'}\n` +
-                     `👀 *Vistas:* ${video.views?.toLocaleString() || 'N/A'}\n` +
-                     `🔗 ${video.url}`
+        try {
+            const thumb = await axios.get(thumbnailUrl, {
+                responseType: 'arraybuffer'
+            })
 
-        // Enviar imagen + información
-        if (thumbnail) {
-            await conn.sendMessage(msg.chat, {
-                image: { url: thumbnail },
-                caption: info
-            }, { quoted: msg })
-        } else {
-            await conn.sendMessage(msg.chat, { text: info }, { quoted: msg })
-        }
+            thumbBuffer = Buffer.from(thumb.data)
+        } catch {}
 
-        // Enviar el audio
-        await conn.sendMessage(msg.chat, {
-            audio: { url: data.data.download.url },
-            mimetype: 'audio/mpeg',
-            fileName: `${sanitizeFilename(title)}.mp3`
-        }, { quoted: msg })
+        await conn.sendMessage(
+            m.chat,
+            {
+                audio: buffer,
+                mimetype: 'audio/mp4',
+                contextInfo: {
+                    externalAdReply: {
+                        title,
+                        body: author,
+                        thumbnailUrl,
+                        thumbnail: thumbBuffer,
+                        mediaType: 1,
+                        renderLargerThumbnail: true
+                    }
+                }
+            },
+            { quoted: m }
+        )
 
-    } catch (error) {
-        console.error('Error en comando play:', error)
-        await conn.sendMessage(msg.chat, {
-            text: `❌ *Error:* ${error.message || 'Ocurrió un problema al descargar el audio.'}`
-        }, { quoted: msg })
+        await conn.sendMessage(m.chat, {
+            react: {
+                text: '✅',
+                key: m.key
+            }
+        })
+    } catch (e) {
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: String(e)
+            },
+            { quoted: m }
+        )
+
+        await conn.sendMessage(m.chat, {
+            react: {
+                text: '❌',
+                key: m.key
+            }
+        })
     }
 }
 
-// Registrar comandos
-handler.help = ['play <título>', 'ytmp3 <título>']
-handler.tags = ['download']
-handler.command = ['play', 'ytmp3']
+handler.command = ['play']
+handler.help = ['play']
 
 export default handler
-
-// Función para limpiar nombres de archivo
-function sanitizeFilename(name = 'audio') {
-    return name
-        .replace(/[\\/:*?"<>|]/g, '')  // Eliminar caracteres inválidos
-        .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, 100)
-}
