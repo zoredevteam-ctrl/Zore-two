@@ -1,4 +1,11 @@
 import axios from 'axios'
+import fs from 'fs/promises'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+import os from 'os'
+import path from 'path'
+
+const execAsync = promisify(exec)
 
 const http = axios.create({
     responseType: 'arraybuffer',
@@ -16,21 +23,7 @@ async function dbg(conn, chat, text, quoted) {
 }
 
 function buildCdnUrl(id) {
-    return `https://cdn.apicausas.xyz/v/yt_${id}_audio.mp3`
-}
-
-async function getApiData(id) {
-    try {
-        const res = await axios.get(
-            `https://rest.apicausas.xyz/api/v1/descargas/youtube?url=https://youtu.be/${id}&type=audio&apikey=Angzl`,
-            { timeout: 30000 }
-        )
-
-        if (!res.data?.status) return null
-        return res.data.data
-    } catch {
-        return null
-    }
+    return `https://cdn.apicausas.xyz/v/yt_${id}_audio.m4a`
 }
 
 async function search(query) {
@@ -83,6 +76,10 @@ async function search(query) {
 async function fastDownload(url) {
     const res = await http.get(url)
 
+    if (res.status >= 400) {
+        throw new Error(`HTTP ${res.status}`)
+    }
+
     const buffer = Buffer.from(res.data)
 
     if (buffer.length > 30 * 1024 * 1024) {
@@ -92,47 +89,97 @@ async function fastDownload(url) {
     return buffer
 }
 
-const handler = async (m, { conn, args }) => {
-    const totalStart = Date.now()
+async function convertToMp3(buffer, id) {
+    const tmpDir = os.tmpdir()
 
-    const text = args.join(' ').trim()
+    const input =
+        path.join(
+            tmpDir,
+            `${id}_${Date.now()}.m4a`
+        )
+
+    const output =
+        path.join(
+            tmpDir,
+            `${id}_${Date.now()}.mp3`
+        )
+
+    await fs.writeFile(
+        input,
+        buffer
+    )
+
+    try {
+        await execAsync(
+            `ffmpeg -y -i "${input}" -vn -ar 44100 -ac 2 -b:a 192k "${output}"`
+        )
+
+        const mp3 =
+            await fs.readFile(output)
+
+        return mp3
+
+    } finally {
+        fs.unlink(input).catch(() => {})
+        fs.unlink(output).catch(() => {})
+    }
+}
+
+const handler = async (
+    m,
+    { conn, args }
+) => {
+    const totalStart =
+        Date.now()
+
+    const text =
+        args.join(' ').trim()
 
     if (!text) {
-        await conn.sendMessage(m.chat, {
-            react: {
-                text: '❓',
-                key: m.key
+        await conn.sendMessage(
+            m.chat,
+            {
+                react: {
+                    text: '❓',
+                    key: m.key
+                }
             }
-        })
+        )
 
         return conn.sendMessage(
             m.chat,
             {
-                text: 'Ingresa el nombre de la canción'
+                text:
+                    'Ingresa el nombre de la canción'
             },
             { quoted: m }
         )
     }
 
     try {
-        await conn.sendMessage(m.chat, {
-            react: {
-                text: '🕒',
-                key: m.key
+        await conn.sendMessage(
+            m.chat,
+            {
+                react: {
+                    text: '🕒',
+                    key: m.key
+                }
             }
-        })
+        )
 
-        const searchStart = Date.now()
+        const searchStart =
+            Date.now()
 
-        const result = await search(text)
-
-        const searchTime =
-            Date.now() - searchStart
+        const result =
+            await search(text)
 
         await dbg(
             conn,
             m.chat,
-            `Search: ${searchTime}ms`,
+            `Search: ${
+                Date.now() -
+                searchStart
+            }ms`,
             m
         )
 
@@ -144,53 +191,44 @@ const handler = async (m, { conn, args }) => {
 
         const id = result.id
 
-        let url = buildCdnUrl(id)
-
-        let buffer
-
         const downloadStart =
             Date.now()
 
-        try {
-            buffer =
-                await fastDownload(url)
-
-        } catch {
-            const apiStart =
-                Date.now()
-
-            const meta =
-                await getApiData(id)
-
-            const apiTime =
-                Date.now() - apiStart
-
-            await dbg(
-                conn,
-                m.chat,
-                `Fallback API: ${apiTime}ms`,
-                m
+        const m4aBuffer =
+            await fastDownload(
+                buildCdnUrl(id)
             )
-
-            if (!meta?.download?.url) {
-                throw new Error(
-                    'No disponible'
-                )
-            }
-
-            url = meta.download.url
-
-            buffer =
-                await fastDownload(url)
-        }
-
-        const downloadTime =
-            Date.now() - downloadStart
 
         await dbg(
             conn,
             m.chat,
-            `Download: ${downloadTime}ms (${(buffer.length / 1024 / 1024).toFixed(2)}MB)`,
+            `Download: ${
+                Date.now() -
+                downloadStart
+            }ms (${(
+                m4aBuffer.length /
+                1024 /
+                1024
+            ).toFixed(2)}MB)`,
+            m
+        )
+
+        const convertStart =
+            Date.now()
+
+        const mp3Buffer =
+            await convertToMp3(
+                m4aBuffer,
+                id
+            )
+
+        await dbg(
+            conn,
+            m.chat,
+            `Convert: ${
+                Date.now() -
+                convertStart
+            }ms`,
             m
         )
 
@@ -200,33 +238,39 @@ const handler = async (m, { conn, args }) => {
         await conn.sendMessage(
             m.chat,
             {
-                audio: buffer,
-                mimetype: 'audio/mpeg',
-                fileName: `${id}.mp3`,
+                audio: mp3Buffer,
+                mimetype:
+                    'audio/mpeg',
+                fileName:
+                    `${id}.mp3`,
                 ptt: false
             },
             { quoted: m }
         )
 
-        const sendTime =
-            Date.now() - sendStart
-
-        const totalTime =
-            Date.now() - totalStart
-
         await dbg(
             conn,
             m.chat,
-            `Send: ${sendTime}ms\nTotal: ${totalTime}ms`,
+            `Send: ${
+                Date.now() -
+                sendStart
+            }ms
+Total: ${
+                Date.now() -
+                totalStart
+            }ms`,
             m
         )
 
-        await conn.sendMessage(m.chat, {
-            react: {
-                text: '✅',
-                key: m.key
+        await conn.sendMessage(
+            m.chat,
+            {
+                react: {
+                    text: '✅',
+                    key: m.key
+                }
             }
-        })
+        )
 
     } catch (e) {
         await conn.sendMessage(
@@ -239,12 +283,15 @@ const handler = async (m, { conn, args }) => {
             { quoted: m }
         )
 
-        await conn.sendMessage(m.chat, {
-            react: {
-                text: '❌',
-                key: m.key
+        await conn.sendMessage(
+            m.chat,
+            {
+                react: {
+                    text: '❌',
+                    key: m.key
+                }
             }
-        })
+        )
     }
 }
 
