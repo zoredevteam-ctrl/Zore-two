@@ -16,7 +16,7 @@ async function dbg(conn, chat, text, quoted) {
 }
 
 function buildCdnUrl(id) {
-    return `https://cdn.apicausas.xyz/v/yt_${id}_audio.m4a`
+    return `https://cdn.apicausas.xyz/v/yt_${id}_audio.mp3`
 }
 
 async function getApiData(id) {
@@ -194,21 +194,6 @@ const handler = async (m, { conn, args }) => {
             m
         )
 
-        await dbg(
-            conn,
-            m.chat,
-            `Audio bytes: ${buffer.length}
-Header: ${buffer.subarray(0,16).toString('hex')}`,
-            m
-        )
-
-        await dbg(
-            conn,
-            m.chat,
-            `📤 SENDING AUDIO...`,
-            m
-        )
-
         const sendStart =
             Date.now()
 
@@ -216,8 +201,8 @@ Header: ${buffer.subarray(0,16).toString('hex')}`,
             m.chat,
             {
                 audio: buffer,
-                mimetype: 'audio/mp4',
-                fileName: `${id}.m4a`,
+                mimetype: 'audio/mpeg',
+                fileName: `${id}.mp3`,
                 ptt: false
             },
             { quoted: m }
@@ -232,8 +217,7 @@ Header: ${buffer.subarray(0,16).toString('hex')}`,
         await dbg(
             conn,
             m.chat,
-            `Send: ${sendTime}ms
-Total: ${totalTime}ms`,
+            `Send: ${sendTime}ms\nTotal: ${totalTime}ms`,
             m
         )
 
