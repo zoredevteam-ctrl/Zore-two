@@ -1,49 +1,107 @@
-import { generateWAMessageFromContent } from '@whiskeysockets/baileys';
+// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// ✦ [ PROTOCOLO KIRA — DEATH NOTE RP ]
+// ⟡ ZoreDevTeam
+
+import { generateWAMessageFromContent } from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn, who, prefix }) => {
-    // Obtenemos el usuario etiquetado (compatible con tu handler)
-    who = who || m.mentionedJid?.[0] || m.quoted?.sender;
-    if (!who) return m.reply(`👁️ 𝕰𝖙𝖎𝖖𝖚𝖊𝖙𝖆 𝖆 𝖆𝖑𝖌𝖚𝖎𝖊𝖓 𝖕𝖆𝖗𝖆 𝖏𝖚𝖟𝖌𝖆𝖗𝖑𝖔.`);
 
-    let kiraText = `🩸 *𝕰𝖑 𝖏𝖚𝖎𝖈𝖎𝖔 𝖍𝖆 𝖈𝖔𝖒𝖊𝖓𝖟𝖆𝖉𝖔* 🩸\n\n` +
-                   `_¿Qué destino le espera a @${who.split('@')[0]}?_`;
+    if (!who) {
+        return conn.sendMessage(m.chat, {
+            text: `╔══「 🩸 𝕵𝖚𝖎𝖈𝖎𝖔 𝖉𝖊 𝕶𝖎𝖗𝖆 」══╗\n\n` +
+                  `꒰ 👁️ ꒱ Necesito un objetivo, Darling~\n` +
+                  `⟡ Uso: *${prefix}kira @usuario*\n\n` +
+                  `╚══「 💕 © 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎 」══╝`
+        }, { quoted: m })
+    }
+
+    const targetNum = who.split('@')[0]
+
+    let targetName = targetNum
+    try { const n = await conn.getName(who); if (n) targetName = n } catch {}
+
+    const kiraText =
+        `🩸 *𝕰𝖑 𝕵𝖚𝖎𝖈𝖎𝖔 𝖍𝖆 𝖈𝖔𝖒𝖊𝖓𝖟𝖆𝖉𝖔* 🩸\n\n` +
+        `👁️ Objetivo detectado: @${targetNum}\n` +
+        `📓 El cuaderno está abierto...\n\n` +
+        `_¿Qué destino le espera a *${targetName}*?_\n` +
+        `_Elige sabiamente, pues la decisión es final~_`
 
     const buttons = [
         {
-            name: "quick_reply",
-            buttonParamsJson: `{"display_text":"💔 Ataque Cardiaco","id":"\( {prefix}dn @ \){who.split('@')[0]} Ataque al corazón"}`
+            name: 'quick_reply',
+            buttonParamsJson: JSON.stringify({
+                display_text: '💔 Ataque Cardiaco',
+                id: `${prefix}dn @${targetNum} Ataque al corazón`
+            })
         },
         {
-            name: "quick_reply",
-            buttonParamsJson: `{"display_text":"🚗 Accidente","id":"\( {prefix}dn @ \){who.split('@')[0]} Accidente de tráfico"}`
+            name: 'quick_reply',
+            buttonParamsJson: JSON.stringify({
+                display_text: '🚗 Accidente de Tráfico',
+                id: `${prefix}dn @${targetNum} Accidente de tráfico`
+            })
         },
         {
-            name: "quick_reply",
-            buttonParamsJson: `{"display_text":"🕊️ Perdonar","id":"${prefix}say Kira ha decidido tener piedad."}`
+            name: 'quick_reply',
+            buttonParamsJson: JSON.stringify({
+                display_text: '🎭 Muerte Misteriosa',
+                id: `${prefix}dn @${targetNum} Muerte misteriosa`
+            })
+        },
+        {
+            name: 'quick_reply',
+            buttonParamsJson: JSON.stringify({
+                display_text: '🕊️ Perdonar la vida',
+                id: `${prefix}say 📓 Kira ha cerrado el cuaderno... por ahora~`
+            })
         }
-    ];
+    ]
 
     const messageContent = {
         viewOnceMessage: {
             message: {
                 interactiveMessage: {
                     body: { text: kiraText },
-                    footer: { text: '𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾' },
+                    footer: { text: '🩸 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎 · Death Note RP' },
                     header: {
                         title: '📓 𝕵𝖚𝖎𝖈𝖎𝖔 𝖉𝖊 𝕶𝖎𝖗𝖆',
                         hasMediaAttachment: false
                     },
-                    nativeFlowMessage: { buttons }
+                    nativeFlowMessage: { buttons },
+                    contextInfo: {
+                        mentionedJid: [who],
+                        isForwarded: true,
+                        forwardedNewsletterMessageInfo: {
+                            newsletterJid: global.newsletterJid,
+                            serverMessageId: '',
+                            newsletterName: global.newsletterName
+                        },
+                        externalAdReply: {
+                            title: global.botName,
+                            body: global.botText,
+                            thumbnailUrl: global.icon,
+                            sourceUrl: global.rcanal,
+                            mediaType: 1,
+                            renderLargerThumbnail: false
+                        }
+                    }
                 }
             }
         }
-    };
+    }
 
-    const msg = generateWAMessageFromContent(m.chat, messageContent, {});
-    await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
-};
+    const msg = generateWAMessageFromContent(m.chat, messageContent, {
+        userJid: conn.user.id
+    })
 
-handler.command = ['kira', 'juzgar'];
-handler.group = true;
+    await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
 
-export default handler;
+    await m.react('📓')
+}
+
+handler.command = ['kira', 'juzgar', 'juicio']
+handler.tags = ['fun', 'anime']
+handler.group = true
+
+export default handler
