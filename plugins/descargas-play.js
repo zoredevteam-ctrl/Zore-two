@@ -198,14 +198,15 @@ const handler = async (m, { conn, args }) => {
             Date.now()
 
         await conn.sendMessage(
-            m.chat,
-            {
-                audio: buffer,
-                mimetype: 'audio/mpeg',
-                ptt: false
-            },
-            { quoted: m }
-        )
+    m.chat,
+    {
+        audio: buffer,
+        mimetype: 'audio/mp4',
+        fileName: `${id}.m4a`,
+        ptt: false
+    },
+    { quoted: m }
+)
 
         const sendTime =
             Date.now() - sendStart
