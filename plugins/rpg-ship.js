@@ -2,7 +2,7 @@
 // ✦ [ PROTOCOLO DE SHIP ] — ZoreDevTeam
 // ⟡ Fusión de fotos de perfil + corazón animado + porcentaje de amor
 
-import Jimp from 'jimp'
+import Jimp, { MIME_PNG } from 'jimp'
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
@@ -152,7 +152,7 @@ const buildShipImage = async (buf1, buf2, percent, name1, name2) => {
         }
     }
 
-    return base.getBufferAsync(Jimp.MIME_PNG)
+    return base.getBufferAsync(MIME_PNG)
 }
 
 // ─── HANDLER PRINCIPAL ────────────────────────────────────────────────────────
