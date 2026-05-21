@@ -68,7 +68,7 @@ global.banner    = 'https://wallpapers.com/images/hd/zero-two-pictures-1j4mw86y6
 global.bannerUrl = 'https://wallpapers.com/images/hd/zero-two-pictures-1j4mw86y6ncyfvj2.jpg'
 global.avatar    = 'https://wallpapers.com/images/featured/zero-two-pictures-j468lgu4oedsxfla.jpg'
 global.iconUrl   = 'https://wallpapers.com/images/featured/zero-two-pictures-j468lgu4oedsxfla.jpg'
-global.icon      = 'https://wallpapers.com/images/featured/zero-two-pictures-j468lgu4oedsxfla.jpg'
+global.icon      = 'https://upload.yotsuba.giize.com/u/Php0Pqpr.jpg'
 global.catalogo  = null
 global.catalogImage = null
 
