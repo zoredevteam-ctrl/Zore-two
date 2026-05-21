@@ -1,44 +1,69 @@
-import { database } from '../lib/database.js'
+// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// ✦ [ PROTOCOLO POEMAS ]
+// ⟡ ZoreDevTeam
 
-// Poemas mejorados y con fuente cursiva elegante
 const poemas = [
-    "𝓔𝓷 𝓮𝓵 𝓼𝓲𝓵𝓮𝓷𝓬𝓲𝓸 𝓭𝓮 𝓽𝓾𝓼 𝓸𝓳𝓸𝓼 𝓮𝓷𝓬𝓸𝓷𝓽𝓻𝓮́ 𝓮𝓵 𝓾𝓷𝓲𝓿𝓮𝓻𝓼𝓸 𝓺𝓾𝓮 𝓷𝓾𝓷𝓬𝓪 𝓼𝓾𝓹𝓮 𝓫𝓾𝓼𝓬𝓪𝓻.",
-    "𝓔𝓻𝓮𝓼 𝓮𝓵 𝓿𝓮𝓻𝓼𝓸 𝓶𝓪́𝓼 𝓮𝔁𝓺𝓾𝓲𝓼𝓲𝓽𝓸 𝓺𝓾𝓮 𝓵𝓪 𝓿𝓲𝓭𝓪 𝓮𝓼𝓬𝓻𝓲𝓫𝓲𝓸́ 𝓮𝓷 𝓼𝓮𝓬𝓻𝓮𝓽𝓸 𝓹𝓪𝓻𝓪 𝓶𝓲́.",
-    "𝓢𝓲 𝓮𝓵 𝓽𝓲𝓮𝓶𝓹𝓸 𝓼𝓮 𝓭𝓮𝓽𝓾𝓿𝓲𝓮𝓻𝓪 𝓮𝓷 𝓽𝓾 𝓶𝓲𝓻𝓪𝓭𝓪, 𝓿𝓲𝓿𝓲𝓻𝓲́𝓪 𝓮𝓷 𝓾𝓷𝓪 𝓮𝓽𝓮𝓻𝓷𝓲𝓭𝓪𝓭 𝓹𝓮𝓻𝓯𝓮𝓬𝓽𝓪.",
-    "𝓣𝓾 𝓿𝓸𝔃 𝓮𝓼 𝓵𝓪 𝓶𝓮𝓵𝓸𝓭𝓲́𝓪 𝓺𝓾𝓮 𝓶𝓲 𝓪𝓵𝓶𝓪 𝓮𝓼𝓹𝓮𝓻𝓪𝓫𝓪 𝓮𝓼𝓬𝓾𝓬𝓱𝓪𝓻 𝓹𝓪𝓻𝓪 𝓮𝓶𝓹𝓮𝔃𝓪𝓻 𝓪 𝓵𝓪𝓽𝓲𝓻.",
-    "𝓝𝓸 𝓽𝓮 𝓫𝓾𝓼𝓺𝓾𝓮́ 𝓮𝓷𝓽𝓻𝓮 𝓵𝓪𝓼 𝓮𝓼𝓽𝓻𝓮𝓵𝓵𝓪𝓼, 𝓽𝓮 𝓮𝓷𝓬𝓸𝓷𝓽𝓻𝓮́ 𝓲𝓵𝓾𝓶𝓲𝓷𝓪𝓷𝓭𝓸 𝓶𝓲 𝓹𝓻𝓸𝓹𝓲𝓪 𝓸𝓼𝓬𝓾𝓻𝓲𝓭𝓪𝓭.",
-    "𝓔𝓷 𝓵𝓪 𝓰𝓮𝓸𝓶𝓮𝓽𝓻𝓲́𝓪 𝓭𝓮 𝓽𝓾 𝓼𝓸𝓷𝓻𝓲𝓼𝓪 𝓱𝓪𝓵𝓵𝓮́ 𝓵𝓪 𝓻𝓮𝓼𝓹𝓾𝓮𝓼𝓽𝓪 𝓪 𝓽𝓸𝓭𝓪𝓼 𝓶𝓲𝓼 𝓹𝓻𝓮𝓰𝓾𝓷𝓽𝓪𝓼.",
-    "𝓔𝓻𝓮𝓼 𝓮𝓼𝓮 𝓼𝓾𝓮𝓷̃𝓸 𝓭𝓮𝓵 𝓺𝓾𝓮 𝓷𝓾𝓷𝓬𝓪 𝓺𝓾𝓲𝓮𝓻𝓸 𝓭𝓮𝓼𝓹𝓮𝓻𝓽𝓪𝘳, 𝓵𝓪 𝓻𝓮𝓪𝓵𝓲𝓭𝓪𝓭 𝓶𝓪́𝓼 𝓭𝓾𝓵𝓬𝓮.",
-    "𝓐𝓾𝓷𝓺𝓾𝓮 𝓮𝓵 𝓭𝓮𝓼𝓽𝓲𝓷𝓸 𝓷𝓸𝓼 𝓼𝓮𝓹𝓪𝓻𝓮, 𝓶𝓲 𝓪𝓵𝓶𝓪 𝓼𝓲𝓮𝓶𝓹𝓻𝓮 𝓬𝓸𝓷𝓸𝓬𝓮𝓻𝓪́ 𝓮𝓵 𝓬𝓪𝓶𝓲𝓷𝓸 𝓱𝓪𝓬𝓲𝓪 𝓽𝓲.",
-    "𝓝𝓸 𝓮𝓻𝓮𝓼 𝓾𝓷 𝓬𝓪𝓹𝓲́𝓽𝓾𝓵𝓸 𝓭𝓮 𝓶𝓲 𝓱𝓲𝓼𝓽𝓸𝓻𝓲𝓪, 𝓮𝓻𝓮𝓼 𝓵𝓪 𝓻𝓪𝔃𝓸́𝓷 𝓹𝓸𝓻 𝓵𝓪 𝓺𝓾𝓮 𝓮𝓼𝓬𝓻𝓲𝓫𝓸.",
-    "𝓔𝓵 𝓪𝓶𝓸𝓻 𝓷𝓸 𝓼𝓮 𝓶𝓲𝓭𝓮 𝓮𝓷 𝓮𝓵 𝓽𝓲𝓮𝓶𝓹𝓸, 𝓼𝓲𝓷𝓸 𝓮𝓷 𝓵𝓪 𝓯𝓸𝓻𝓶𝓪 𝓮𝓷 𝓺𝓾𝓮 𝓶𝓮 𝓶𝓲𝓻𝓪𝓼."
+    { texto: "En el silencio de tus ojos encontré el universo que nunca supe buscar.", tema: "mirada" },
+    { texto: "Eres el verso más exquisito que la vida escribió en secreto para mí.", tema: "amor" },
+    { texto: "Si el tiempo se detuviera en tu mirada, viviría en una eternidad perfecta.", tema: "tiempo" },
+    { texto: "Tu voz es la melodía que mi alma esperaba escuchar para empezar a latir.", tema: "voz" },
+    { texto: "No te busqué entre las estrellas, te encontré iluminando mi propia oscuridad.", tema: "encuentro" },
+    { texto: "En la geometría de tu sonrisa hallé la respuesta a todas mis preguntas.", tema: "sonrisa" },
+    { texto: "Eres ese sueño del que nunca quiero despertar, la realidad más dulce.", tema: "sueño" },
+    { texto: "Aunque el destino nos separe, mi alma siempre conocerá el camino hacia ti.", tema: "destino" },
+    { texto: "No eres un capítulo de mi historia, eres la razón por la que escribo.", tema: "historia" },
+    { texto: "El amor no se mide en el tiempo, sino en la forma en que me miras.", tema: "mirada" },
+    { texto: "Cada vez que cierro los ojos te veo, cada vez que los abro te busco.", tema: "amor" },
+    { texto: "Eres la tormenta que no quiero que pase y la calma que necesito sentir.", tema: "sentimientos" },
+    { texto: "Guardé cada palabra tuya como si fueran las últimas flores del invierno.", tema: "palabras" },
+    { texto: "Tu nombre es el poema que mi corazón recita sin que nadie se lo pida.", tema: "nombre" },
+    { texto: "No sé si el paraíso existe, pero sé que se parece mucho a estar contigo.", tema: "paraíso" }
 ]
 
-let handler = async (m, { conn }) => {
-    // Reacción inicial
-    await m.react('✍🏻')
+const decoradores = ['🌸', '💗', '✨', '🌙', '💕', '🌺', '💫', '🎐']
+const pick = arr => arr[Math.floor(Math.random() * arr.length)]
 
-    const poemaRandom = poemas[Math.floor(Math.random() * poemas.length)]
+const getThumbBuffer = async () => {
+    try {
+        const src = global.icon || global.avatar || global.banner
+        if (!src) return null
+        const res = await fetch(src)
+        return Buffer.from(await res.arrayBuffer())
+    } catch { return null }
+}
 
-    const mensajeElegante = `✦ *Poemas para ti* ✦\n\n` +
-                           `“${poemaRandom}”\n\n` +
-                           `— 𝓩𝓮𝓻𝓸 𝓣𝔀𝓸 💕`
+let handler = async (m, { conn, args }) => {
+    await m.react('✍️')
 
-    // Enviar al chat con el botón incrustado del canal (ContextInfo)
+    const poema = pick(poemas)
+    const deco  = pick(decoradores)
+    const thumb = await getThumbBuffer()
+
+    const texto =
+        `╔══「 ${deco} 𝑷𝒐𝒆𝒎𝒂𝒔 𝒅𝒆 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 ${deco} 」══╗\n\n` +
+        `❝ ${poema.texto} ❞\n\n` +
+        `╚══「 💕 © ZoreDevTeam 」══╝`
+
     await conn.sendMessage(m.chat, {
-        text: mensajeElegante,
+        text: texto,
         contextInfo: {
-            forwardingScore: 9999,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '0029Vb6p68rF6smrH4Jeay3Y@newsletter',
-                newsletterName: '🌸 𝐙𝐞𝐫𝐨 𝐓𝐰𝐨 𝐎𝐟𝐢𝐜𝐢𝐚𝐥 🌸', // <- Aquí pones el nombre de tu canal
-                serverMessageId: -1
+                newsletterJid: global.newsletterJid,
+                serverMessageId: '',
+                newsletterName: global.newsletterName
+            },
+            externalAdReply: {
+                title: global.botName,
+                body: '💗 Un poema para ti~',
+                thumbnail: thumb,
+                sourceUrl: global.rcanal,
+                mediaType: 1,
+                renderLargerThumbnail: false
             }
         }
     }, { quoted: m })
 
-    // Reacción final
     await m.react('💗')
 }
 
