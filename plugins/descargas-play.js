@@ -1,16 +1,4 @@
 import axios from 'axios'
-import { exec as execCb } from 'child_process'
-import { promisify } from 'util'
-import fs from 'fs/promises'
-import os from 'os'
-import path from 'path'
-
-const exec = promisify(execCb)
-
-const http = axios.create({
-    responseType: 'arraybuffer',
-    timeout: 30000
-})
 
 const dbg = async (conn, chat, text, m) => {
     try {
@@ -20,25 +8,6 @@ const dbg = async (conn, chat, text, m) => {
             { quoted: m }
         )
     } catch {}
-}
-
-const buildCdnUrl = id =>
-    `https://cdn.apicausas.xyz/v/yt_${id}_audio.m4a`
-
-async function getApiData(id) {
-    try {
-        const { data } = await axios.get(
-            `https://rest.apicausas.xyz/api/v1/descargas/youtube?url=https://youtu.be/${id}&type=audio&apikey=Angzl`,
-            { timeout: 30000 }
-        )
-
-        return data?.status
-            ? data.data
-            : null
-
-    } catch {
-        return null
-    }
 }
 
 async function search(query) {
@@ -80,7 +49,11 @@ async function search(query) {
 
             if (v) {
                 return {
-                    id: v.videoId
+                    id: v.videoId,
+                    title:
+                        v.title
+                            ?.runs?.[0]
+                            ?.text
                 }
             }
         }
@@ -89,12 +62,43 @@ async function search(query) {
     return null
 }
 
-async function fastDownload(url) {
-    const { data } =
-        await http.get(url)
+async function downloadMp3(id) {
+    const url =
+        `https://api.evogb.org/dl/ytmp3?url=${encodeURIComponent(`https://youtu.be/${id}`)}&key=evogb-WzR3kPpa`
+
+    const res =
+        await axios.get(url, {
+            timeout: 60000
+        })
+
+    if (!res.data)
+        throw Error(
+            'Sin respuesta API'
+        )
+
+    const audioUrl =
+        res.data?.result?.download ||
+        res.data?.result?.url ||
+        res.data?.url
+
+    if (!audioUrl) {
+        throw Error(
+            'No disponible'
+        )
+    }
+
+    const audio =
+        await axios.get(
+            audioUrl,
+            {
+                responseType:
+                    'arraybuffer',
+                timeout: 60000
+            }
+        )
 
     const buffer =
-        Buffer.from(data)
+        Buffer.from(audio.data)
 
     if (
         buffer.length >
@@ -106,49 +110,6 @@ async function fastDownload(url) {
     }
 
     return buffer
-}
-
-async function toMp3(buffer, id) {
-    const dir =
-        await fs.mkdtemp(
-            path.join(
-                os.tmpdir(),
-                'play-'
-            )
-        )
-
-    const inFile =
-        path.join(
-            dir,
-            `${id}.m4a`
-        )
-
-    const outFile =
-        path.join(
-            dir,
-            `${id}.mp3`
-        )
-
-    await fs.writeFile(
-        inFile,
-        buffer
-    )
-
-    await exec(
-        `ffmpeg -y -i "${inFile}" -vn -ar 44100 -ac 2 -b:a 192k "${outFile}"`
-    )
-
-    const mp3 =
-        await fs.readFile(
-            outFile
-        )
-
-    fs.rm(dir, {
-        recursive: true,
-        force: true
-    }).catch(() => {})
-
-    return mp3
 }
 
 const handler = async (
@@ -214,51 +175,13 @@ const handler = async (
             )
         }
 
-        const id =
-            result.id
-
-        let buffer
-        let url =
-            buildCdnUrl(id)
-
         const d1 =
             Date.now()
 
-        try {
-            buffer =
-                await fastDownload(
-                    url
-                )
-        } catch {
-            const a1 =
-                Date.now()
-
-            const meta =
-                await getApiData(id)
-
-            await dbg(
-                conn,
-                m.chat,
-                `Fallback API: ${
-                    Date.now() - a1
-                }ms`,
-                m
+        const buffer =
+            await downloadMp3(
+                result.id
             )
-
-            if (
-                !meta?.download
-                    ?.url
-            ) {
-                throw Error(
-                    'No disponible'
-                )
-            }
-
-            buffer =
-                await fastDownload(
-                    meta.download.url
-                )
-        }
 
         await dbg(
             conn,
@@ -273,24 +196,6 @@ const handler = async (
             m
         )
 
-        const c1 =
-            Date.now()
-
-        buffer =
-            await toMp3(
-                buffer,
-                id
-            )
-
-        await dbg(
-            conn,
-            m.chat,
-            `Convert: ${
-                Date.now() - c1
-            }ms`,
-            m
-        )
-
         const s2 =
             Date.now()
 
@@ -301,7 +206,7 @@ const handler = async (
                 mimetype:
                     'audio/mpeg',
                 fileName:
-                    `${id}.mp3`,
+                    `${result.id}.mp3`,
                 ptt: false
             },
             { quoted: m }
