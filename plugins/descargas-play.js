@@ -1,52 +1,69 @@
 import axios from 'axios'
-import fs from 'fs/promises'
-import { exec } from 'child_process'
+import { exec as execCb } from 'child_process'
 import { promisify } from 'util'
+import fs from 'fs/promises'
 import os from 'os'
 import path from 'path'
 
-const execAsync = promisify(exec)
+const exec = promisify(execCb)
 
 const http = axios.create({
     responseType: 'arraybuffer',
     timeout: 30000
 })
 
-async function dbg(conn, chat, text, quoted) {
+const dbg = async (conn, chat, text, m) => {
     try {
         await conn.sendMessage(
             chat,
             { text: `⚡ ${text}` },
-            { quoted }
+            { quoted: m }
         )
     } catch {}
 }
 
-function buildCdnUrl(id) {
-    return `https://cdn.apicausas.xyz/v/yt_${id}_audio.m4a`
+const buildCdnUrl = id =>
+    `https://cdn.apicausas.xyz/v/yt_${id}_audio.m4a`
+
+async function getApiData(id) {
+    try {
+        const { data } = await axios.get(
+            `https://rest.apicausas.xyz/api/v1/descargas/youtube?url=https://youtu.be/${id}&type=audio&apikey=Angzl`,
+            { timeout: 30000 }
+        )
+
+        return data?.status
+            ? data.data
+            : null
+
+    } catch {
+        return null
+    }
 }
 
 async function search(query) {
     try {
-        const res = await axios.get(
-            `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgIQAQ%253D%253D`,
-            {
-                timeout: 30000,
-                headers: {
-                    'User-Agent': 'Mozilla/5.0'
+        const { data: html } =
+            await axios.get(
+                `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgIQAQ%253D%253D`,
+                {
+                    timeout: 30000,
+                    headers: {
+                        'User-Agent':
+                            'Mozilla/5.0'
+                    }
                 }
-            }
-        )
+            )
 
-        const html = res.data
-
-        const match = html.match(
-            /var ytInitialData = (\{.*?\});<\/script>/
-        )
+        const match =
+            html.match(
+                /var ytInitialData = (\{.*?\});<\/script>/
+            )
 
         if (!match) return null
 
-        const data = JSON.parse(match[1])
+        const data =
+            JSON.parse(match[1])
 
         const contents =
             data.contents
@@ -58,71 +75,80 @@ async function search(query) {
                 ?.contents || []
 
         for (const item of contents) {
-            if (item.videoRenderer) {
+            const v =
+                item.videoRenderer
+
+            if (v) {
                 return {
-                    id: item.videoRenderer.videoId,
-                    title:
-                        item.videoRenderer.title
-                            ?.runs?.[0]?.text
+                    id: v.videoId
                 }
             }
         }
-
     } catch {}
 
     return null
 }
 
 async function fastDownload(url) {
-    const res = await http.get(url)
+    const { data } =
+        await http.get(url)
 
-    if (res.status >= 400) {
-        throw new Error(`HTTP ${res.status}`)
-    }
+    const buffer =
+        Buffer.from(data)
 
-    const buffer = Buffer.from(res.data)
-
-    if (buffer.length > 30 * 1024 * 1024) {
-        throw new Error('Archivo demasiado grande')
+    if (
+        buffer.length >
+        30 * 1024 * 1024
+    ) {
+        throw Error(
+            'Archivo demasiado grande'
+        )
     }
 
     return buffer
 }
 
-async function convertToMp3(buffer, id) {
-    const tmpDir = os.tmpdir()
-
-    const input =
-        path.join(
-            tmpDir,
-            `${id}_${Date.now()}.m4a`
+async function toMp3(buffer, id) {
+    const dir =
+        await fs.mkdtemp(
+            path.join(
+                os.tmpdir(),
+                'play-'
+            )
         )
 
-    const output =
+    const inFile =
         path.join(
-            tmpDir,
-            `${id}_${Date.now()}.mp3`
+            dir,
+            `${id}.m4a`
+        )
+
+    const outFile =
+        path.join(
+            dir,
+            `${id}.mp3`
         )
 
     await fs.writeFile(
-        input,
+        inFile,
         buffer
     )
 
-    try {
-        await execAsync(
-            `ffmpeg -y -i "${input}" -vn -ar 44100 -ac 2 -b:a 192k "${output}"`
+    await exec(
+        `ffmpeg -y -i "${inFile}" -vn -ar 44100 -ac 2 -b:a 192k "${outFile}"`
+    )
+
+    const mp3 =
+        await fs.readFile(
+            outFile
         )
 
-        const mp3 =
-            await fs.readFile(output)
+    fs.rm(dir, {
+        recursive: true,
+        force: true
+    }).catch(() => {})
 
-        return mp3
-
-    } finally {
-        fs.unlink(input).catch(() => {})
-        fs.unlink(output).catch(() => {})
-    }
+    return mp3
 }
 
 const handler = async (
@@ -167,7 +193,7 @@ const handler = async (
             }
         )
 
-        const searchStart =
+        const s1 =
             Date.now()
 
         const result =
@@ -177,48 +203,82 @@ const handler = async (
             conn,
             m.chat,
             `Search: ${
-                Date.now() -
-                searchStart
+                Date.now() - s1
             }ms`,
             m
         )
 
         if (!result?.id) {
-            throw new Error(
+            throw Error(
                 'No se encontró resultado'
             )
         }
 
-        const id = result.id
+        const id =
+            result.id
 
-        const downloadStart =
+        let buffer
+        let url =
+            buildCdnUrl(id)
+
+        const d1 =
             Date.now()
 
-        const m4aBuffer =
-            await fastDownload(
-                buildCdnUrl(id)
+        try {
+            buffer =
+                await fastDownload(
+                    url
+                )
+        } catch {
+            const a1 =
+                Date.now()
+
+            const meta =
+                await getApiData(id)
+
+            await dbg(
+                conn,
+                m.chat,
+                `Fallback API: ${
+                    Date.now() - a1
+                }ms`,
+                m
             )
+
+            if (
+                !meta?.download
+                    ?.url
+            ) {
+                throw Error(
+                    'No disponible'
+                )
+            }
+
+            buffer =
+                await fastDownload(
+                    meta.download.url
+                )
+        }
 
         await dbg(
             conn,
             m.chat,
             `Download: ${
-                Date.now() -
-                downloadStart
+                Date.now() - d1
             }ms (${(
-                m4aBuffer.length /
+                buffer.length /
                 1024 /
                 1024
             ).toFixed(2)}MB)`,
             m
         )
 
-        const convertStart =
+        const c1 =
             Date.now()
 
-        const mp3Buffer =
-            await convertToMp3(
-                m4aBuffer,
+        buffer =
+            await toMp3(
+                buffer,
                 id
             )
 
@@ -226,19 +286,18 @@ const handler = async (
             conn,
             m.chat,
             `Convert: ${
-                Date.now() -
-                convertStart
+                Date.now() - c1
             }ms`,
             m
         )
 
-        const sendStart =
+        const s2 =
             Date.now()
 
         await conn.sendMessage(
             m.chat,
             {
-                audio: mp3Buffer,
+                audio: buffer,
                 mimetype:
                     'audio/mpeg',
                 fileName:
@@ -252,10 +311,8 @@ const handler = async (
             conn,
             m.chat,
             `Send: ${
-                Date.now() -
-                sendStart
-            }ms
-Total: ${
+                Date.now() - s2
+            }ms\nTotal: ${
                 Date.now() -
                 totalStart
             }ms`,
