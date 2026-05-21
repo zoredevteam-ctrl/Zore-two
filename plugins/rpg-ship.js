@@ -2,7 +2,9 @@
 // ✦ [ PROTOCOLO DE SHIP ] — ZoreDevTeam
 // ⟡ Fusión de fotos de perfil + corazón animado + porcentaje de amor
 
-import Jimp, { MIME_PNG } from 'jimp'
+import pkg from 'jimp'
+const { MIME_PNG } = pkg
+const Jimp = pkg
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
