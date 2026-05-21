@@ -199,10 +199,10 @@ const handler = async (m, { conn, command }) => {
 
     await m.react('💗')
 
-    // Nombres
-    let name1 = cleanJid(user1), name2 = cleanJid(user2)
-    try { const n = await conn.getName(user1); if (n) name1 = n } catch {}
-    try { const n = await conn.getName(user2); if (n) name2 = n } catch {}
+    // Nombres con @mención para que WhatsApp los resalte en azul
+    const tag1 = '@' + cleanJid(user1)
+    const tag2 = '@' + cleanJid(user2)
+    let name1 = tag1, name2 = tag2
 
     // Porcentaje (determinista por par)
     const percent = getPercent(user1, user2)
@@ -225,7 +225,7 @@ const handler = async (m, { conn, command }) => {
 
     const caption =
         `💗 *¡SHIP ACTIVADO, DARLING~!* 🌸\n\n` +
-        `✨ *${name1}* 💗 *${name2}* ✨\n\n` +
+        `✨ ${tag1} 💗 ${tag2} ✨\n\n` +
         `${emoji} *Compatibilidad de amor:* *${percent}%*\n` +
         `${bar}\n\n` +
         `🌸 ${phrase}\n\n` +
