@@ -231,16 +231,35 @@ const handler = async (m, { conn, command }) => {
         `🌸 ${phrase}\n\n` +
         `> 💕 *Zero Two* los bendice~ © ZoreDevTeam`
 
+    const contextInfo = {
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+            newsletterJid: global.newsletterJid,
+            serverMessageId: '',
+            newsletterName: global.newsletterName
+        },
+        externalAdReply: {
+            title: global.botName,
+            body: global.botText,
+            thumbnailUrl: global.icon,
+            sourceUrl: global.rcanal,
+            mediaType: 1,
+            renderLargerThumbnail: false
+        }
+    }
+
     if (imgBuffer) {
         await conn.sendMessage(m.chat, {
             image: imgBuffer,
             caption,
-            mentions: [user1, user2]
+            mentions: [user1, user2],
+            contextInfo
         }, { quoted: m })
     } else {
         await conn.sendMessage(m.chat, {
             text: caption,
-            mentions: [user1, user2]
+            mentions: [user1, user2],
+            contextInfo
         }, { quoted: m })
     }
 
