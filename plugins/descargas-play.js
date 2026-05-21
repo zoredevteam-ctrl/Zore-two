@@ -1,6 +1,15 @@
 import axios from 'axios'
 
-async function dbg(conn, chat, text, m) {
+const causas = axios.create({
+    timeout: 60000
+})
+
+const dbg = async (
+    conn,
+    chat,
+    text,
+    m
+) => {
     try {
         await conn.sendMessage(
             chat,
@@ -10,13 +19,12 @@ async function dbg(conn, chat, text, m) {
     } catch {}
 }
 
-async function search(query) {
+const search = async query => {
     try {
         const { data: html } =
-            await axios.get(
+            await causas.get(
                 `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgIQAQ%253D%253D`,
                 {
-                    timeout: 30000,
                     headers: {
                         'User-Agent':
                             'Mozilla/5.0'
@@ -31,11 +39,9 @@ async function search(query) {
 
         if (!match) return null
 
-        const data =
-            JSON.parse(match[1])
-
         const contents =
-            data.contents
+            JSON.parse(match[1])
+                .contents
                 ?.twoColumnSearchResultsRenderer
                 ?.primaryContents
                 ?.sectionListRenderer
@@ -43,9 +49,9 @@ async function search(query) {
                 ?.itemSectionRenderer
                 ?.contents || []
 
-        for (const item of contents) {
+        for (const x of contents) {
             const v =
-                item.videoRenderer
+                x.videoRenderer
 
             if (v) {
                 return {
@@ -62,29 +68,28 @@ async function search(query) {
     return null
 }
 
-async function downloadMp3(
+const downloadMp3 = async (
     id,
     conn,
     m
-) {
-    const api =
+) => {
+    const url =
         `https://api.evogb.org/dl/ytmp3?url=${encodeURIComponent(`https://youtu.be/${id}`)}&key=evogb-WzR3kPpa`
 
-    const start =
+    const apiStart =
         Date.now()
 
-    const res =
-        await axios.get(api, {
-            timeout: 60000
-        })
+    const { data } =
+        await causas.get(url)
 
     await dbg(
         conn,
         m.chat,
         `API: ${
-            Date.now() - start
+            Date.now() -
+            apiStart
         }ms\n${JSON.stringify(
-            res.data,
+            data,
             null,
             2
         ).slice(0, 3000)}`,
@@ -92,17 +97,17 @@ async function downloadMp3(
     )
 
     const audioUrl =
-        res.data?.result
+        data?.result
             ?.download ||
-        res.data?.result
+        data?.result
             ?.url ||
-        res.data?.result
+        data?.result
             ?.link ||
-        res.data?.data
+        data?.data
             ?.download ||
-        res.data?.data
+        data?.data
             ?.url ||
-        res.data?.url
+        data?.url
 
     if (!audioUrl) {
         throw Error(
@@ -113,28 +118,28 @@ async function downloadMp3(
     const dlStart =
         Date.now()
 
-    const audio =
-        await axios.get(
+    const { data: audio } =
+        await causas.get(
             audioUrl,
             {
                 responseType:
-                    'arraybuffer',
-                timeout: 60000
+                    'arraybuffer'
             }
         )
 
     const buffer =
-        Buffer.from(
-            audio.data
-        )
+        Buffer.from(audio)
 
     await dbg(
         conn,
         m.chat,
         `Download: ${
-            Date.now() - dlStart
+            Date.now() -
+            dlStart
         }ms (${(
-            buffer.length / 1024 / 1024
+            buffer.length /
+            1024 /
+            1024
         ).toFixed(2)}MB)`,
         m
     )
@@ -184,7 +189,7 @@ const handler = async (
             }
         )
 
-        const s1 =
+        const searchStart =
             Date.now()
 
         const result =
@@ -194,7 +199,8 @@ const handler = async (
             conn,
             m.chat,
             `Search: ${
-                Date.now() - s1
+                Date.now() -
+                searchStart
             }ms`,
             m
         )
@@ -239,11 +245,13 @@ const handler = async (
             conn,
             m.chat,
             `Send: ${
-                Date.now() - sendStart
+                Date.now() -
+                sendStart
             }ms\nTotal: ${
                 Date.now() -
                 totalStart
-            }ms`,
+            }ms`
+            ,
             m
         )
 
