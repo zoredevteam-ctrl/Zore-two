@@ -73,7 +73,7 @@ No es un bot genérico más — tiene personalidad, estilo y comandos cuidadosam
 
 **1. Clona el repositorio**
 ```bash
-git clone https://github.com/zoredevteam-ctrl/Zore-two.git
+git clone https://github.com/zoredevteam-ctrl/Zore-two
 cd Zore-two
 ```
 
