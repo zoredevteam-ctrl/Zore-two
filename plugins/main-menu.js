@@ -1,3 +1,7 @@
+// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// ✦ [ PROTOCOLO MENÚ ]
+// ⟡ ZoreDevTeam
+
 import fs from 'fs'
 import { database } from '../lib/database.js'
 
@@ -5,15 +9,13 @@ const handler = async (m, { conn }) => {
     try {
         const botname = global.botName || 'Zero Two'
 
-        // ── Cargar plugins y agrupar por tag ──────────────────────────────
         const pluginFiles = fs.readdirSync('./plugins').filter(f => f.endsWith('.js'))
         const grouped = {}
-
         for (const file of pluginFiles) {
             try {
                 const plugin = (await import(`../plugins/${file}`)).default
-                const tags   = plugin?.tags || ['misc']
-                const cmd    = plugin?.command?.[0] || file.replace('.js', '')
+                const tags = plugin?.tags || ['misc']
+                const cmd  = plugin?.command?.[0] || file.replace('.js', '')
                 for (const tag of tags) {
                     if (!grouped[tag]) grouped[tag] = []
                     grouped[tag].push(cmd)
@@ -25,40 +27,39 @@ const handler = async (m, { conn }) => {
             }
         }
 
-        const totalCmds      = Object.values(grouped).flat().length
+        const totalCmds       = Object.values(grouped).flat().length
         const totalUsers      = Object.keys(database.data.users || {}).length
         const registeredUsers = Object.values(database.data.users || {}).filter(u => u.registered).length
 
-        // ── Saludo según hora ─────────────────────────────────────────────
         const hora = parseInt(new Date().toLocaleTimeString('es-CO', {
             timeZone: 'America/Bogota', hour: '2-digit', hour12: false
         }))
         const [saludo, carita] =
-            hora >= 5  && hora < 12 ? ['buenos días',    '(＊^▽^＊) ☀️']  :
-            hora >= 12 && hora < 18 ? ['buenas tardes',  '(｡•̀ᴗ-)✧ 🌸'] :
-                                      ['buenas noches',  '(◕‿◕✿) 🌙']
+            hora >= 5  && hora < 12 ? ['buenos días',   '(＊^▽^＊) ☀️'] :
+            hora >= 12 && hora < 18 ? ['buenas tardes', '(｡•̀ᴗ-)✧ 🌸'] :
+                                      ['buenas noches', '(◕‿◕✿) 🌙']
 
-        // ── Secciones ─────────────────────────────────────────────────────
+        const nombre = m.pushName || m.sender?.split('@')[0] || 'Darling'
+
         const secciones = Object.entries(grouped).map(([tag, cmds]) =>
-            `𖤐 *${tag.toUpperCase()}*\n${cmds.map(c => `  ꕦ ${c}`).join('\n')}\n`
+            `𖤐 *${tag.toUpperCase()}*\n${cmds.map(c => `  ꕦ ${c}`).join('\n')}`
         ).join('\n')
 
-        const menuTexto = (
-            `𖤐 ❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎'𝐒 𝐌𝐄𝐍𝐔 ❖ 𖤐\n` +
-            `❝ ¡Hola *${m.pushName}*, ${saludo}~! ${carita}\n` +
-            `Soy *${botname}* y este es mi menú,\n` +
-            `más te vale usarlo bien... hmph 💗 ❞\n\n` +
-            `ꙮ *Comandos:*    ${totalCmds} disponibles\n` +
-            `ꙮ *Usuarios:*    ${totalUsers} conocidos\n` +
-            `ꙮ *Registrados:* ${registeredUsers} darlings\n\n` +
-            secciones +
-            `𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)`
-        ).trim()
+        const menuTexto =
+`𖤐 ❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎'𝐒 𝐌𝐄𝐍𝐔 ❖ 𖤐
+❝ ¡Hola *${nombre}*, ${saludo}~! ${carita}
+Soy *${botname}* y este es mi menú,
+más te vale usarlo bien... hmph 💗 ❞
+ꙮ *Comandos:* ${totalCmds} disponibles
+ꙮ *Usuarios:* ${totalUsers} conocidos
+ꙮ *Registrados:* ${registeredUsers} darlings
+${secciones}
+𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)`
 
-        // ── Thumbnail como Buffer ─────────────────────────────────────────
+        // Thumbnail como Buffer
+        const src = global.banner || global.icon || global.avatar || 'https://causas-files.vercel.app/fl/9vs2.jpg'
         let buffer = null
         try {
-            const src = global.banner || global.icon || global.avatar || 'https://causas-files.vercel.app/fl/9vs2.jpg'
             const res = await fetch(src)
             buffer = Buffer.from(await res.arrayBuffer())
         } catch {}
@@ -75,9 +76,17 @@ const handler = async (m, { conn }) => {
                 isForwarded: true,
                 forwardingScore: 999,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid:   global.newsletterJid   || '120363404822730259@newsletter',
-                    newsletterName:  global.newsletterName  || global.botName,
-                    serverMessageId: ''
+                    newsletterJid:   global.newsletterJid  || '120363404822730259@newsletter',
+                    newsletterName:  global.newsletterName || botname,
+                    serverMessageId: -1
+                },
+                externalAdReply: {
+                    title: global.botName || 'ZERO TWO',
+                    body: 'darling~ 💗',
+                    mediaType: 1,
+                    thumbnail: buffer,
+                    renderLargerThumbnail: true,
+                    sourceUrl: global.rcanal || 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y'
                 }
             }
         }, { quoted: m })
