@@ -22,7 +22,7 @@ if (!(global.subBotRegistry instanceof Map)) global.subBotRegistry = new Map()
 if (!global.subLocks)                        global.subLocks       = new Map()
 
 const SUBBOT_DIR          = global.jadi || 'JadiBots'
-const MAX_SUBBOTS         = 10
+const MAX_SUBBOTS         = 100
 const PAIRING_TIMEOUT_MS  = 120_000
 const MAX_RECONNECT       = 6
 const BASE_DELAY_MS       = 1_500
