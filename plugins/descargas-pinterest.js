@@ -60,7 +60,7 @@ let handler = async (m, { conn, args, prefix }) => {
     await m.reply('🌸 Buscando imágenes en Pinterest, espera un momento~')
 
     try {
-        const res = await fetch(`https://nex-magical.vercel.app/search/pinterest?q=${encodeURIComponent(text)}&apikey=NEX-Magicalofc`)
+        const res = await fetch(`https://nexevo.boxmine.xyz/search/pinterest?q=${encodeURIComponent(text)}&apikey=NEX-Shizuka`)
 
         if (!res.ok) throw new Error(`Error en la API: ${res.status} ${res.statusText}`)
 
