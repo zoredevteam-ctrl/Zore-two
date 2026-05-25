@@ -174,22 +174,14 @@ async function startSubBot({ sessionPath, number, m, conn, plugins }) {
 
             setTimeout(async () => {
                 if (codeSent || connected) return
+                codeSent = true  // ← flag ANTES de la llamada async para evitar doble disparo
                 try {
                     let code = await sock.requestPairingCode(number)
                     code     = code.match(/.{1,4}/g)?.join('-') || code
-                    codeSent = true
 
                     await m.react('🔑')
 
-                    await notify(
-                        `╔══「 🔑 Código de Emparejamiento 」══╗\n\n` +
-                        `꒰ 💗 ꒱ Número: *+${number}*\n` +
-                        `꒰ 📱 ꒱ WhatsApp → Dispositivos vinculados → Vincular\n` +
-                        `꒰ ⏳ ꒱ Expira en *2 minutos*, Darling~\n\n` +
-                        `╚══「 💕 © ZoreDevTeam 」══╝`
-                    )
-
-                    // Código solo para fácil copiado
+                    // Solo el código — limpio, fácil de copiar, visible para todos
                     await conn.sendMessage(m.chat, { text: code }, { quoted: m })
 
                     pairingTimer = setTimeout(async () => {
