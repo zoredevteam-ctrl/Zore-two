@@ -90,19 +90,10 @@ const getVersion = async () => {
 }
 
 // ── HANDLER — #code ────────────────────────────────────────────────────────
-const handler = async (m, { conn, args, plugins }) => {
-    const input  = args.join(' ').trim()
+const handler = async (m, { conn, plugins }) => {
+    // Número detectado automáticamente — usuario solo pone #code
+    const number = m.sender.split('@')[0].split(':')[0]
     const active = global.conns.filter(c => c?.user && c?.ws?.socket?.readyState !== ws.CLOSED)
-
-    if (!input) {
-        return sendStyled(conn, m,
-            `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
-            `꒰ 🌸 ꒱ ¡Ingresa tu número para crear un sub-bot, Darling~!\n` +
-            `⟡ Uso: *#code +573001234567*\n\n` +
-            `꒰ 📊 ꒱ Sub-bots activos: *${active.length}/${MAX_SUBBOTS}*\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
-        )
-    }
 
     if (active.length >= MAX_SUBBOTS) {
         return sendStyled(conn, m,
@@ -149,7 +140,7 @@ const handler = async (m, { conn, args, plugins }) => {
     startSubBot({ sessionPath, number, m, conn, plugins })
 }
 
-handler.help    = ['code +número']
+handler.help    = ['code']
 handler.tags    = ['serbot']
 handler.command = ['code', 'serbot', 'jadibot']
 export default handler
