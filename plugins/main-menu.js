@@ -16,13 +16,13 @@ function clockString(ms) {
 
 function getGreeting() {
     const h = new Date().getHours()
-    if (h >= 5  && h < 12) return { text: 'buenos días',  emoji: '☀️',  cara: '(＊^▽^＊)' }
+    if (h >= 5  && h < 12) return { text: 'buenos días',   emoji: '☀️',  cara: '(＊^▽^＊)' }
     if (h >= 12 && h < 18) return { text: 'buenas tardes', emoji: '🌸', cara: '(｡•̀ᴗ-)✧' }
-    return                         { text: 'buenas noches', emoji: '🌙', cara: '(◕‿◕✿)' }
+    return                         { text: 'buenas noches', emoji: '🌙', cara: '(◕‿◕✿)'  }
 }
 
 // ─────────────────────────────────────────────
-//  Thumbnail (imagen de Zero Two en base64)
+//  Thumbnail Zero Two
 // ─────────────────────────────────────────────
 
 async function getThumb() {
@@ -36,365 +36,208 @@ async function getThumb() {
 }
 
 // ─────────────────────────────────────────────
-//  Menús por categoría — estilo Zero Two
+//  Emojis por categoría (cosméticos)
 // ─────────────────────────────────────────────
 
-export const menuObject = {
-
-economy: `
-𖤐 ❖ 𝐄𝐂𝐎𝐍𝐎𝐌𝐘 ❖ 𖤐
-❝ El dinero no da la felicidad, darling~
-   pero yo sí sé cómo conseguirlo 💗 ❞
-
-ꕦ \`$prefixwork\`
-  → Trabaja para ganar monedas.
-
-ꕦ \`$prefixbal\`
-  → Revisa tu balance actual.
-
-ꕦ \`$prefixdaily\`
-  → Reclama tu recompensa diaria.
-
-ꕦ \`$prefixminar\`
-  → Mina recursos para ganar coins.
-
-ꕦ \`$prefixcrime\`
-  → Comete un crimen por coins (riesgo~).
-
-ꕦ \`$prefixdeposit <cantidad>\`
-  → Deposita coins al banco.
-
-ꕦ \`$prefixwithdraw <cantidad>\`
-  → Retira coins del banco.
-
-ꕦ \`$prefixcasino <cantidad>\`
-  → Apuesta en el casino, si te atreves.
-
-ꕦ \`$prefixrob @usuario\`
-  → Intenta robar monedas~ hmph.
-
-ꕦ \`$prefixtransfer @usuario <cant>\`
-  → Envía coins a otro darling.
-
-ꕦ \`$prefixshop\`
-  → Ver la tienda.
-
-ꕦ \`$prefixbuy <item>\`
-  → Comprar un ítem.
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)
-`.trim(),
-
-downloads: `
-𖤐 ❖ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐒 ❖ 𖤐
-❝ Te descargo lo que quieras, darling~
-   no me lo agradezcas demasiado 💗 ❞
-
-ꕦ \`$prefixplay <canción>\`
-  → Música desde YouTube.
-
-ꕦ \`$prefixplayvid <video>\`
-  → Video de YouTube.
-
-ꕦ \`$prefixspotify <canción>\`
-  → Canciones de Spotify.
-
-ꕦ \`$prefixtiktok <url>\`
-  → TikTok sin marca de agua~
-
-ꕦ \`$prefixinstagram <url>\`
-  → Reels, historias o fotos de Instagram.
-
-ꕦ \`$prefixfacebook <url>\`
-  → Videos de Facebook.
-
-ꕦ \`$prefixtwitter <url>\`
-  → Videos de Twitter / X.
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)
-`.trim(),
-
-anime: `
-𖤐 ❖ 𝐀𝐍𝐈𝐌𝐄 ❖ 𖤐
-❝ Reacciones, waifus y más cositas~
-   esto es lo mejor del menú, hmph 💗 ❞
-
-ꕦ \`$prefixwaifu\`
-  → Imagen waifu aleatoria.
-
-ꕦ \`$prefixneko\`
-  → Imágenes neko aleatorias.
-
-ꕦ \`$prefixppcouple\`
-  → Fotos matching para parejas~
-
-ꕦ \`$prefixhug @usuario\`
-  → Abraza a alguien 🫂
-
-ꕦ \`$prefixkiss @usuario\`
-  → Envía un beso anime 💋
-
-ꕦ \`$prefixpat @usuario\`
-  → Da una caricia adorable.
-
-ꕦ \`$prefixslap @usuario\`
-  → Golpea a alguien (broma~).
-
-ꕦ \`$prefixcry\`
-  → Reacción de llanto 😢
-
-ꕦ \`$prefixdance\`
-  → Reacción de baile 💃
-
-ꕦ \`$prefixwave @usuario\`
-  → Saluda con la mano~
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)
-`.trim(),
-
-group: `
-𖤐 ❖ 𝐆𝐑𝐔𝐏𝐎𝐒 ❖ 𖤐
-❝ Administra tu grupo como yo administro
-   a los parasitos... con mucho estilo 💗 ❞
-
-ꕦ \`$prefixadd <número>\`
-  → Agregar un usuario al grupo.
-
-ꕦ \`$prefixkick @usuario\`
-  → Expulsar a alguien~ hmph.
-
-ꕦ \`$prefixpromote @usuario\`
-  → Dar permisos de admin.
-
-ꕦ \`$prefixdemote @usuario\`
-  → Quitar permisos de admin.
-
-ꕦ \`$prefixtagall\`
-  → Mencionar a todos los darlings.
-
-ꕦ \`$prefixgroup open\` / \`close\`
-  → Abrir o cerrar el grupo.
-
-ꕦ \`$prefixlink\`
-  → Enlace de invitación.
-
-ꕦ \`$prefixrevokelink\`
-  → Revocar y generar nuevo enlace.
-
-ꕦ \`$prefixsetwelcome <texto>\`
-  → Personalizar bienvenida.
-
-ꕦ \`$prefixsetgoodbye <texto>\`
-  → Personalizar despedida.
-
-ꕦ \`$prefixtestwelcome\`
-  → Probar el mensaje de bienvenida.
-
-ꕦ \`$prefixwelcomeinfo\`
-  → Ver configuración actual.
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)
-`.trim(),
-
-profile: `
-𖤐 ❖ 𝐏𝐄𝐑𝐅𝐈𝐋 ❖ 𖤐
-❝ Tus stats... ojalá sean buenos,
-   no te hagas vergonzar, darling~ 💗 ❞
-
-ꕦ \`$prefixperfil\`
-  → Muestra tu perfil completo con foto.
-
-ꕦ \`$prefixperfil @usuario\`
-  → Ver el perfil de otro darling.
-
-ꕦ \`$prefixsetbirthday dd/mm\`
-  → Registrar tu cumpleaños~
-
-ꕦ \`$prefixreg nombre.edad\`
-  → Registrarse en el bot.
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)
-`.trim(),
-
-stickers: `
-𖤐 ❖ 𝐒𝐓𝐈𝐂𝐊𝐄𝐑𝐒 ❖ 𖤐
-❝ Crea stickers tan bonitos como yo~
-   bueno, casi... hmph 💗 ❞
-
-ꕦ \`$prefixsticker\`
-  → Convierte imagen o video en sticker.
-
-ꕦ \`$prefixtoimg\`
-  → Convierte sticker en imagen.
-
-ꕦ \`$prefixattp <texto>\`
-  → Sticker animado con texto.
-
-ꕦ \`$prefixemojimix\`
-  → Combina dos emojis en un sticker~
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)
-`.trim(),
-
-utils: `
-𖤐 ❖ 𝐔𝐓𝐈𝐋𝐒 ❖ 𖤐
-❝ Herramientas útiles para darlings
-   que no saben hacer nada solos~ 💗 ❞
-
-ꕦ \`$prefixping\`
-  → Velocidad de respuesta del bot.
-
-ꕦ \`$prefixclima <ciudad>\`
-  → Clima actual de cualquier ciudad.
-
-ꕦ \`$prefixcalc <expresión>\`
-  → Calculadora matemática.
-
-ꕦ \`$prefixqr <texto>\`
-  → Generar código QR.
-
-ꕦ \`$prefixtraducir <texto>\`
-  → Traducir texto a español.
-
-ꕦ \`$prefixchiste\`
-  → Chiste aleatorio~
-
-ꕦ \`$prefixfrase\`
-  → Frase motivacional.
-
-ꕦ \`$prefixpokedex <nombre>\`
-  → Información detallada de un Pokémon.
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •ｩ\`)
-`.trim(),
-
-sockets: `
-𖤐 ❖ 𝐒𝐔𝐁-𝐁𝐎𝐓𝐒 ❖ 𖤐
-❝ Conecta tus sub-bots, darling~
-   pero no los quieras más que a mí 💗 ❞
-
-ꕦ \`$prefixjadibot\`
-  → Conectar sub-bot con QR.
-
-ꕦ \`$prefixcode\`
-  → Conectar con código de 8 dígitos.
-
-ꕦ \`$prefixbots\`
-  → Ver sub-bots activos.
-
-ꕦ \`$prefixdeletesub\`
-  → Eliminar tu sesión de sub-bot.
-
-ꕦ \`$prefixpausesub\`
-  → Pausar tu sub-bot~
-
-ꕦ \`$prefixtoken\`
-  → Ver tu token de sesión.
-
-ꕦ \`$prefixsetname <nombre>\` *(premium)*
-  → Cambiar el nombre del sub-bot.
-
-ꕦ \`$prefixsetpp\` *(premium)*
-  → Cambiar la foto del sub-bot.
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)
-`.trim(),
-
-gacha: `
-𖤐 ❖ 𝐆𝐀𝐂𝐇𝐀 ❖ 𖤐
-❝ A ver qué tan afortunado eres, darling~
-   no llores si te toca malo 💗 ❞
-
-ꕦ \`$prefixgacha\`
-  → Obtén personajes o recompensas aleatorias.
-
-ꕦ \`$prefixroll\`
-  → Haz una tirada aleatoria~
-
-ꕦ \`$prefixclaim\`
-  → Reclama tu premio disponible.
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)
-`.trim(),
-
+const TAG_EMOJI = {
+    anime:        '🌸',
+    group:        '👥',
+    grupos:       '👥',
+    grupo:        '👥',
+    economy:      '💰',
+    descargas:    '📥',
+    download:     '📥',
+    dl:           '📥',
+    owner:        '👑',
+    fun:          '🎮',
+    main:         '🏠',
+    serbot:       '🤖',
+    nsfw:         '🔞',
+    tools:        '🔧',
+    herramientas: '🔧',
+    utilidad:     '🔧',
+    stickers:     '🎨',
+    waifu:        '💎',
+    juegos:       '🎲',
+    ai:           '🧠',
+    general:      '📋',
+    misc:         '✨',
 }
 
 // ─────────────────────────────────────────────
-//  Menú general — formato Zero Two
+//  Scan de plugins — igual que Zero Two
 // ─────────────────────────────────────────────
 
-const buildFullMenu = (user, pkg, usedPrefix, greeting) => {
-    const nombre = user.name || 'darling'
-    const uptime = clockString(process.uptime() * 1000)
-    const totalUsers = Object.keys(database.data.users || {}).length
-    const registeredUsers = Object.values(database.data.users || {}).filter(u => u.registered).length
+async function scanPlugins() {
+    const pluginsDir = './plugins'
+    let files = []
+    try {
+        files = fs.readdirSync(pluginsDir).filter(f => f.endsWith('.js'))
+    } catch {
+        return { grouped: {}, total: 0 }
+    }
+
+    const grouped  = {}
+    const cmdsSeen = new Set() // evita duplicados entre tags
+
+    for (const file of files) {
+        try {
+            const mod  = (await import(`../plugins/${file}`)).default
+            const tags = mod?.tags    || ['misc']
+            const cmds = mod?.command || [file.replace('.js', '')]
+
+            for (const tag of tags) {
+                if (!grouped[tag]) grouped[tag] = []
+                for (const cmd of (Array.isArray(cmds) ? cmds : [cmds])) {
+                    const key = `${tag}:${cmd}`
+                    if (!cmdsSeen.has(key)) {
+                        cmdsSeen.add(key)
+                        grouped[tag].push(cmd)
+                    }
+                }
+            }
+        } catch {
+            const cmd = file.replace('.js', '')
+            if (!grouped['misc']) grouped['misc'] = []
+            grouped['misc'].push(cmd)
+        }
+    }
+
+    const total = Object.values(grouped).flat().length
+    return { grouped, total }
+}
+
+// ─────────────────────────────────────────────
+//  Contexto newsletter (Zero Two)
+// ─────────────────────────────────────────────
+
+function buildCtx(thumbBase64, tagLabel = '') {
+    return {
+        isForwarded: true,
+        forwardingScore: 999,
+        externalAdReply: {
+            title:                 '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎',
+            body:                  tagLabel ? `${tagLabel} — darling~ 💗` : 'darling~ 💗',
+            mediaType:             1,
+            thumbnail:             thumbBase64,
+            renderLargerThumbnail: true,
+            sourceUrl:             global.rcanal || 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y',
+        },
+        forwardedNewsletterMessageInfo: {
+            newsletterJid:   '120363404822730259@newsletter',
+            newsletterName:  '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎',
+            serverMessageId: -1
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+//  Texto de categoría individual
+// ─────────────────────────────────────────────
+
+const TSUNDERE_LINES = {
+    anime:        'Reacciones, waifus y neko~ lo mejor del menú, hmph.',
+    economy:      'El dinero no da la felicidad... pero yo sé cómo conseguirlo 💰',
+    download:     'Te descargo lo que quieras~ no me lo agradezcas demasiado.',
+    descargas:    'Te descargo lo que quieras~ no me lo agradezcas demasiado.',
+    dl:           'Más descargas~ porque una categoría no era suficiente, darling.',
+    group:        'Administra tu grupo con estilo... como yo administro a los parasitos.',
+    grupos:       'Administra tu grupo con estilo... como yo administro a los parasitos.',
+    grupo:        'Más comandos de grupo~ no te confundas, darling.',
+    owner:        'Comandos de dueño. Solo para los elegidos, hmph 👑',
+    fun:          'Diversión garantizada~ o te devuelvo los coins.',
+    main:         'Comandos principales del bot~ por si no sabías por dónde empezar.',
+    serbot:       'Conecta tus sub-bots~ pero no los quieras más que a mí.',
+    nsfw:         '18+. No me mires así, darling~ tú lo pediste 🔞',
+    tools:        'Herramientas para darlings que no saben hacer nada solos~',
+    herramientas: 'Más herramientas~ cuántas necesitas, en serio.',
+    utilidad:     'Comandos útiles~ úsalos bien.',
+    stickers:     'Crea stickers tan bonitos como yo~ bueno, casi.',
+    waifu:        'Sistema de waifus~ a ver si tienes suerte, darling.',
+    juegos:       'Juegos para cuando estés aburrido~ no me culpes si pierdes.',
+    ai:           'Inteligencia artificial~ aunque yo ya soy suficientemente inteligente.',
+    general:      'Comandos generales~ para todo lo demás.',
+    misc:         'Comandos variados~ un poco de todo, darling.',
+}
+
+function buildCategoryMenu(tag, cmds, usedPrefix) {
+    const emoji = TAG_EMOJI[tag] || '✨'
+    const line  = TSUNDERE_LINES[tag] || 'Comandos disponibles, darling~'
+    const rows  = cmds.map(c => `ꕦ \`${usedPrefix}${c}\``).join('\n')
+
+    return `𖤐 ❖ ${emoji} ${tag.toUpperCase()} ❖ 𖤐
+❝ ${line} 💗 ❞
+
+${rows}
+
+𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)`
+}
+
+// ─────────────────────────────────────────────
+//  Menú general completo
+// ─────────────────────────────────────────────
+
+function buildFullMenu(grouped, total, user, pkg, usedPrefix, greeting) {
+    const nombre      = user.name || 'darling'
+    const uptime      = clockString(process.uptime() * 1000)
+    const totalUsers  = Object.keys(database.data.users || {}).length
+    const registered  = Object.values(database.data.users || {}).filter(u => u.registered).length
+
+    const secciones = Object.entries(grouped).map(([tag, cmds]) => {
+        const emoji = TAG_EMOJI[tag] || '✨'
+        const list  = cmds.map(c => `  ꕦ ${c}`).join('\n')
+        return `𖤐 *${emoji} ${tag.toUpperCase()}*\n${list}`
+    }).join('\n\n')
 
     return `𖤐 ❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎'𝐒 𝐌𝐄𝐍𝐔 ❖ 𖤐
 ❝ ¡Hola *${nombre}*, ${greeting.text}~! ${greeting.cara} ${greeting.emoji}
-Soy *Zero Two* y más te vale usarme bien...
-   o te hago pistilo, darling 💗 ❞
+Soy *Zero Two* y este es mi menú,
+más te vale usarlo bien... hmph 💗 ❞
 
-ꙮ *Versión:* v${pkg.version}
-ꙮ *Prefix:* \`${usedPrefix}\`
-ꙮ *Runtime:* ${uptime}
-ꙮ *Modo:* ${global.botOff ? 'Privado 🔒' : 'Público 🌸'}
+ꙮ *Comandos:* ${total} disponibles
 ꙮ *Usuarios:* ${totalUsers} conocidos
-ꙮ *Registrados:* ${registeredUsers} darlings
+ꙮ *Registrados:* ${registered} darlings
+ꙮ *Versión:* v${pkg.version}
+ꙮ *Runtime:* ${uptime}
+ꙮ *Prefix:* \`${usedPrefix}\`
+ꙮ *Modo:* ${global.botOff ? 'Privado 🔒' : 'Público 🌸'}
 
-𖤐 *TUS STATS, darling~*
+𖤐 *TUS STATS~*
 ꒰ Nivel: \`${user.level || 1}\` ꒱  ꒰ Exp: \`${user.exp || 0}\` ꒱
 ꒰ Coins: \`$${user.money || 0}\` ꒱  ꒰ Diamonds: \`${user.limit ?? 20}\` ꒱
 
-𖤐 ❖ *CATEGORÍAS* ❖ 𖤐
-Selecciona una con el botón de abajo~
-o escribe \`${usedPrefix}menu <categoría>\`
+${secciones}
 
-ꕦ 💰 \`${usedPrefix}menu economy\`
-ꕦ 📥 \`${usedPrefix}menu downloads\`
-ꕦ 🌸 \`${usedPrefix}menu anime\`
-ꕦ 👥 \`${usedPrefix}menu group\`
-ꕦ 👤 \`${usedPrefix}menu profile\`
-ꕦ 🎨 \`${usedPrefix}menu stickers\`
-ꕦ 🔧 \`${usedPrefix}menu utils\`
-ꕦ 🤖 \`${usedPrefix}menu sockets\`
-ꕦ 🎰 \`${usedPrefix}menu gacha\`
-
-𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)`.trim()
+𖤐 *~Zero Two* 🌸 (´｡• ᵕ •｡\`)`
 }
 
 // ─────────────────────────────────────────────
-//  Secciones para List Message (botones WhatsApp)
+//  List Message — categorías dinámicas
 // ─────────────────────────────────────────────
 
-const buildListSections = (usedPrefix) => [
-    {
-        title: '🎮 Bot & Perfil',
-        rows: [
-            { title: '💰 Economy',   description: 'Monedas, banco, casino y más',    id: `${usedPrefix}menu economy`   },
-            { title: '👤 Perfil',    description: 'Tu info, registro y cumpleaños',   id: `${usedPrefix}menu profile`   },
-            { title: '🎰 Gacha',     description: 'Sorteos, tiradas y premios',       id: `${usedPrefix}menu gacha`     },
-        ]
-    },
-    {
-        title: '🌸 Contenido',
-        rows: [
-            { title: '🌸 Anime',     description: 'Waifus, reacciones y neko',        id: `${usedPrefix}menu anime`     },
-            { title: '📥 Downloads', description: 'YouTube, Spotify, TikTok y más',   id: `${usedPrefix}menu downloads` },
-            { title: '🎨 Stickers',  description: 'Crear y convertir stickers',       id: `${usedPrefix}menu stickers`  },
-        ]
-    },
-    {
-        title: '⚙️ Grupos & Bots',
-        rows: [
-            { title: '👥 Grupos',    description: 'Admin, bienvenida, enlaces',       id: `${usedPrefix}menu group`     },
-            { title: '🤖 Sub-Bots',  description: 'Conectar y gestionar sub-bots',    id: `${usedPrefix}menu sockets`   },
-            { title: '🔧 Utils',     description: 'Ping, clima, calc, QR y más',      id: `${usedPrefix}menu utils`     },
-        ]
+function buildListSections(grouped, usedPrefix) {
+    // Agrupa las categorías en bloques de 10 filas máximo por sección
+    // WhatsApp limita a 10 filas por sección y 5 secciones
+    const entries  = Object.entries(grouped)
+    const TAGS_PER_SECTION = 10
+
+    const chunks = []
+    for (let i = 0; i < entries.length; i += TAGS_PER_SECTION) {
+        chunks.push(entries.slice(i, i + TAGS_PER_SECTION))
     }
-]
+
+    return chunks.slice(0, 5).map((chunk, idx) => ({
+        title: idx === 0 ? '🌸 Categorías' : `🌸 Más categorías (${idx + 1})`,
+        rows: chunk.map(([tag, cmds]) => ({
+            title:       `${TAG_EMOJI[tag] || '✨'} ${tag.toUpperCase()}`,
+            description: `${cmds.length} comando${cmds.length !== 1 ? 's' : ''} disponibles`,
+            id:          `${usedPrefix}menu ${tag}`
+        }))
+    }))
+}
 
 // ─────────────────────────────────────────────
-//  Handler
+//  Handler principal
 // ─────────────────────────────────────────────
 
 const handler = async (m, { conn, usedPrefix, text }) => {
@@ -403,98 +246,70 @@ const handler = async (m, { conn, usedPrefix, text }) => {
         pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8'))
     } catch {}
 
-    const user     = database.getUser(m.sender)
-    const greeting = getGreeting()
-    const { buffer: thumbBuffer, base64: thumbBase64 } = await getThumb()
+    const user              = database.data.users?.[m.sender] || {}
+    const greeting          = getGreeting()
+    const { grouped, total} = await scanPlugins()
+    const { buffer, base64} = await getThumb()
+    const ctx               = buildCtx(base64)
 
-    // ── Menú de categoría ──
+    // ── #menu <categoría> ──────────────────────
     if (text && text.trim()) {
         const key = text.trim().toLowerCase()
-        if (menuObject[key]) {
-            const body = menuObject[key].replaceAll('$prefix', usedPrefix)
+        if (grouped[key]) {
+            const body = buildCategoryMenu(key, grouped[key], usedPrefix)
             try {
                 return await conn.sendMessage(m.chat, {
                     text: body,
-                    contextInfo: {
-                        isForwarded: true,
-                        forwardingScore: 999,
-                        externalAdReply: {
-                            title: '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎',
-                            body: `${key.toUpperCase()} — darling~ 💗`,
-                            mediaType: 1,
-                            thumbnail: thumbBase64,
-                            renderLargerThumbnail: true,
-                            sourceUrl: global.rcanal || 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y',
-                        },
-                        forwardedNewsletterMessageInfo: {
-                            newsletterJid: '120363404822730259@newsletter',
-                            newsletterName: '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎',
-                            serverMessageId: -1
-                        }
-                    }
+                    contextInfo: buildCtx(base64, key.toUpperCase())
                 }, { quoted: m })
             } catch {
                 return m.reply(body)
             }
         }
+        // categoría no encontrada
+        const disponibles = Object.keys(grouped).join(', ')
+        return m.reply(`𖤐 Esa categoría no existe, darling~ 💗\n\nDisponibles: ${disponibles}`)
     }
 
-    // ── Menú general con documento + botón de lista ──
-    const fullMenu   = buildFullMenu(user, pkg, usedPrefix, greeting)
-    const sections   = buildListSections(usedPrefix)
+    // ── Menú general ───────────────────────────
+    const fullMenu = buildFullMenu(grouped, total, user, pkg, usedPrefix, greeting)
 
-    // 1) Enviar menú como documento estilo Zero Two
+    // 1) Documento fake estilo Zero Two
     try {
-        if (thumbBuffer) {
+        if (buffer) {
             await conn.sendMessage(m.chat, {
-                document: thumbBuffer,
-                mimetype: 'application/pdf',
-                fileName: `『 Zero Two Menu 』.pdf`,
+                document:  buffer,
+                mimetype:  'application/pdf',
+                fileName:  `『 Zero Two Menu 』.pdf`,
                 fileLength: 2199023255552,
-                pageCount: 2026,
-                caption: fullMenu,
-                mentions: [m.sender],
-                contextInfo: {
-                    isForwarded: true,
-                    forwardingScore: 999,
-                    externalAdReply: {
-                        title: '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎',
-                        body: 'darling~ 💗',
-                        mediaType: 1,
-                        thumbnail: thumbBase64,
-                        renderLargerThumbnail: true,
-                        sourceUrl: global.rcanal || 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y',
-                    },
-                    forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363404822730259@newsletter',
-                        newsletterName: '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎',
-                        serverMessageId: -1
-                    }
-                }
+                pageCount:  2026,
+                caption:    fullMenu,
+                mentions:   [m.sender],
+                contextInfo: ctx
             }, { quoted: m })
         } else {
             await m.reply(fullMenu)
         }
     } catch (e) {
-        console.error('[menu] doc error:', e)
+        console.error('[menu] doc send error:', e)
         await m.reply(fullMenu).catch(() => {})
     }
 
-    // 2) Enviar List Message con botones de categoría
-    // Los list messages funcionan en chats privados y grupos.
-    // La respuesta del usuario llega como texto con el `id` de la fila seleccionada.
-    try {
-        await conn.sendMessage(m.chat, {
-            text: '𖤐 Elige una categoría, darling~ 💗\n¡No te tome todo el día decidirte, hmph!',
-            footer: '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 🌸',
-            title: '❖ MENÚ DE CATEGORÍAS ❖',
-            buttonText: '📋 Ver categorías',
-            sections,
-            listType: 1,
-        }, { quoted: m })
-    } catch (e) {
-        // Si el List Message falla (algunos clientes no lo soportan), silencioso
-        console.error('[menu] list error:', e)
+    // 2) List Message con categorías dinámicas
+    const sections = buildListSections(grouped, usedPrefix)
+    if (sections.length > 0) {
+        try {
+            await conn.sendMessage(m.chat, {
+                text:       '𖤐 Elige una categoría, darling~\n¡No te tome todo el día, hmph! 💗',
+                footer:     '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 🌸',
+                title:      '❖ CATEGORÍAS ❖',
+                buttonText: '📋 Ver categorías',
+                sections,
+                listType:   1,
+            }, { quoted: m })
+        } catch (e) {
+            console.error('[menu] list send error:', e)
+        }
     }
 }
 
