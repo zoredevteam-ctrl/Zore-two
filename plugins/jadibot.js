@@ -114,13 +114,68 @@ const handler = async (m, { conn, plugins, prefix }) => {
     const cmd     = m.body?.slice((prefix || '.').length).trim().split(/\s+/)[0]?.toLowerCase() || ''
     const useQR   = /^(qr|serbot)$/.test(cmd)
     const useCode = /^(code|jadibot)$/.test(cmd)
+    const active  = global.conns.filter(c => c?.user && c?.ws?.socket?.readyState !== ws.CLOSED)
 
-    if (!await preCheck(m, conn, number)) return
+    if (active.length >= MAX_SUBBOTS) {
+        return sendStyled(conn, m,
+            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+            `꒰ 💔 ꒱ Límite alcanzado, Darling~\n` +
+            `꒰ 📊 ꒱ Activos: *${active.length}/${MAX_SUBBOTS}*\n\n` +
+            `╚══「 💕 © ZoreDevTeam 」══╝`
+        )
+    }
+
+    // Limpiar lock si la sesión ya no existe
+    if (global.subLocks.get(number)) {
+        const sessionPath = path.join(SUBBOT_DIR, number)
+        const haySession  = fs.existsSync(path.join(sessionPath, 'creds.json'))
+        const haySocket   = active.find(c => c._number === number)
+        if (!haySession && !haySocket) {
+            global.subLocks.delete(number)
+        } else {
+            return sendStyled(conn, m,
+                `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+                `꒰ ⏳ ꒱ Ya estoy procesando tu sesión~\n` +
+                `꒰ 🌸 ꒱ Ten paciencia, Darling~ 💕\n\n` +
+                `╚══「 💕 © ZoreDevTeam 」══╝`
+            )
+        }
+    }
+
+    if (active.find(c => c._number === number)) {
+        return sendStyled(conn, m,
+            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+            `꒰ ✅ ꒱ Ya tienes un sub-bot activo, Darling~\n\n` +
+            `╚══「 💕 © ZoreDevTeam 」══╝`
+        )
+    }
 
     global.subLocks.set(number, true)
     fs.mkdirSync(path.join(SUBBOT_DIR, number), { recursive: true })
 
     await m.react('⏳')
+
+    // Mensaje de método antes de empezar
+    if (useCode) {
+        await sendStyled(conn, m,
+            `╔══「 🔑 Código de Emparejamiento 」══╗\n\n` +
+            `꒰ 📱 ꒱ Abre WhatsApp → *Dispositivos vinculados*\n` +
+            `꒰ 🔗 ꒱ Toca *Vincular con número*\n` +
+            `꒰ ⌨️ ꒱ Ingresa el código que te mandaré~\n` +
+            `꒰ ⏳ ꒱ Espera un momento, Darling~\n\n` +
+            `╚══「 💕 © ZoreDevTeam 」══╝`
+        )
+    } else if (useQR) {
+        await sendStyled(conn, m,
+            `╔══「 📷 Código QR 」══╗\n\n` +
+            `꒰ 📱 ꒱ Abre WhatsApp → *Dispositivos vinculados*\n` +
+            `꒰ 🔗 ꒱ Toca *Vincular dispositivo*\n` +
+            `꒰ 📷 ꒱ Escanea el QR que te mandaré~\n` +
+            `꒰ ⏳ ꒱ Espera un momento, Darling~\n\n` +
+            `╚══「 💕 © ZoreDevTeam 」══╝`
+        )
+    }
+
     startSubBot({ number, m, conn, plugins, useQR, useCode })
 }
 
