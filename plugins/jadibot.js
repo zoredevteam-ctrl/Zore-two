@@ -109,10 +109,11 @@ const preCheck = async (m, conn, number) => {
 }
 
 // ── HANDLER — #code → código de 8 dígitos ────────────────────────────────
-const handler = async (m, { conn, command, plugins }) => {
+const handler = async (m, { conn, plugins, prefix }) => {
     const number  = m.sender.split('@')[0].split(':')[0]
-    const useQR   = /^(qr|serbot)$/.test(command)
-    const useCode = /^(code|jadibot)$/.test(command)
+    const cmd     = m.body?.slice((prefix || '.').length).trim().split(/\s+/)[0]?.toLowerCase() || ''
+    const useQR   = /^(qr|serbot)$/.test(cmd)
+    const useCode = /^(code|jadibot)$/.test(cmd)
 
     if (!await preCheck(m, conn, number)) return
 
