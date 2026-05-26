@@ -14,8 +14,8 @@ import {
     Browsers,
     DisconnectReason
 } from '@whiskeysockets/baileys'
-import { smsg }                   from '../lib/simple.js'
-import { handler as mainHandler }  from '../handler.js'
+import { smsg }                  from '../lib/simple.js'
+import { handler as mainHandler } from '../handler.js'
 
 if (!Array.isArray(global.conns))            global.conns          = []
 if (!(global.subBotRegistry instanceof Map)) global.subBotRegistry = new Map()
@@ -38,8 +38,8 @@ const getThumb = async () => {
 }
 
 const sendStyled = async (conn, m, text) => {
-    const thumb = await getThumb()
     try {
+        const thumb = await getThumb()
         return conn.sendMessage(m.chat, {
             text,
             contextInfo: {
@@ -71,16 +71,15 @@ const getVersion = async () => {
     } catch { return [2, 2306, 9] }
 }
 
-// ── HANDLER — solo #code, número automático ────────────────────────────────
+// ── HANDLER — solo #code, número automático ───────────────────────────────
 const handler = async (m, { conn, plugins }) => {
-    // Número del sender automáticamente, sin que el usuario escriba nada
     const number = m.sender.split('@')[0].split(':')[0]
     const active = global.conns.filter(c => c?.user && c?.ws?.socket?.readyState !== ws.CLOSED)
 
     if (active.length >= MAX_SUBBOTS) {
         return sendStyled(conn, m,
-            `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
-            `꒰ 💔 ꒱ Llegamos al límite de sub-bots, Darling~\n` +
+            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+            `꒰ 💔 ꒱ Límite alcanzado, Darling~\n` +
             `꒰ 📊 ꒱ Activos: *${active.length}/${MAX_SUBBOTS}*\n\n` +
             `╚══「 💕 © ZoreDevTeam 」══╝`
         )
@@ -88,27 +87,26 @@ const handler = async (m, { conn, plugins }) => {
 
     if (global.subLocks.get(number)) {
         return sendStyled(conn, m,
-            `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
-            `꒰ ⏳ ꒱ Ya estoy generando tu código, Darling~\n` +
-            `꒰ 🌸 ꒱ Ten paciencia~ 💕\n\n` +
+            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+            `꒰ ⏳ ꒱ Ya estoy generando tu código~\n` +
+            `꒰ 🌸 ꒱ Ten paciencia, Darling~ 💕\n\n` +
             `╚══「 💕 © ZoreDevTeam 」══╝`
         )
     }
 
     if (active.find(c => c._number === number)) {
         return sendStyled(conn, m,
-            `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
+            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
             `꒰ ✅ ꒱ Ya tienes un sub-bot activo, Darling~\n\n` +
             `╚══「 💕 © ZoreDevTeam 」══╝`
         )
     }
 
     global.subLocks.set(number, true)
-    const sessionPath = path.join(SUBBOT_DIR, number)
-    fs.mkdirSync(sessionPath, { recursive: true })
+    fs.mkdirSync(path.join(SUBBOT_DIR, number), { recursive: true })
 
     await m.react('⏳')
-    startSubBot({ sessionPath, number, m, conn, plugins })
+    startSubBot({ number, m, conn, plugins })
 }
 
 handler.help    = ['code']
@@ -116,12 +114,13 @@ handler.tags    = ['serbot']
 handler.command = ['code', 'serbot', 'jadibot']
 export default handler
 
-// ── startSubBot ────────────────────────────────────────────────────────────
-async function startSubBot({ sessionPath, number, m, conn, plugins }) {
-    let retries      = 0
-    let codeSent     = false
-    let connected    = false
-    let pairingTimer = null
+// ── startSubBot ───────────────────────────────────────────────────────────
+async function startSubBot({ number, m, conn, plugins }) {
+    const sessionPath  = path.join(SUBBOT_DIR, number)
+    let retries        = 0
+    let connected      = false
+    let pairingTimer   = null
+    let codeRequested  = false   // mutex — garantiza UN SOLO código
 
     const cleanUp = async (removeSession = false) => {
         clearTimeout(pairingTimer)
@@ -134,6 +133,45 @@ async function startSubBot({ sessionPath, number, m, conn, plugins }) {
     }
 
     const notify = text => sendStyled(conn, m, text)
+
+    // Pedir código una sola vez
+    const requestCode = async (sock) => {
+        if (codeRequested) return
+        codeRequested = true
+        try {
+            const raw  = await sock.requestPairingCode(number)
+            const code = raw.match(/.{1,4}/g)?.join('-') || raw
+
+            await m.react('🔑')
+
+            // Código solo, limpio, sin nada extra — todos lo ven
+            await conn.sendMessage(m.chat, { text: code }, { quoted: m })
+
+            pairingTimer = setTimeout(async () => {
+                if (!connected) {
+                    await cleanUp(false)
+                    notify(
+                        `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+                        `꒰ ⏰ ꒱ Tiempo agotado, Darling~\n` +
+                        `꒰ 💔 ꒱ Usa *#code* para intentarlo de nuevo.\n\n` +
+                        `╚══「 💕 © ZoreDevTeam 」══╝`
+                    )
+                    m.react('💔')
+                }
+            }, PAIRING_TIMEOUT_MS)
+
+        } catch (e) {
+            codeRequested = false
+            await cleanUp(false)
+            notify(
+                `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+                `꒰ ❌ ꒱ Error generando tu código~\n` +
+                `⟡ _${e.message}_\n\n` +
+                `╚══「 💕 © ZoreDevTeam 」══╝`
+            )
+            m.react('💔')
+        }
+    }
 
     const start = async () => {
         try {
@@ -172,44 +210,13 @@ async function startSubBot({ sessionPath, number, m, conn, plugins }) {
                 await mainHandler(msg, sock, global.plugins || plugins)
             })
 
-            setTimeout(async () => {
-                if (codeSent || connected) return
-                codeSent = true  // ← flag ANTES de la llamada async para evitar doble disparo
-                try {
-                    let code = await sock.requestPairingCode(number)
-                    code     = code.match(/.{1,4}/g)?.join('-') || code
-
-                    await m.react('🔑')
-
-                    // Solo el código — limpio, fácil de copiar, visible para todos
-                    await conn.sendMessage(m.chat, { text: code }, { quoted: m })
-
-                    pairingTimer = setTimeout(async () => {
-                        if (!connected) {
-                            await cleanUp(false)
-                            notify(
-                                `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
-                                `꒰ ⏰ ꒱ Se acabó el tiempo, Darling~\n` +
-                                `꒰ 💔 ꒱ Usa *#code* para intentarlo de nuevo.\n\n` +
-                                `╚══「 💕 © ZoreDevTeam 」══╝`
-                            )
-                            m.react('💔')
-                        }
-                    }, PAIRING_TIMEOUT_MS)
-
-                } catch (e) {
-                    await cleanUp(false)
-                    notify(
-                        `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
-                        `꒰ ❌ ꒱ Error generando tu código~\n` +
-                        `⟡ _${e.message}_\n\n` +
-                        `╚══「 💕 © ZoreDevTeam 」══╝`
-                    )
-                    m.react('💔')
+            sock.ev.on('connection.update', async ({ connection, lastDisconnect, qr }) => {
+                // QR disponible = momento de pedir el código (solo una vez)
+                if (qr) {
+                    await requestCode(sock)
+                    return
                 }
-            }, 3000)
 
-            sock.ev.on('connection.update', async ({ connection, lastDisconnect }) => {
                 const statusCode = lastDisconnect?.error?.output?.statusCode
 
                 if (connection === 'open') {
@@ -227,20 +234,22 @@ async function startSubBot({ sessionPath, number, m, conn, plugins }) {
 
                     await m.react('✅')
                     notify(
-                        `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
+                        `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
                         `꒰ ✅ ꒱ ¡Sub-bot *+${number}* conectado~! 💗\n` +
                         `꒰ 📊 ꒱ Activos: *${global.conns.length}/${MAX_SUBBOTS}*\n\n` +
                         `꒰ 🌸 ꒱ ¡Bienvenido a la familia Zero Two~! 💕\n\n` +
                         `╚══「 💕 © ZoreDevTeam 」══╝`
                     )
+                    return
                 }
 
                 if (connection === 'close') {
-                    if ([401, 403, 405, DisconnectReason.loggedOut, DisconnectReason.forbidden].includes(statusCode)) {
+                    const fatal = [401, 403, 405, DisconnectReason.loggedOut, DisconnectReason.forbidden]
+                    if (fatal.includes(statusCode)) {
                         await cleanUp(true)
                         notify(
-                            `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
-                            `꒰ 💔 ꒱ Sub-bot *+${number}* desconectado permanentemente~\n` +
+                            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+                            `꒰ 💔 ꒱ Sub-bot *+${number}* cerrado permanentemente~\n` +
                             `꒰ 🌸 ꒱ Usa *#code* para reconectar.\n\n` +
                             `╚══「 💕 © ZoreDevTeam 」══╝`
                         )
@@ -252,7 +261,7 @@ async function startSubBot({ sessionPath, number, m, conn, plugins }) {
                     if (retries >= MAX_RECONNECT) {
                         await cleanUp(false)
                         notify(
-                            `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
+                            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
                             `꒰ 💔 ꒱ No pude reconectar *+${number}*~\n` +
                             `꒰ 🌸 ꒱ Usa *#code* de nuevo, Darling~\n\n` +
                             `╚══「 💕 © ZoreDevTeam 」══╝`
@@ -261,6 +270,7 @@ async function startSubBot({ sessionPath, number, m, conn, plugins }) {
                     }
 
                     retries++
+                    codeRequested = false // permitir nuevo código al reconectar
                     await sleep(Math.min(30000, BASE_DELAY_MS * 2 ** (retries - 1)))
                     start()
                 }
@@ -269,7 +279,7 @@ async function startSubBot({ sessionPath, number, m, conn, plugins }) {
         } catch (e) {
             await cleanUp(false)
             notify(
-                `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
+                `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
                 `꒰ ❌ ꒱ Error iniciando sub-bot~\n` +
                 `⟡ _${e.message}_\n\n` +
                 `╚══「 💕 © ZoreDevTeam 」══╝`
