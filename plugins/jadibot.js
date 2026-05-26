@@ -6,6 +6,7 @@ import fs from 'fs'
 import path from 'path'
 import pino from 'pino'
 import ws from 'ws'
+import qrcode from 'qrcode'
 import {
     makeWASocket,
     useMultiFileAuthState,
@@ -71,56 +72,69 @@ const getVersion = async () => {
     } catch { return [2, 2306, 9] }
 }
 
-// ── HANDLER — solo #code, número automático ───────────────────────────────
-const handler = async (m, { conn, plugins }) => {
-    const number = m.sender.split('@')[0].split(':')[0]
+// ── Validaciones comunes ──────────────────────────────────────────────────
+const preCheck = async (m, conn, number) => {
     const active = global.conns.filter(c => c?.user && c?.ws?.socket?.readyState !== ws.CLOSED)
 
     if (active.length >= MAX_SUBBOTS) {
-        return sendStyled(conn, m,
+        await sendStyled(conn, m,
             `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
             `꒰ 💔 ꒱ Límite alcanzado, Darling~\n` +
             `꒰ 📊 ꒱ Activos: *${active.length}/${MAX_SUBBOTS}*\n\n` +
             `╚══「 💕 © ZoreDevTeam 」══╝`
         )
+        return false
     }
 
     if (global.subLocks.get(number)) {
-        return sendStyled(conn, m,
+        await sendStyled(conn, m,
             `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-            `꒰ ⏳ ꒱ Ya estoy generando tu código~\n` +
+            `꒰ ⏳ ꒱ Ya estoy procesando tu sesión~\n` +
             `꒰ 🌸 ꒱ Ten paciencia, Darling~ 💕\n\n` +
             `╚══「 💕 © ZoreDevTeam 」══╝`
         )
+        return false
     }
 
     if (active.find(c => c._number === number)) {
-        return sendStyled(conn, m,
+        await sendStyled(conn, m,
             `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
             `꒰ ✅ ꒱ Ya tienes un sub-bot activo, Darling~\n\n` +
             `╚══「 💕 © ZoreDevTeam 」══╝`
         )
+        return false
     }
+
+    return true
+}
+
+// ── HANDLER — #code → código de 8 dígitos ────────────────────────────────
+const handler = async (m, { conn, command, plugins }) => {
+    const number  = m.sender.split('@')[0].split(':')[0]
+    const useQR   = /^(qr|serbot)$/.test(command)
+    const useCode = /^(code|jadibot)$/.test(command)
+
+    if (!await preCheck(m, conn, number)) return
 
     global.subLocks.set(number, true)
     fs.mkdirSync(path.join(SUBBOT_DIR, number), { recursive: true })
 
     await m.react('⏳')
-    startSubBot({ number, m, conn, plugins })
+    startSubBot({ number, m, conn, plugins, useQR, useCode })
 }
 
-handler.help    = ['code']
+handler.help    = ['code', 'qr']
 handler.tags    = ['serbot']
-handler.command = ['code', 'serbot', 'jadibot']
+handler.command = ['code', 'jadibot', 'qr', 'serbot']
 export default handler
 
 // ── startSubBot ───────────────────────────────────────────────────────────
-async function startSubBot({ number, m, conn, plugins }) {
-    const sessionPath  = path.join(SUBBOT_DIR, number)
-    let retries        = 0
-    let connected      = false
-    let pairingTimer   = null
-    let codeRequested  = false   // mutex — garantiza UN SOLO código
+async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
+    const sessionPath = path.join(SUBBOT_DIR, number)
+    let retries       = 0
+    let connected     = false
+    let pairingTimer  = null
+    let sent          = false  // mutex — evita doble envío
 
     const cleanUp = async (removeSession = false) => {
         clearTimeout(pairingTimer)
@@ -133,45 +147,6 @@ async function startSubBot({ number, m, conn, plugins }) {
     }
 
     const notify = text => sendStyled(conn, m, text)
-
-    // Pedir código una sola vez
-    const requestCode = async (sock) => {
-        if (codeRequested) return
-        codeRequested = true
-        try {
-            const raw  = await sock.requestPairingCode(number)
-            const code = raw.match(/.{1,4}/g)?.join('-') || raw
-
-            await m.react('🔑')
-
-            // Código solo, limpio, sin nada extra — todos lo ven
-            await conn.sendMessage(m.chat, { text: code }, { quoted: m })
-
-            pairingTimer = setTimeout(async () => {
-                if (!connected) {
-                    await cleanUp(false)
-                    notify(
-                        `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-                        `꒰ ⏰ ꒱ Tiempo agotado, Darling~\n` +
-                        `꒰ 💔 ꒱ Usa *#code* para intentarlo de nuevo.\n\n` +
-                        `╚══「 💕 © ZoreDevTeam 」══╝`
-                    )
-                    m.react('💔')
-                }
-            }, PAIRING_TIMEOUT_MS)
-
-        } catch (e) {
-            codeRequested = false
-            await cleanUp(false)
-            notify(
-                `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-                `꒰ ❌ ꒱ Error generando tu código~\n` +
-                `⟡ _${e.message}_\n\n` +
-                `╚══「 💕 © ZoreDevTeam 」══╝`
-            )
-            m.react('💔')
-        }
-    }
 
     const start = async () => {
         try {
@@ -211,9 +186,53 @@ async function startSubBot({ number, m, conn, plugins }) {
             })
 
             sock.ev.on('connection.update', async ({ connection, lastDisconnect, qr }) => {
-                // QR disponible = momento de pedir el código (solo una vez)
-                if (qr) {
-                    await requestCode(sock)
+
+                if (qr && !connected && !sent) {
+                    sent = true
+
+                    if (useQR) {
+                        // ── Mandar imagen del QR ──────────────────────────
+                        try {
+                            const qrBuffer = await qrcode.toBuffer(qr, { scale: 8 })
+                            await conn.sendMessage(m.chat, {
+                                image: qrBuffer,
+                                caption:
+                                    `╔══「 📷 Escanea el QR 」══╗\n\n` +
+                                    `꒰ 📱 ꒱ WhatsApp → *Dispositivos vinculados*\n` +
+                                    `꒰ 🔗 ꒱ Toca *Vincular dispositivo* y escanea~\n` +
+                                    `꒰ ⏳ ꒱ Expira en *45 segundos*, Darling~\n\n` +
+                                    `╚══「 💕 © ZoreDevTeam 」══╝`
+                            }, { quoted: m })
+                            await m.react('📷')
+                        } catch (e) {
+                            sent = false
+                        }
+                    } else if (useCode) {
+                        // ── Mandar código de 8 dígitos ────────────────────
+                        try {
+                            const raw  = await sock.requestPairingCode(number)
+                            const code = raw.match(/.{1,4}/g)?.join('-') || raw
+                            await m.react('🔑')
+                            await conn.sendMessage(m.chat, { text: code }, { quoted: m })
+                        } catch (e) {
+                            sent = false
+                        }
+                    }
+
+                    // Timeout si no conecta
+                    pairingTimer = setTimeout(async () => {
+                        if (!connected) {
+                            await cleanUp(false)
+                            notify(
+                                `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+                                `꒰ ⏰ ꒱ Tiempo agotado, Darling~\n` +
+                                `꒰ 💔 ꒱ Usa *#code* o *#qr* para intentarlo de nuevo.\n\n` +
+                                `╚══「 💕 © ZoreDevTeam 」══╝`
+                            )
+                            m.react('💔')
+                        }
+                    }, PAIRING_TIMEOUT_MS)
+
                     return
                 }
 
@@ -249,8 +268,8 @@ async function startSubBot({ number, m, conn, plugins }) {
                         await cleanUp(true)
                         notify(
                             `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-                            `꒰ 💔 ꒱ Sub-bot *+${number}* cerrado permanentemente~\n` +
-                            `꒰ 🌸 ꒱ Usa *#code* para reconectar.\n\n` +
+                            `꒰ 💔 ꒱ Sub-bot *+${number}* cerrado~\n` +
+                            `꒰ 🌸 ꒱ Usa *#code* o *#qr* para reconectar.\n\n` +
                             `╚══「 💕 © ZoreDevTeam 」══╝`
                         )
                         return
@@ -263,14 +282,14 @@ async function startSubBot({ number, m, conn, plugins }) {
                         notify(
                             `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
                             `꒰ 💔 ꒱ No pude reconectar *+${number}*~\n` +
-                            `꒰ 🌸 ꒱ Usa *#code* de nuevo, Darling~\n\n` +
+                            `꒰ 🌸 ꒱ Usa *#code* o *#qr* de nuevo.\n\n` +
                             `╚══「 💕 © ZoreDevTeam 」══╝`
                         )
                         return
                     }
 
                     retries++
-                    codeRequested = false // permitir nuevo código al reconectar
+                    sent = false
                     await sleep(Math.min(30000, BASE_DELAY_MS * 2 ** (retries - 1)))
                     start()
                 }
