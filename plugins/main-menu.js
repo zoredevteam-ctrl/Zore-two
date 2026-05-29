@@ -2,7 +2,7 @@ import fs from 'fs'
 import fetch from 'node-fetch'
 import { database } from '../lib/database.js'
 
-const handler = async (m, { conn, usedPrefix }) => {
+const handler = async (m, { conn, usedPrefix, prefix }) => {
     try {
         const botname = global.botname || global.botName || 'Zero Two'
 
@@ -45,7 +45,7 @@ const handler = async (m, { conn, usedPrefix }) => {
         const readMore = String.fromCharCode(8206).repeat(4000)
 
         // ── Secciones manuales ───────────────────────
-        const p = usedPrefix
+        const p = usedPrefix || prefix || global.prefix || "#"
         const seccionesTexto = `*╭── ⟡ [ ✦ 𝐀𝐍𝐈𝐌𝐄 & 𝐑𝐄𝐀𝐂𝐂𝐈𝐎𝐍𝐄𝐒 ] ⟡*
 > ✧ ${p}dance
 > ✧ ${p}hug
@@ -180,30 +180,18 @@ ${seccionesTexto}
 
 ✦ *~Zero Two* ʚɞ (´｡• ᵕ •｡\`)`.trim()
 
-        // ── Descargar banner ─────────────────────────
+        // ── Descargar banner y enviar como imagen ─────
         const response = await fetch('https://upload.yotsuba.giize.com/u/h6QD209b.jpg')
         const buffer   = await response.buffer()
-        const base64   = buffer.toString('base64')
 
         await conn.sendMessage(m.chat, {
-            document:  buffer,
-            mimetype:  'application/pdf',
-            fileName:  '\u300e Zero Two Menu \u300f.pdf',
-            fileLength: 2199023255552,
-            pageCount:  2026,
-            caption:    menuTexto,
-            mentions:   [m.sender],
+            image:    buffer,
+            mimetype: 'image/jpeg',
+            caption:  menuTexto,
+            mentions: [m.sender],
             contextInfo: {
                 isForwarded: true,
                 forwardingScore: 999,
-                externalAdReply: {
-                    title:                 global.botName || 'Zero Two',
-                    body:                  global.botText || 'darling~ \uD83D\uDC97',
-                    mediaType:             1,
-                    thumbnail:             base64,
-                    renderLargerThumbnail: true,
-                    sourceUrl:             global.rcanal || 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y'
-                },
                 forwardedNewsletterMessageInfo: {
                     newsletterJid:   global.newsletterJid  || '120363404822730259@newsletter',
                     newsletterName:  global.newsletterName || 'Zero Two',
