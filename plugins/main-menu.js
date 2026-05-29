@@ -1,5 +1,4 @@
 import fs from 'fs'
-import path from 'path'
 import fetch from 'node-fetch'
 import { database } from '../lib/database.js'
 
@@ -10,9 +9,8 @@ const handler = async (m, { conn, usedPrefix }) => {
         // ── Stats ────────────────────────────────────
         const totalUsers      = Object.keys(database.data.users || {}).length
         const registeredUsers = Object.values(database.data.users || {}).filter(u => u.registered).length
-        const user            = database.data.users?.[m.sender] || {}
 
-        // Conteo real deduplicado desde los plugins
+        // ── Conteo real deduplicado ───────────────────
         let totalCmds = 0
         try {
             const pluginFiles = fs.readdirSync('./plugins').filter(f => f.endsWith('.js'))
@@ -25,14 +23,14 @@ const handler = async (m, { conn, usedPrefix }) => {
                 } catch {}
             }
             totalCmds = allCmds.size
-        } catch { totalCmds = 0 }
+        } catch {}
 
         // ── Uptime ───────────────────────────────────
-        const s = process.uptime()
-        const h = Math.floor(s / 3600)
-        const min = Math.floor(s / 60) % 60
-        const sec = Math.floor(s) % 60
-        const uptime = `${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+        const sec = process.uptime()
+        const h   = Math.floor(sec / 3600)
+        const min = Math.floor(sec / 60) % 60
+        const s   = Math.floor(sec) % 60
+        const uptime = `${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(s).padStart(2,'0')}`
 
         // ── Saludo ───────────────────────────────────
         const hora = parseInt(new Date().toLocaleTimeString('es-CO', {
@@ -48,8 +46,7 @@ const handler = async (m, { conn, usedPrefix }) => {
 
         // ── Secciones manuales ───────────────────────
         const p = usedPrefix
-        const seccionesTexto = `
-*╭── ⟡ [ ✦ 𝐀𝐍𝐈𝐌𝐄 & 𝐑𝐄𝐀𝐂𝐂𝐈𝐎𝐍𝐄𝐒 ] ⟡*
+        const seccionesTexto = `*╭── ⟡ [ ✦ 𝐀𝐍𝐈𝐌𝐄 & 𝐑𝐄𝐀𝐂𝐂𝐈𝐎𝐍𝐄𝐒 ] ⟡*
 > ✧ ${p}dance
 > ✧ ${p}hug
 > ✧ ${p}kill
@@ -104,6 +101,8 @@ const handler = async (m, { conn, usedPrefix }) => {
 > ✧ ${p}ver / ${p}vv
 > ✧ ${p}recordar
 > ✧ ${p}save
+> ✧ ${p}fetch
+> ✧ ${p}detectarsyntax
 *╰─────────────── ✦*
 
 *╭── ⟡ [ ✦ 𝐀𝐈 ] ⟡*
@@ -164,7 +163,7 @@ const handler = async (m, { conn, usedPrefix }) => {
 > ✧ ${p}revsall
 > ✧ ${p}update
 > ✧ ${p}e
-*╰─────────────── ✦*`.trim()
+*╰─────────────── ✦*`
 
         // ── Texto del menú ───────────────────────────
         const menuTexto = `✦ ⋆｡°✩ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎'𝐒 𝐌𝐄𝐍𝐔 ✩°｡⋆ ✦
@@ -181,21 +180,33 @@ ${seccionesTexto}
 
 ✦ *~Zero Two* ʚɞ (´｡• ᵕ •｡\`)`.trim()
 
-        // ── Descargar banner y enviar ─────────────────
-        const bannerRes    = await fetch('https://upload.yotsuba.giize.com/u/h6QD209b.jpg')
+        // ── Descargar banner ─────────────────────────
+        const response = await fetch('https://upload.yotsuba.giize.com/u/h6QD209b.jpg')
         const buffer   = await response.buffer()
+        const base64   = buffer.toString('base64')
 
         await conn.sendMessage(m.chat, {
-            image:    buffer,
-            mimetype: 'image/jpeg',
-            caption:  menuTexto,
-            mentions: [m.sender],
+            document:  buffer,
+            mimetype:  'application/pdf',
+            fileName:  '\u300e Zero Two Menu \u300f.pdf',
+            fileLength: 2199023255552,
+            pageCount:  2026,
+            caption:    menuTexto,
+            mentions:   [m.sender],
             contextInfo: {
                 isForwarded: true,
                 forwardingScore: 999,
+                externalAdReply: {
+                    title:                 global.botName || 'Zero Two',
+                    body:                  global.botText || 'darling~ \uD83D\uDC97',
+                    mediaType:             1,
+                    thumbnail:             base64,
+                    renderLargerThumbnail: true,
+                    sourceUrl:             global.rcanal || 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y'
+                },
                 forwardedNewsletterMessageInfo: {
                     newsletterJid:   global.newsletterJid  || '120363404822730259@newsletter',
-                    newsletterName:  global.newsletterName || '𝐙𝐄𝐑𝐎 𝐓𝐖𝐎',
+                    newsletterName:  global.newsletterName || 'Zero Two',
                     serverMessageId: -1
                 }
             }
