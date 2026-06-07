@@ -19,6 +19,9 @@ import { exec } from 'child_process'
 import { smsg } from './lib/simple.js'
 import { database } from './lib/database.js'
 import { handler, loadEvents } from './handler.js'
+import { readdirSync } from 'fs'
+import { join, resolve } from 'path'
+import { pathToFileURL } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pluginsDir = path.join(__dirname, 'plugins')
@@ -26,10 +29,10 @@ const pluginsDir = path.join(__dirname, 'plugins')
 global.conns = []
 
 const log = {
-  info: msg => console.log(chalk.bgBlue.white.bold('INFO'), chalk.white(msg)),
+  info:    msg => console.log(chalk.bgBlue.white.bold('INFO'),    chalk.white(msg)),
   success: msg => console.log(chalk.bgGreen.white.bold('SUCCESS'), chalk.greenBright(msg)),
-  warn: msg => console.log(chalk.bgYellow.red.bold('WARNING'), chalk.yellow(msg)),
-  error: msg => console.log(chalk.bgRed.white.bold('ERROR'), chalk.redBright(msg))
+  warn:    msg => console.log(chalk.bgYellow.red.bold('WARNING'),  chalk.yellow(msg)),
+  error:   msg => console.log(chalk.bgRed.white.bold('ERROR'),     chalk.redBright(msg))
 }
 
 const p1 = chalk.hex('#ffb6c1')
@@ -68,53 +71,57 @@ const plugins = new Map()
 
 async function loadPlugins () {
   if (!fs.existsSync(pluginsDir)) fs.mkdirSync(pluginsDir, { recursive: true })
-
   const files = fs.readdirSync(pluginsDir).filter(f => f.endsWith('.js'))
-
   for (const file of files) {
     try {
       const filePath = path.join(pluginsDir, file)
       const plugin = (await import(`${filePath}?t=${Date.now()}`)).default
-      if (plugin) {
-        plugins.set(file, plugin)
-        log.success(`Plugin cargado: ${file}`)
-      }
-    } catch (e) {
-      log.error(`Error cargando plugin ${file}: ${e.message}`)
-    }
+      if (plugin) { plugins.set(file, plugin); log.success(`Plugin cargado: ${file}`) }
+    } catch (e) { log.error(`Error cargando plugin ${file}: ${e.message}`) }
   }
-
   fs.watch(pluginsDir, async (event, filename) => {
     if (!filename?.endsWith('.js')) return
-
     const filePath = path.join(pluginsDir, filename)
-
     try {
       if (fs.existsSync(filePath)) {
         const plugin = (await import(`${filePath}?t=${Date.now()}`)).default
-        if (plugin) {
-          plugins.set(filename, plugin)
-          log.success(`Plugin recargado: ${filename}`)
-        }
-      } else {
-        plugins.delete(filename)
-        log.warn(`Plugin eliminado: ${filename}`)
-      }
-    } catch (e) {
-      log.error(`Error recargando plugin ${filename}: ${e.message}`)
-    }
+        if (plugin) { plugins.set(filename, plugin); log.success(`Plugin recargado: ${filename}`) }
+      } else { plugins.delete(filename); log.warn(`Plugin eliminado: ${filename}`) }
+    } catch (e) { log.error(`Error recargando plugin ${filename}: ${e.message}`) }
   })
 }
 
-global.sessionName = global.sessionName || './Sessions/Owner'
-try {
-  fs.mkdirSync(global.sessionName, { recursive: true })
-} catch (e) {
-  log.error(`No se pudo crear carpeta de sesión: ${e.message}`)
+// ── Cargar eventos de la carpeta /events ──────────────────────────────────────
+
+const loadedEventFiles = new Map()
+
+async function loadEventFiles (conn) {
+  const eventsPath = resolve('./events')
+  let files = []
+  try { files = readdirSync(eventsPath).filter(f => f.endsWith('.js')) } catch { return }
+
+  for (const file of files) {
+    if (loadedEventFiles.has(file)) continue
+    try {
+      const url = pathToFileURL(join(eventsPath, file)).href
+      const mod = await import(url)
+      if (!mod.event || !mod.run) continue
+
+      conn.ev.on(mod.event, (data) => {
+        try { mod.run(conn, data) } catch (e) { log.error(`[${file}] ${e.message}`) }
+      })
+
+      loadedEventFiles.set(file, true)
+      log.success(`Evento cargado: ${file} (${mod.event})`)
+    } catch (e) { log.error(`Error cargando evento ${file}: ${e.message}`) }
+  }
 }
 
+global.sessionName = global.sessionName || './Sessions/Owner'
+try { fs.mkdirSync(global.sessionName, { recursive: true }) } catch (e) { log.error(`No se pudo crear carpeta de sesión: ${e.message}`) }
+
 const methodCodeQR = process.argv.includes('--qr')
-const methodCode = process.argv.includes('--code')
+const methodCode   = process.argv.includes('--code')
 const DIGITS = s => String(s).replace(/\D/g, '')
 
 function normalizePhone (input) {
@@ -138,12 +145,10 @@ else if (!fs.existsSync('./Sessions/Owner/creds.json')) {
     chalk.blueBright('1. Con código QR\n') +
     chalk.cyan('2. Con código de texto de 8 dígitos\n--> ')
   )
-
   while (!/^[1-2]$/.test(opcion)) {
     log.error('Solo ingrese 1 o 2.')
     opcion = readlineSync.question('--> ')
   }
-
   if (opcion === '2') {
     console.log(chalk.yellowBright('\nIngrese su número de WhatsApp:\nEjemplo: +57301******\n'))
     const phoneInput = readlineSync.question(chalk.hex('#ff1493')('ꕤ --> '))
@@ -161,10 +166,7 @@ async function startBot () {
     logger,
     printQRInTerminal: false,
     browser: Browsers.macOS('Chrome'),
-    auth: {
-      creds: state.creds,
-      keys: makeCacheableSignalKeyStore(state.keys, logger)
-    },
+    auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, logger) },
     markOnlineOnConnect: false,
     generateHighQualityLinkPreview: true,
     syncFullHistory: false,
@@ -199,9 +201,7 @@ async function startBot () {
             chalk.hex('#ff1493')('ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n')
           )
         }
-      } catch (e) {
-        log.error(`Error al generar código: ${e.message}`)
-      }
+      } catch (e) { log.error(`Error al generar código: ${e.message}`) }
     }, 3000)
   }
 
@@ -214,15 +214,15 @@ async function startBot () {
     }
 
     if (connection === 'open') {
-  console.log(zeroBanner)
-  log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`)
-  log.info(`Plugins cargados: ${plugins.size}`)
-  await loadEvents(conn)
-}
+      console.log(zeroBanner)
+      log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`)
+      log.info(`Plugins cargados: ${plugins.size}`)
+      // Cargar todos los eventos de la carpeta /events
+      await loadEventFiles(conn)
+    }
 
     if (connection === 'close') {
       const reason = lastDisconnect?.error?.output?.statusCode
-
       if ([
         DisconnectReason.connectionLost,
         DisconnectReason.connectionClosed,
@@ -251,24 +251,20 @@ async function startBot () {
     }
   })
 
+  // ── Mensajes ──────────────────────────────────────────────────────────────
   conn.ev.on('messages.upsert', async ({ messages, type }) => {
     try {
       if (type !== 'notify') return
       let m = messages[0]
       if (!m?.message) return
-
       if (Object.keys(m.message)[0] === 'ephemeralMessage') {
         m.message = m.message.ephemeralMessage.message
       }
-
       if (m.key?.remoteJid === 'status@broadcast') return
       if (m.key?.id?.startsWith('BAE5') && m.key.id.length === 16) return
-
       m = await smsg(conn, m)
       await handler(m, conn, plugins)
-    } catch (e) {
-      log.error(`Error en mensaje: ${e.message}`)
-    }
+    } catch (e) { log.error(`Error en mensaje: ${e.message}`) }
   })
 }
 
