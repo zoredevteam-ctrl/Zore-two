@@ -17,7 +17,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
     )
   }
 
-  await conn.sendMessage(
+  const { key } = await conn.sendMessage(
     msg.chat,
     { text: 'Procesando...\n> Duarte es femboy' },
     { quoted: msg }
@@ -31,21 +31,20 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
     if (!json.status || !json.result) {
       return conn.sendMessage(
         msg.chat,
-        { text: '⚠️ No obtuve respuesta de la api.' },
+        { text: '⚠️ No obtuve respuesta de la api.', edit: key },
         { quoted: msg }
       )
     }
-
     await conn.sendMessage(
       msg.chat,
-      { text: json.result },
+      { text: json.result, edit: key },
       { quoted: msg }
     )
 
   } catch (e) {
     await conn.sendMessage(
       msg.chat,
-      { text: `❌ Error:\n${e.message}` },
+      { text: `❌ Error:\n${e.message}`, edit: key },
       { quoted: msg }
     )
   }
