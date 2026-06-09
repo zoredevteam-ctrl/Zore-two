@@ -19,7 +19,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
 
   const { key } = await conn.sendMessage(
     msg.chat,
-    { text: 'Procesando...\n> Duarte es femboy' },
+    { text: 'Procesando...\n> Duarte es femboy 😅' },
     { quoted: msg }
   )
 
