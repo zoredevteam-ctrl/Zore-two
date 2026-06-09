@@ -31,7 +31,7 @@ const handler = async (m, { conn }) => {
 
 handler.help = ['update'];
 handler.tags = ['owner'];
-handler.command = ['update'];
+handler.command = ['update', 'up'];
 handler.owner = true;
 
 export default handler;
