@@ -24,7 +24,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   )
 
   try {
-    const api = `https://nex-magical.vercel.app/ai/flux?prompt=${encodeURIComponent(query)}&apikey=NEX-Magicalofc`
+    const api = `https://nexevo.boxmine.xyz/ai/flux?prompt=${encodeURIComponent(query)}&apikey=NEX-Shizuka`
     const res = await axios.get(api, { responseType: 'arraybuffer' })
 
     await conn.sendMessage(
