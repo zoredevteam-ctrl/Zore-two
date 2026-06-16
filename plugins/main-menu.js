@@ -181,7 +181,7 @@ ${seccionesTexto}
 ✦ *~Zero Two* ʚɞ (´｡• ᵕ •｡\`)`.trim()
 
         // ── Descargar banner y enviar como imagen ─────
-        const response = await fetch('https://upload.yotsuba.giize.com/u/h6QD209b.jpg')
+        const response = await fetch('https://files.evogb.win/nQR7jG.png')
         const buffer   = await response.buffer()
 
         await conn.sendMessage(m.chat, {
