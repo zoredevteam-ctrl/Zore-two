@@ -119,7 +119,7 @@ let handler = async (m, { conn, args, text, db }) => {
     } catch {}
 
     await conn.sendMessage(m.chat, {
-        text: `☠️ *¡𝕰𝕷 𝕿𝕴𝕰𝕸𝕻𝕺 𝕳𝕬 𝕿𝕰𝕽𝕸𝕴𝕹𝕬𝕯𝕺!* ☠️\n\n` +
+        text: `☠️ *الوقت خلص!* ☠️\n\n` +
               `@${targetNum} ha muerto por *${cause}*~ 🩸\n` +
               `_اتاخد منه حدين بسبب الصدمة._\n\n` +
               `> 📓 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎`,

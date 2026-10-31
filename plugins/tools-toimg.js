@@ -18,7 +18,7 @@ let handler = async (m, { conn }) => {
 
         await conn.sendMessage(m.chat, {
             image: media,
-            caption: '💗 ¡اتفضل صورتك حبيبي!\nاتحوّلت بكل حبي من Flash Bot MD 🌸'
+            caption: '💗 اتفضل صورتك يا حبيبي!\nاتحوّلت بكل حبي من Flash Bot MD 🌸'
         }, { quoted: m })
 
         await m.react('💗')

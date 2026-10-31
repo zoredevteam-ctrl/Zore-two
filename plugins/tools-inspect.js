@@ -52,7 +52,7 @@ let handler = async (m, { conn, args }) => {
             const nombre = info.subject || 'بدون اسم'
             const descripcion = info.desc || 'بدون وصف'
             const participantes = info.size ?? info.participants?.length ?? 'مش متاح'
-            const tipo = info.isCommunity ? '🏘️ Comunidad' : '👥 Grupo'
+            const tipo = info.isCommunity ? '🏘️ Comunidad' : '👥 جروب'
             const creacion = info.creation
                 ? new Date(info.creation * 1000).toLocaleDateString('ar-EG')
                 : 'مش متاح'

@@ -46,7 +46,7 @@ let handler = async (m, { conn, args, isAdmin, isOwner, db }) => {
         }
 
         return conn.sendMessage(m.chat, {
-            text: `🌸💗 *¡ANTIBOT ACTIVADO!* 💗🌸\n\nمفيش روبوت مقلّد هيقدر يدخل جنتي الوردية تاني.\nعايز بس حبايب بشر يحبوني بجد، كياااه~! ♡`,
+            text: `🌸💗 *تم تفعيل مضاد البوت!* 💗🌸\n\nمفيش روبوت مقلّد هيقدر يدخل جنتي الوردية تاني.\nعايز بس حبايب بشر يحبوني بجد، كياااه~! ♡`,
             contextInfo
         }, { quoted: m })
     }

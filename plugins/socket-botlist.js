@@ -41,7 +41,7 @@ const handler = async (m, { conn, isOwner }) => {
     const link = phone ? `https://wa.me/${phone}` : 'N/A'
 
     lista += `  ${i + 1}. ${nombre}\n`
-    lista += `     ✧ Número  › ${link}\n`
+    lista += `     ✧ الرقم  › ${link}\n`
     lista += `     ✧ Activo  › ${uptime}\n`
     if (i < active.length - 1) lista += `\n`
   })

@@ -79,7 +79,7 @@ let handler = async (m, { conn, args, prefix }) => {
         await sendAlbumMessage(conn, m.chat, images, { caption, quoted: m })
         await m.react('✅')
     } catch (error) {
-        console.error('خطأ en pinterest:', error)
+        console.error('خطأ في pinterest:', error)
         await m.react('💔')
         await m.reply(`💔 حبيبي, حصلت مشكلة... [خطأ: ${error.message}]`)
     }

@@ -85,7 +85,7 @@ export async function writeExif(buffer, packname = '', author = '') {
 
         const result = Buffer.concat([
             buffer.slice(0, 4),    // "RIFF"
-            newRiff,               // nuevo tamaño
+            newRiff,               // الحجم الجديد
             buffer.slice(8),       // resto del webp
             exifChunk              // metadata al final
         ])
@@ -123,7 +123,7 @@ async function videoToWebp(buffer) {
         '-loop', '0',
         '-preset', 'picture',
         '-an', '-vsync', '0',
-        '-t', '00:00:10',       // máx 10s como WhatsApp
+        '-t', '00:00:10',       // أقصى 10 ثواني زي واتساب
         tmpOut
     ])
 
