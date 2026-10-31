@@ -19,8 +19,8 @@ const makeCtx = (thumb) => ({
         newsletterName:  global.newsletterName
     },
     externalAdReply: {
-        title:                 global.botName  || 'Zero Two',
-        body:                  global.botText  || 'darling~ 💗',
+        title:                 global.botName  || 'Flash Bot MD',
+        body:                  global.botText  || 'حبيبي~ 💗',
         mediaType:             1,
         thumbnail:             thumb,
         renderLargerThumbnail: false,
@@ -32,21 +32,21 @@ const makeCtx = (thumb) => ({
 
 const PROMOTE_MSGS = (num, groupName) => [
 
-`*ꕥ👑* ¡El reino de *${groupName}* tiene un nuevo guardián!
-> ✰ @${num} ha sido coronado/a como *Administrador/a* de este lugar~
-> ꕥ Que uses bien tu poder, darling... o yo misma te lo quito 💗`,
+`*ꕥ👑* مملكة *${groupName}* عندها حارس جديد!
+> ✰ @${num} اتوّج كـ *Administrador/a* المكان ده~
+> ꕥ اتمنى تستخدم سلطتك صح، حبيبي... ولا أنا نفسي هشيلها منك 💗`,
 
-`*ꕥ🌸* Las estrellas han hablado en *${groupName}*~
-> ✰ @${num} ahora forma parte de los elegidos.
-> ꕥ *Administrador/a* desde este momento. No me decepciones 💗`,
+`*ꕥ🌸* النجوم اتكلمت في *${groupName}*~
+> ✰ @${num} بقى من المختارين.
+> ꕥ *Administrador/a* من اللحظة دي. ماتخيّبش أملي 💗`,
 
-`*ꕥ✨* Un nuevo título ha sido otorgado en *${groupName}*
-> ✰ @${num} — bienvenido/a al rango de *Admin.*
-> ꕥ El reino confía en ti... hmph, yo también supongo 💗`,
+`*ꕥ✨* اتمنح لقب جديد في *${groupName}*
+> ✰ @${num} — أهلاً بيك في رتبة *Admin.*
+> ꕥ المملكة بتثق فيك... hmph, أنا كمان أظن 💗`,
 
-`*ꕥ💎* ¡Atención ciudadanos de *${groupName}*!
-> ✰ @${num} ha ascendido a *Administrador/a.*
-> ꕥ Cuida bien este lugar o tendrás que responderme a mí~ 💗`,
+`*ꕥ💎* انتباه يا مواطنين *${groupName}*!
+> ✰ @${num} اترقّى لـ *Administrador/a.*
+> ꕥ خلي بالك من المكان ده ولا هتتحاسب معايا~ 💗`,
 
 ]
 
@@ -54,21 +54,21 @@ const PROMOTE_MSGS = (num, groupName) => [
 
 const DEMOTE_MSGS = (num, groupName) => [
 
-`*ꕥ😔* El reino de *${groupName}* ha hablado...
-> ✰ @${num} ha sido destituido/a como *Administrador/a.*
-> ꕥ Así son las cosas darling, el poder no es para siempre 💔`,
+`*ꕥ😔* مملكة *${groupName}* اتكلمت...
+> ✰ @${num} اتعزل من منصب *Administrador/a.*
+> ꕥ كده الدنيا يا حبيبي, السلطة مش للأبد 💔`,
 
-`*ꕥ😞* Tiempos difíciles en *${groupName}*~
-> ✰ @${num} ya no ostenta el título de *Admin.*
-> ꕥ Espero que hayas aprendido algo de esta experiencia... 💔`,
+`*ꕥ😞* أوقات صعبة في *${groupName}*~
+> ✰ @${num} مبقاش شايل لقب *Admin.*
+> ꕥ اتمنى تكون اتعلمت حاجة من التجربة دي... 💔`,
 
-`*ꕥ💔* El trono ha cambiado en *${groupName}*
-> ✰ @${num} fue removido/a del cargo de *Administrador/a.*
-> ꕥ Sin rencores, darling. Así funciona este reino~ 💔`,
+`*ꕥ💔* العرش اتغير في *${groupName}*
+> ✰ @${num} اتشال من منصب *Administrador/a.*
+> ꕥ بدون زعل يا حبيبي. كده المملكة دي بتشتغل~ 💔`,
 
-`*ꕥ😤* Las decisiones del reino de *${groupName}* son definitivas.
-> ✰ @${num} perdió su rango de *Admin.*
-> ꕥ Qué le vamos a hacer... yo tampoco puedo hacer nada 💔`,
+`*ꕥ😤* قرارات مملكة *${groupName}* نهائية.
+> ✰ @${num} خسر رتبته *Admin.*
+> ꕥ نعمل إيه... أنا كمان مش قادر أعمل حاجة 💔`,
 
 ]
 
@@ -114,6 +114,6 @@ export const run = async (conn, update) => {
         }
 
     } catch (e) {
-        console.log('[PROMOTE/DEMOTE] Error:', e.message)
+        console.log('[PROMOTE/DEMOTE] خطأ:', e.message)
     }
 }

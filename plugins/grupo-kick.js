@@ -3,13 +3,13 @@ const handler = async (m, { conn, who }) => {
 
     const botJid = conn.user.id.split(':')[0] + '@s.whatsapp.net'
 
-    if (who === botJid) return m.reply('⚠️ No puedo expulsarme a mí mismo')
+    if (who === botJid) return m.reply('⚠️ مش قادر أطرد نفسي')
 
     try {
         await conn.groupParticipantsUpdate(m.chat, [who], 'remove')
-        m.reply('✅ Usuario eliminado del grupo')
+        m.reply('✅ العضو اتحذف من الجروب')
     } catch {
-        m.reply('❌ No se pudo expulsar al usuario')
+        m.reply('❌ مش قدرت أطرد العضو')
     }
 }
 

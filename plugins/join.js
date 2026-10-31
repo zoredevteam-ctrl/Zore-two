@@ -6,7 +6,7 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
   try {
     if (!text) {
       return m.reply(
-        `♡ Darling... pásame un enlace de grupo 💗\n\nEjemplo:\n${usedPrefix}join https://chat.whatsapp.com/ABCDEFGHIJK123456789 7`
+        `♡ حبيبي... هاتلي لينك جروب 💗\n\nEjemplo:\n${usedPrefix}join https://chat.whatsapp.com/ABCDEFGHIJK123456789 7`
       )
     }
 
@@ -14,7 +14,7 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
     let match = text.match(linkRegex)
     if (!match) {
       return m.reply(
-        '♡ Mmm... ese enlace no parece válido 💔\nAsegúrate que sea un enlace de WhatsApp'
+        '♡ Mmm... ese enlace no parece válido 💔\nاتأكد إنه لينك واتساب'
       )
     }
 
@@ -40,21 +40,21 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
       let msg = err?.message || ''
 
       if (msg.includes('already')) {
-        return m.reply('♡ Ya estoy en ese grupo, Darling 💗')
+        return m.reply('♡ أنا في الجروب ده بالفعل، حبيبي 💗')
       }
       if (msg.includes('expired') || msg.includes('invalid')) {
-        return m.reply('♡ El enlace está expirado o inválido 💔')
+        return m.reply('♡ اللينك منتهي أو غير صالح 💔')
       }
 
       throw err
     }
 
     if (!groupId || !groupId.endsWith('@g.us')) {
-      return m.reply('♡ No obtuve un ID válido 💔')
+      return m.reply('♡ مفيش ID صالح 💔')
     }
 
     // 📛 Nombre del grupo
-    let groupName = 'Grupo desconocido'
+    let groupName = 'جروب غير معروف'
     try {
       let meta = await conn.groupMetadata(groupId)
       groupName = meta?.subject || groupName
@@ -77,19 +77,19 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
 
     // ✅ Confirmación
     await m.reply(
-      `♡ Ya entré a *${groupName}* 💗\n` +
+      `♡ دخلت *${groupName}* 💗\n` +
       (days
-        ? `Me quedaré ${days} día(s) contigo~`
-        : 'Me quedaré para siempre contigo, Darling ♡')
+        ? `هفضل ${days} يوم معاك~`
+        : 'هفضل معاك للأبد يا حبيبي ♡')
     )
 
     // 🎬 Bienvenida
     let media = 'https://files.catbox.moe/sjak3i.jpg'
 
-    let welcomeText = `╭━━━〔 ♡ 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 ♡ 〕━━━⬣
-┃ ❥ Ya llegué, Darling... 💗
-┃ ❥ Ahora este grupo es más divertido~
-┃ ❥ Llámame si me necesitas ♡
+    let welcomeText = `╭━━━〔 ♡ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 ♡ 〕━━━⬣
+┃ ❥ وصلت، حبيبي... 💗
+┃ ❥ دلوقتي الجروب ده أمتع~
+┃ ❥ ناديني لو محتاجني ♡
 ╰━━━━━━━━━━━━━━━━⬣`
 
     await conn.sendMessage(groupId, {
@@ -105,10 +105,10 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
     let msg = '♡ No pude entrar... 💔\n'
     let errMsg = e?.message || ''
 
-    if (errMsg.includes('already')) msg += 'Ya estoy en ese grupo~'
-    else if (errMsg.includes('expired')) msg += 'El enlace expiró...'
-    else if (errMsg.includes('limit')) msg += 'Límite de uniones alcanzado...'
-    else msg += 'Error inesperado'
+    if (errMsg.includes('already')) msg += 'أنا في الجروب ده بالفعل~'
+    else if (errMsg.includes('expired')) msg += 'اللينك انتهى...'
+    else if (errMsg.includes('limit')) msg += 'وصلت حد الانضمام...'
+    else msg += 'خطأ غير متوقع'
 
     await m.reply(msg)
   }

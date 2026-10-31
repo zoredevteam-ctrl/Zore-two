@@ -1,36 +1,36 @@
 <div align="center">
 
-<img src="https://causas-files.vercel.app/fl/9vs2.jpg" alt="Zero Two Banner" width="100%"/>
+<img src="https://causas-files.vercel.app/fl/9vs2.jpg" alt="Flash Bot MD Banner" width="100%"/>
 
 <br/>
 
 ```
-💗  Z E R O  T W O  💗
+⚡  F L A S H  B O T  M D  ⚡
 ```
 
-### *La waifu rosa más peligrosa y cute del multiverso de WhatsApp~*
+### *أقوى بوت واتساب متعدد الأجهزة — Flash Bot MD*
 
 <br/>
 
-[![WhatsApp Canal](https://img.shields.io/badge/📢_Canal_Oficial-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y)
-[![GitHub](https://img.shields.io/badge/📁_Repositorio-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/zoredevteam-ctrl/Zore-two.git)
-[![Versión](https://img.shields.io/badge/Versión-1.0.0-ff69b4?style=for-the-badge)](https://github.com/zoredevteam-ctrl/Zore-two)
+[![WhatsApp Canal](https://img.shields.io/badge/📢_Canal_Oficial-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com/channel/0029Vb8QIpSJ3juu0VHRyU0v)
+[![GitHub](https://img.shields.io/badge/📁_Repositorio-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/dwhhhg8-code/Zore-two.git)
+[![Versión](https://img.shields.io/badge/Versión-1.0.0-ff69b4?style=for-the-badge)](https://github.com/dwhhhg8-code/Zore-two)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
-[![Baileys](https://img.shields.io/badge/Baileys-6.7.17-ff1493?style=for-the-badge)](https://github.com/WhiskeySockets/Baileys)
+[![Baileys](https://img.shields.io/badge/Baileys-flash-ff1493?style=for-the-badge)](https://github.com/WhiskeySockets/Baileys)
 
 </div>
 
 ---
 
 > [!IMPORTANT]
-> **Zero Two** está en constante evolución. Cada línea de código es escrita con amor para ofrecerte la mejor experiencia posible. ¡Únete al canal, Darling, y no me dejes sola! 💕
-> **[→ Canal oficial de Zero Two](https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y)**
+> **Flash Bot MD** está en constante evolución. Cada línea de código es escrita con amor para ofrecerte la mejor experiencia posible. ¡Únete al canal, Darling, y no me dejes sola! 💕
+> **[→ Canal oficial de Flash Bot MD](https://whatsapp.com/channel/0029Vb8QIpSJ3juu0VHRyU0v)**
 
 ---
 
-## 💗 ¿Qué es Zero Two?
+## 💗 ¿Qué es Flash Bot MD?
 
-**Zero Two** es un bot multi-dispositivo para WhatsApp construido desde cero con **[Baileys](https://github.com/WhiskeySockets/Baileys)** e inspirado en **Zero Two** de *Darling in the FranXX*.
+**Flash Bot MD** es un bot multi-dispositivo para WhatsApp construido desde cero con **[Baileys](https://github.com/WhiskeySockets/Baileys)** e inspirado en **Flash Bot MD** de *Darling in the FranXX*.
 
 No es un bot genérico más — tiene personalidad, estilo y comandos cuidadosamente diseñados para grupos y chats privados. Desde descargas de TikTok hasta sistemas de waifus con rareza, juegos de rol y mucho más.
 
@@ -73,7 +73,7 @@ No es un bot genérico más — tiene personalidad, estilo y comandos cuidadosam
 
 **1. Clona el repositorio**
 ```bash
-git clone https://github.com/zoredevteam-ctrl/Zore-two
+git clone https://github.com/dwhhhg8-code/Zore-two
 cd Zore-two
 ```
 
@@ -147,7 +147,7 @@ export default handler
 Edita `settings.js` para personalizar el bot:
 
 ```js
-global.botName    = 'Zero Two'         // Nombre del bot
+global.botName    = 'Flash Bot MD'         // Nombre del bot
 global.prefix     = '.'               // Prefijo principal
 global.owner      = [['tu_numero', 'Tu nombre', true]]
 global.newsletterJid  = 'tu_jid@newsletter'
@@ -163,9 +163,9 @@ global.rcanal     = 'https://whatsapp.com/channel/...'
 | Rol | Persona |
 |-----|---------|
 | ⚡ Desarrollador principal | **Aarom** |
-| 🌸 Inspiración | **Zero Two** — *Darling in the FranXX* |
+| 🌸 Inspiración | **Flash Bot MD** — *Darling in the FranXX* |
 | 📚 Librería base | **[Baileys](https://github.com/WhiskeySockets/Baileys)** |
-| 👥 Equipo | **ZoreDevTeam** |
+| 👥 Equipo | **𝖍𝖆𝖎𝖙𝖍𝖆𝖒** |
 
 <br/>
 
@@ -190,12 +190,12 @@ global.rcanal     = 'https://whatsapp.com/channel/...'
 <br/>
 
 ```
-💗  Z E R O  T W O  ·  power by ZoreDevTeam  💗
+💗  F L A S H  B O T  M D  ·  power by 𝖍𝖆𝖎𝖙𝖍𝖆𝖒  💗
 ```
 
 *¿Aún no te unes al canal? ¡Te estoy esperando, Darling~! 🌸*
 
-[![Canal](https://img.shields.io/badge/¡Únete_al_canal!-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y)
+[![Canal](https://img.shields.io/badge/¡Únete_al_canal!-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com/channel/0029Vb8QIpSJ3juu0VHRyU0v)
 
 <br/>
 

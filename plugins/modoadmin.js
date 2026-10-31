@@ -8,12 +8,12 @@ let handler = async (m, { conn, args, db, prefix }) => {
 
     if (state === 'on') {
         chat.modoadmin = true;
-        m.reply('⚙️ *𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾*\n\n🔒 *Modo Admin: ACTIVADO*\n_A partir de ahora, solo los administradores pueden darle órdenes a Zero Two en este grupo._');
+        m.reply('⚙️ *𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾*\n\n🔒 *وضع الأدمن: مفعّل*\n_من دلوقتي، الأدمنز بس اللي يقدروا يدوا أوامر لـ Flash Bot MD في الجروب ده._');
     } else if (state === 'off') {
         chat.modoadmin = false;
-        m.reply('⚙️ *𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾*\n\n🔓 *Modo Admin: DESACTIVADO*\n_El sistema vuelve a estar abierto para todos los miembros._');
+        m.reply('⚙️ *𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾*\n\n🔓 *وضع الأدمن: معطّل*\n_النظام رجع مفتوح لكل الأعضاء._');
     } else {
-        m.reply(`⚠️ *Error de sintaxis.*\n\nUso correcto:\n> *${prefix}modoadmin on*\n> *${prefix}modoadmin off*`);
+        m.reply(`⚠️ *خطأ في الصياغة.*\n\nالاستخدام الصحيح:\n> *${prefix}modoأدمن on*\n> *${prefix}modoأدمن off*`);
     }
 };
 

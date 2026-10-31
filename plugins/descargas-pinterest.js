@@ -7,7 +7,7 @@ import {
 
 async function sendAlbumMessage(conn, jid, medias, options = {}) {
     if (typeof jid !== 'string') throw new TypeError(`jid must be string, received: ${jid}`)
-    if (medias.length < 2) throw new RangeError('Se necesitan al menos 2 imágenes para un álbum')
+    if (medias.length < 2) throw new RangeError('محتاج صورتين على الأقل لعمل ألبوم')
 
     const caption = options.text || options.caption || ''
     const delayMs = !isNaN(options.delay) ? options.delay : 500
@@ -54,20 +54,20 @@ async function sendAlbumMessage(conn, jid, medias, options = {}) {
 
 let handler = async (m, { conn, args, prefix }) => {
     const text = args.join(' ')
-    if (!text) return m.reply(`💗 Darling, dime qué buscar~\n> Ejemplo: ${prefix}pinterest Zero Two`)
+    if (!text) return m.reply(`💗 حبيبي, قولي أدور على إيه~\n> Ejemplo: ${prefix}pinterest Flash Bot MD`)
 
     await m.react('⏳')
-    await m.reply('🌸 Buscando imágenes en Pinterest, espera un momento~')
+    await m.reply('🌸 بدور على صور في بنترست، استنى لحظة~')
 
     try {
         const res = await fetch(`https://nexevo.boxmine.xyz/search/pinterest?q=${encodeURIComponent(text)}&apikey=NEX-Shizuka`)
 
-        if (!res.ok) throw new Error(`Error en la API: ${res.status} ${res.statusText}`)
+        if (!res.ok) throw new Error(`خطأ في الـ API: ${res.status} ${res.statusText}`)
 
         const data = await res.json()
 
         if (!data.status || !Array.isArray(data.result) || data.result.length < 2) {
-            return m.reply('💔 No encontré suficientes imágenes, darling... prueba con otra búsqueda~')
+            return m.reply('💔 مالقيتش صور كفاية، حبيبي... جرّب بحث تاني~')
         }
 
         const images = data.result.slice(0, 10).map(img => ({
@@ -75,13 +75,13 @@ let handler = async (m, { conn, args, prefix }) => {
             data: { url: img.image_large_url }
         }))
 
-        const caption = `🌸 *Resultados para:* ${text}\n💗 *~Zero Two*`
+        const caption = `🌸 *نتائج لـ:* ${text}\n💗 *~Flash Bot MD*`
         await sendAlbumMessage(conn, m.chat, images, { caption, quoted: m })
         await m.react('✅')
     } catch (error) {
-        console.error('Error en pinterest:', error)
+        console.error('خطأ en pinterest:', error)
         await m.react('💔')
-        await m.reply(`💔 Darling, algo salió mal... [Error: ${error.message}]`)
+        await m.reply(`💔 حبيبي, حصلت مشكلة... [خطأ: ${error.message}]`)
     }
 }
 

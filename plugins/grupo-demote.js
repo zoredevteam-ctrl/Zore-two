@@ -3,9 +3,9 @@ const handler = async (m, { conn, who }) => {
 
     try {
         await conn.groupParticipantsUpdate(m.chat, [who], 'demote')
-        m.reply('✅ Usuario ya no es administrador')
+        m.reply('✅ العضو مبقاش أدمن')
     } catch {
-        m.reply('❌ No se pudo quitar el admin')
+        m.reply('❌ مش قدرت أشيل الأدمن')
     }
 }
 

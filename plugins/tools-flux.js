@@ -6,7 +6,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   if (!query) {
     await conn.sendMessage(
       msg.chat,
-      { text: `❌ Error:\n> Debes escribir una descripción.` },
+      { text: `❌ خطأ:\n> لازم تكتب وصف.` },
       { quoted: msg }
     )
 
@@ -19,7 +19,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
 
   await conn.sendMessage(
     msg.chat,
-    { text: '🖼️ Generando imagen...' },
+    { text: '🖼️ جاري توليد الصورة...' },
     { quoted: msg }
   )
 
@@ -31,7 +31,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
       msg.chat,
       {
         image: Buffer.from(res.data),
-        caption: `🎨 *IMAGEN GENERADA*\n• Prompt: ${query}`
+        caption: `🎨 *الصورة اتولدت*\n• Prompt: ${query}`
       },
       { quoted: msg }
     )
@@ -39,7 +39,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   } catch (e) {
     await conn.sendMessage(
       msg.chat,
-      { text: `❌ Error:\n${e.message}` },
+      { text: `❌ خطأ:\n${e.message}` },
       { quoted: msg }
     )
   }

@@ -1,15 +1,15 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO WAIFU — COLECCIÓN ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 const handler = async (m, { conn, db }) => {
     const sender = m.sender
 
     if (!db.waifus?.[sender] || !db.waifus[sender].coleccion?.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                  `🌸 ¡No tienes ninguna waifu todavía, Darling~!\n` +
-                  `⟡ Usa *#rw* para invocar una y *#c* para reclamarla 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                  `🌸 ¡لسه معندكش أي ويفو، حبيبي~!\n` +
+                  `⟡ Usa *#rw* عشان تستدعي واحدة y *#c* para reclamarla 💕`
         }, { quoted: m })
     }
 
@@ -30,16 +30,16 @@ const handler = async (m, { conn, db }) => {
     ).join('\n')
 
     const texto =
-        `💗 *COLECCIÓN DE ${nombre.toUpperCase()}* 💗\n\n` +
-        `📦 *Total:* ${coleccion.length} waifus\n\n` +
-        `📊 *Por rareza:*\n` +
+        `💗 *مجموعة ${nombre.toUpperCase()}* 💗\n\n` +
+        `📦 *Total:* ${coleccion.length} ويفو\n\n` +
+        `📊 *حسب النُدرة:*\n` +
         `  💎 Legendaria: *${conteo['💎']}*\n` +
         `  🌟 Épica: *${conteo['🌟']}*\n` +
         `  💜 Rara: *${conteo['💜']}*\n` +
-        `  💙 Poco común: *${conteo['💙']}*\n` +
+        `  💙 قليل الوجود: *${conteo['💙']}*\n` +
         `  🤍 Común: *${conteo['🤍']}*\n\n` +
-        `✨ *Últimas reclamadas:*\n${listaTexto}\n\n` +
-        `> 💕 *Zero Two* © ZoreDevTeam`
+        `✨ *آخر اللي اتصطادوا:*\n${listaTexto}\n\n` +
+        `> 💕 *Flash Bot MD* © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     // Mandar con foto de la última waifu
     const ultima = coleccion[coleccion.length - 1]

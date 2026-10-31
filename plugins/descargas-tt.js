@@ -1,6 +1,6 @@
-// 💗  ──  Z E R O  T W O  S Y S T E M  ──  💗
+// 💗  ──  F L A S H  B O T  M D  S Y S T E M  ──  💗
 // ✦ [ PROTOCOLO DE DESCARGA TIKTOK ]
-// ⟡ Design & Control: ZoreDevTeam
+// ⟡ Design & Control: 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 const formatNum = (n) => {
     try {
@@ -47,10 +47,10 @@ const downloadTikTok = async (url) => {
                 videoUrl = link
                 break
             }
-        } catch (e) { console.log('💗 [ ZERO TWO LOG ] Nodo de descarga falló:', e.message) }
+        } catch (e) { console.log('💗 [ FLASH BOT MD LOG ] Nodo de descarga falló:', e.message) }
     }
 
-    if (!videoUrl) throw new Error('No pude interceptar el video, Darling 💔')
+    if (!videoUrl) throw new Error('مش قدرت أمسك الفيديو يا حبيبي 💔')
     return { videoUrl, autor, titulo, likes, plays }
 }
 
@@ -61,10 +61,10 @@ let handler = async (m, { conn, args, prefix, command }) => {
 
     if (!url || !url.includes('tiktok.com')) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                  `🌸 *¡Darling!* Eso no parece un link de TikTok~ 😤\n` +
-                  `Dame un enlace válido, ¿sí? No soy adivina... _o casi_ 💕\n\n` +
-                  `⟡ Uso correcto: *${prefix + command} <link de tiktok>*`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                  `🌸 *¡حبيبي!* ده مش شكله لينك تيك توك~ 😤\n` +
+                  `هات لينك صالح، تمام؟ أنا مش عرّافة... _أو تقريباً_ 💕\n\n` +
+                  `⟡ الاستخدام الصحيح: *${prefix + command} <link de tiktok>*`
         }, { quoted: m })
     }
 
@@ -75,24 +75,24 @@ let handler = async (m, { conn, args, prefix, command }) => {
 
         await m.react('⬇️')
 
-        const caption = `> ⟪💗⟫ *¡Aquí está tu video, Darling~!*\n\n` +
-                        `🌸 *[ DATOS DEL VIDEO ]*\n` +
+        const caption = `> ⟪💗⟫ *اتفضل الفيديو بتاعك يا حبيبي~!*\n\n` +
+                        `🌸 *[ بيانات الفيديو ]*\n` +
                         `  ⟡ Título: *${titulo}*\n` +
                         `  ⟡ Autor: *@${autor}*\n` +
                         `  ⟡ Likes: *${formatNum(likes)}* 💗\n` +
                         `  ⟡ Vistas: *${formatNum(plays)}* 👁️\n\n` +
-                        `💕 *Zero Two* al rescate~ © ZoreDevTeam`
+                        `💕 *Flash Bot MD* al rescate~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
         await m.react('📤')
 
         await conn.sendMessage(m.chat, {
             video: { url: videoUrl },
             caption,
-            mimetype: 'video/mp4',
+            mimetype: 'فيديو/mp4',
             contextInfo: {
                 externalAdReply: {
-                    title: '💗 ZERO TWO — TIKTOK DL',
-                    body: `Descargado de: @${autor}`,
+                    title: '💗 FLASH BOT MD — TIKTOK DL',
+                    body: `تم التحميل من: @${autor}`,
                     mediaType: 1,
                     thumbnailUrl: global.icon,
                     renderLargerThumbnail: true
@@ -103,13 +103,13 @@ let handler = async (m, { conn, args, prefix, command }) => {
         await m.react('✅')
 
     } catch (e) {
-        console.error('[ZERO TWO ERROR]', e.message)
+        console.error('[FLASH BOT MD ERROR]', e.message)
         await m.react('💔')
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                  `🌸 *¡Ugh!* Mis sistemas fallaron, Darling~ 😤💔\n` +
-                  `⟡ Error: _${e.message}_\n\n` +
-                  `No te rindas, inténtalo de nuevo~ 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                  `🌸 *¡Ugh!* أنظمتي فشلت، حبيبي~ 😤💔\n` +
+                  `⟡ خطأ: _${e.message}_\n\n` +
+                  `ماتستسلمش، جرّب تاني~ 💕`
         }, { quoted: m })
     }
 }

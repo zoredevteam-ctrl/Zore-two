@@ -5,9 +5,9 @@ const exec = promisify(_exec).bind(cp)
 
 let handler = async (m, { conn, args }) => {
     const text = args.join(' ')
-    if (!text) return m.reply('💗 Darling, ingresa un comando~')
+    if (!text) return m.reply('💗 حبيبي, اكتب أمر~')
 
-    await m.reply('💗 *Ejecutando, darling~*')
+    await m.reply('💗 *Ejecutando, حبيبي~*')
 
     let o
     try {

@@ -23,8 +23,8 @@ export const run = async (conn, update) => {
                 image: { url: ppuser },
                 caption:
                     `「 👋 *ADIÓS* 」\n\n` +
-                    `✦ @${user} acaba de salir del grupo.\n\n` +
-                    `❝ Que te vaya bien en tu camino, Darling~ 🌷 ❞`,
+                    `✦ @${user} لسه خارج من الجروب.\n\n` +
+                    `❝ بالتوفيق في طريقك، حبيبي~ 🌷 ❞`,
                 mentions: [participant]
             })
         }

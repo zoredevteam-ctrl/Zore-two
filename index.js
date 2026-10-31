@@ -35,36 +35,27 @@ const log = {
   error:   msg => console.log(chalk.bgRed.white.bold('ERROR'),     chalk.redBright(msg))
 }
 
-const p1 = chalk.hex('#ffb6c1')
-const p2 = chalk.hex('#ff69b4')
-const p3 = chalk.hex('#ff1493')
-const p4 = chalk.hex('#c71585')
+const p1 = chalk.hex('#FFD400')
+const p2 = chalk.hex('#FFC300')
+const p3 = chalk.hex('#FFB000')
+const p4 = chalk.hex('#FF8C00')
 
 const zeroBanner = `
-${p3('ꕤ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ꕤ')}
-${p1('⠀⠀⠀⠀⠀⠀⢀⡤⠤⠒⠒⢲⡖⠢⢤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
-${p1('⠀⠀⠀⢀⡠⠚⣁⠤⠤⠤⠤⢼⣷⠀⢀⡈⠓⢤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
-${p1('⠀⢷⣤⣪⢖⡥⠒⠊⠉⢉⠉⠺⣿⣇⡀⠱⡀⠀⠱⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
-${p2('⠀⢸⣿⡿⠋⠀⠀⠀⠀⠀⣧⢠⢠⠀⢣⠀⠹⡀⡀⠘⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
-${p2('⠀⡯⡿⠁⡄⠀⠀⢰⣄⠀⢹⡆⢎⣆⠀⢣⠀⢱⢹⣆⠘⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
-${p2('⢸⠀⡗⡄⢡⠸⡀⠀⡞⡄⠘⣿⡸⣯⠳⡵⣄⠀⢇⡏⢆⠹⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
-${p2('⢸⡀⢱⢇⠘⣆⢳⡀⢹⣇⠀⢻⡑⣸⣤⣬⣿⡀⢸⢸⡌⢦⠱⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
-${p3('⠘⣧⠸⡜⣦⠹⡆⢳⣄⣿⡄⢺⢿⣽⣾⡈⠀⣧⠈⣾⣼⠄⢣⠹⡄⠀⠀⠀⠀⠀⠀⠀⠀')}
-${p3('⠀⢿⠀⢣⠙⣧⣿⣾⡏⠉⠀⠀⠀⠙⠉⠀⠀⢸⠀⢹⣿⡄⠀⠳⡹⣦⡀⠀⠀⠀⠀⠀⠀')}
-${p3('⠀⠘⡇⠀⣿⣍⠙⠿⠁⠠⣄⠀⠀⠀⠀⠀⠀⢸⠀⢸⡏⢻⡄⠀⠘⢾⣗⢦⡀⠀⠀⠀⠀')}
-${p3('⠀⠀⢹⠀⢸⠘⣆⠀⠀⠀⠀⠀⢀⡄⠀⠀⢀⣼⠀⣞⢧⠀⠹⣦⡀⠀⠈⠳⡉⠢⣄⠀⠀')}
-${p4('⠀⠀⠈⢇⠸⡄⢻⢳⣄⠀⠈⠑⠋⠀⠀⣠⠎⢹⠀⣹⡘⣆⠀⠀⢿⢦⡀⠀⠈⠢⣄⠙⠦')}
-${p4('⠀⠀⠀⢸⡄⡇⣿⢸⠈⣿⠒⣤⣀⣠⡞⣁⡠⣼⡄⣿⣇⠘⡄⠀⠀⢳⡉⠢⢄⡀⠈⠑⠤')}
-${p4('⠀⠀⠀⡞⢱⢠⣿⠇⢀⣿⢠⢴⠻⣿⠊⠀⠀⣾⠁⡟⢻⣷⣿⠦⢀⣀⡿⣦⣀⣈⠑⢦⣄')}
-${p4('⠀⠀⣸⠁⠀⣏⡟⠀⣌⣯⣼⢻⠀⣭⠀⠀⢠⠇⢸⠙⠦⣍⣀⡀⡸⠃⢠⣿⣿⣿⣧⠈⠓')}
-${p4('⠀⣰⠃⠀⡤⢺⡿⠟⢁⡨⠔⠋⡸⠈⢧⠀⣼⠀⣿⠀⢀⣾⣿⡿⡏⠀⣿⣿⣿⣿⣿⣆⠀')}
-${p4('⡰⢁⠆⣼⡇⠈⢶⣿⡏⠀⠀⢀⡇⠰⡏⠀⣿⠀⣿⠀⣸⣿⣿⢸⡇⠀⣿⣿⣿⣿⣿⣿⡆')}
-${p4('⠁⡜⢰⣿⡇⡘⢸⣿⡧⠀⠀⡞⠀⠀⢣⢸⢸⣇⢹⣦⣏⠛⠋⠋⠁⢸⣿⣿⣿⣿⣿⣿⡇')}
-${p4('⢰⠁⣿⣿⠇⡇⢾⡫⢾⣀⡾⠀⣧⣀⣸⣾⢾⣿⣾⢿⣦⣉⣭⣤⣦⢸⣿⣿⣿⣿⣿⣿⡇')}
-${p3('ꕤ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ꕤ')}
-${p3('      ꕤ  ')}${chalk.whiteBright('𝐙 𝐄 𝐑 𝐎  𝐓 𝐖 𝐎')}${p3('  ꕤ')}
-${chalk.gray('         ꕦ power by Arom ꕦ')}  ${chalk.gray('v' + global.botVersion)}
-${p3('ꕤ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ꕤ')}
+${p3('⚡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━⚡')}
+${p1('⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣷⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p1('⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p2('⠀⠀⠀⣰⣿⣿⣿⠟⠋⠉⠀⠀⠈⠉⠙⠻⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p2('⠀⠀⢰⣿⣿⣿⠃⠀⠀⠀⢀⣠⣄⠀⠀⠀⠀⢹⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p2('⠀⠀⣿⣿⣿⡇⠀⠀⠀⢰⣿⣿⣿⡆⠀⠀⠀⢸⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p2('⠀⠀⢿⣿⣿⣧⡀⠀⠀⠀⠙⠛⠋⠀⠀⠀⢀⣾⣿⣿⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p3('⠀⠀⠈⢿⣿⣿⣿⣶⣤⣀⣀⣀⣀⣤⣶⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p3('⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p3('⠀⠀⠀⠀⠀⠀⠉⠛⠿⣿⣿⣿⣿⣿⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p4('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')}
+${p3('⚡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━⚡')}
+${p3('      ⚡  ')}${chalk.whiteBright('𝐅 𝐋 𝐀 𝐒 𝐇  𝐁 𝐎 𝐓  𝐌 𝐃')}${p3('  ⚡')}
+${chalk.gray('         power by 𝖍𝖆𝖎𝖙𝖍𝖆𝖒')}  ${chalk.gray('v' + global.botVersion)}
+${p3('⚡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━⚡')}
 `
 
 const plugins = new Map()
@@ -76,8 +67,8 @@ async function loadPlugins () {
     try {
       const filePath = path.join(pluginsDir, file)
       const plugin = (await import(`${filePath}?t=${Date.now()}`)).default
-      if (plugin) { plugins.set(file, plugin); log.success(`Plugin cargado: ${file}`) }
-    } catch (e) { log.error(`Error cargando plugin ${file}: ${e.message}`) }
+      if (plugin) { plugins.set(file, plugin); log.success(`تم تحميل الأمر: ${file}`) }
+    } catch (e) { log.error(`خطأ في تحميل الأمر ${file}: ${e.message}`) }
   }
   fs.watch(pluginsDir, async (event, filename) => {
     if (!filename?.endsWith('.js')) return
@@ -85,9 +76,9 @@ async function loadPlugins () {
     try {
       if (fs.existsSync(filePath)) {
         const plugin = (await import(`${filePath}?t=${Date.now()}`)).default
-        if (plugin) { plugins.set(filename, plugin); log.success(`Plugin recargado: ${filename}`) }
-      } else { plugins.delete(filename); log.warn(`Plugin eliminado: ${filename}`) }
-    } catch (e) { log.error(`Error recargando plugin ${filename}: ${e.message}`) }
+        if (plugin) { plugins.set(filename, plugin); log.success(`تم إعادة تحميل الأمر: ${filename}`) }
+      } else { plugins.delete(filename); log.warn(`تم حذف الأمر: ${filename}`) }
+    } catch (e) { log.error(`خطأ في إعادة تحميل الأمر ${filename}: ${e.message}`) }
   })
 }
 
@@ -112,13 +103,13 @@ async function loadEventFiles (conn) {
       })
 
       loadedEventFiles.set(file, true)
-      log.success(`Evento cargado: ${file} (${mod.event})`)
-    } catch (e) { log.error(`Error cargando evento ${file}: ${e.message}`) }
+      log.success(`تم تحميل الحدث: ${file} (${mod.event})`)
+    } catch (e) { log.error(`خطأ في تحميل الحدث ${file}: ${e.message}`) }
   }
 }
 
 global.sessionName = global.sessionName || './Sessions/Owner'
-try { fs.mkdirSync(global.sessionName, { recursive: true }) } catch (e) { log.error(`No se pudo crear carpeta de sesión: ${e.message}`) }
+try { fs.mkdirSync(global.sessionName, { recursive: true }) } catch (e) { log.error(`تعذّر إنشاء مجلد الجلسة: ${e.message}`) }
 
 const methodCodeQR = process.argv.includes('--qr')
 const methodCode   = process.argv.includes('--code')
@@ -141,17 +132,17 @@ if (methodCodeQR) opcion = '1'
 else if (methodCode) opcion = '2'
 else if (!fs.existsSync('./Sessions/Owner/creds.json')) {
   opcion = readlineSync.question(
-    chalk.bold.white('\nSeleccione una opción:\n') +
-    chalk.blueBright('1. Con código QR\n') +
-    chalk.cyan('2. Con código de texto de 8 dígitos\n--> ')
+    chalk.bold.white('\nاختر طريقة الربط:\n') +
+    chalk.blueBright('1. بكود QR\n') +
+    chalk.cyan('2. بكود ربط من 8 أرقام\n--> ')
   )
   while (!/^[1-2]$/.test(opcion)) {
-    log.error('Solo ingrese 1 o 2.')
+    log.error('من فضلك اكتب 1 أو 2 فقط.')
     opcion = readlineSync.question('--> ')
   }
   if (opcion === '2') {
-    console.log(chalk.yellowBright('\nIngrese su número de WhatsApp:\nEjemplo: +57301******\n'))
-    const phoneInput = readlineSync.question(chalk.hex('#ff1493')('ꕤ --> '))
+    console.log(chalk.yellowBright('\nاكتب رقم واتساب بتاعك:\nمثال: +2010******\n'))
+    const phoneInput = readlineSync.question(chalk.hex('#FFD400')('⚡ --> '))
     phoneNumber = normalizePhone(phoneInput)
   }
 }
@@ -194,14 +185,14 @@ async function startBot () {
           const pairing = await conn.requestPairingCode(phoneNumber)
           const code = pairing?.match(/.{1,4}/g)?.join('-') || pairing
           console.log(
-            chalk.hex('#ff1493')('\nꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n') +
-            chalk.whiteBright('  CÓDIGO DE EMPAREJAMIENTO\n') +
+            chalk.hex('#FFD400')('\n⚡━━━━━━━━━━━━━━━━━━━━⚡\n') +
+            chalk.whiteBright('  كود الربط\n') +
             chalk.hex('#ff1493')('ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n') +
             chalk.whiteBright(`  ${code}\n`) +
             chalk.hex('#ff1493')('ꕤ━━━━━━━━━━━━━━━━━━━━ꕤ\n')
           )
         }
-      } catch (e) { log.error(`Error al generar código: ${e.message}`) }
+      } catch (e) { log.error(`خطأ في إنشاء الكود: ${e.message}`) }
     }, 3000)
   }
 
@@ -209,14 +200,14 @@ async function startBot () {
     const { qr, connection, lastDisconnect } = update
 
     if (qr && opcion === '1') {
-      console.log(chalk.hex('#ff1493')('\nꕤ Escanea el código QR:\n'))
+      console.log(chalk.hex('#FFD400')('\n⚡ امسح كود QR:\n'))
       qrcode.generate(qr, { small: true })
     }
 
     if (connection === 'open') {
       console.log(zeroBanner)
-      log.success(`Conectado como: ${conn.user?.name || 'Desconocido'}`)
-      log.info(`Plugins cargados: ${plugins.size}`)
+      log.success(`تم الاتصال باسم: ${conn.user?.name || 'غير معروف'}`)
+      log.info(`عدد الأوامر المحمّلة: ${plugins.size}`)
       // Cargar todos los eventos de la carpeta /events
       await loadEventFiles(conn)
     }
@@ -230,22 +221,22 @@ async function startBot () {
         DisconnectReason.timedOut,
         DisconnectReason.badSession
       ].includes(reason)) {
-        log.warn(`Reconectando... (${reason})`)
+        log.warn(`جاري إعادة الاتصال... (${reason})`)
         startBot()
       } else if (reason === DisconnectReason.loggedOut) {
-        log.warn('Sesión cerrada. Eliminando sesión...')
+        log.warn('تم تسجيل الخروج. جاري حذف الجلسة...')
         exec('rm -rf ./Sessions/Owner/*')
         process.exit(1)
       } else if (reason === DisconnectReason.forbidden) {
-        log.error('Acceso denegado. Eliminando sesión...')
+        log.error('الوصول مرفوض. جاري حذف الجلسة...')
         exec('rm -rf ./Sessions/Owner/*')
         process.exit(1)
       } else if (reason === DisconnectReason.multideviceMismatch) {
-        log.warn('Multidispositivo no coincide. Reiniciando...')
+        log.warn('عدم توافق الأجهزة. جاري إعادة التشغيل...')
         exec('rm -rf ./Sessions/Owner/*')
         process.exit(0)
       } else {
-        log.error(`Desconexión desconocida: ${reason}`)
+        log.error(`انقطاع غير معروف: ${reason}`)
         startBot()
       }
     }
@@ -264,14 +255,14 @@ async function startBot () {
       if (m.key?.id?.startsWith('BAE5') && m.key.id.length === 16) return
       m = await smsg(conn, m)
       await handler(m, conn, plugins)
-    } catch (e) { log.error(`Error en mensaje: ${e.message}`) }
+    } catch (e) { log.error(`خطأ في الرسالة: ${e.message}`) }
   })
 }
 
 ;(async () => {
-  console.log(chalk.hex('#ff1493')('\nꕤ Iniciando Zero Two...\n'))
+  console.log(chalk.hex('#FFD400')('\n⚡ جاري تشغيل Flash Bot MD...\n'))
   await database.read()
-  log.success('Base de datos cargada.')
+  log.success('تم تحميل قاعدة البيانات.')
   await loadPlugins()
   global.plugins = plugins
   await startBot()

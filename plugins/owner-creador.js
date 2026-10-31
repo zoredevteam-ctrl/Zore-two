@@ -1,6 +1,6 @@
 let handler = async (m, { conn }) => {
   try {
-    // 💗 Reacción estilo Zero Two
+    // 💗 Reacción estilo Flash Bot MD
     await conn.sendMessage(m.chat, {
       react: { text: '💗', key: m.key }
     });
@@ -22,10 +22,10 @@ let handler = async (m, { conn }) => {
     });
 
     // 💬 Mensaje estilo anime actualizado
-    let texto = `╭━━━〔 ♡ 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 ♡ 〕━━━⬣
-┃ ❥ Aquí están mis creadores
-┃ ❥ Puedes hablar con ellos si me necesitas
-┃ ❥ No seas tímido... 💗
+    let texto = `╭━━━〔 ♡ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 ♡ 〕━━━⬣
+┃ ❥ دول مطوّريني
+┃ ❥ تقدر تكلمهم لو محتاجني
+┃ ❥ ماتكسفش... 💗
 ╰━━━━━━━━━━━━━━━━⬣`;
 
     // 📩 Enviar mensaje de texto
@@ -41,7 +41,7 @@ let handler = async (m, { conn }) => {
 
   } catch (e) {
     console.error(e);
-    await m.reply('♡ Ocurrió un error... inténtalo otra vez');
+    await m.reply('♡ حصل خطأ... جرّب تاني');
   }
 };
 

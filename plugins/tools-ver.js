@@ -2,19 +2,19 @@ import { downloadContentFromMessage } from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn }) => {
     if (!m.quoted) 
-        return m.reply('*🌷 hey tu! y la imagen estás desafiando a darling~! 😡*')
+        return m.reply('*🌷 يا انت! والصورة بتتحدى حبيبي~! 😡*')
 
     try {
         const quoted = m.quoted
 
         if (!quoted.msg?.viewOnce)
-            return m.reply('💔 Ese mensaje no es de una sola vista, darling~')
+            return m.reply('💔 الرسالة دي مش رسالة عرض لمرة واحدة، حبيبي~')
 
         let mediaType = quoted.mtype.replace('Message', '')
         let mediaMessage = quoted.msg
 
-        if (!['image', 'video', 'audio'].includes(mediaType))
-            return m.reply('💔 Solo puedo usar este comando en mensajes de *ver una sola vez*, darling~')
+        if (!['image', 'فيديو', 'audio'].includes(mediaType))
+            return m.reply('💔 الأمر ده بيشتغل على رسايل *العرض لمرة واحدة* بس، حبيبي~')
 
         await m.react('⏳')
 
@@ -26,7 +26,7 @@ let handler = async (m, { conn }) => {
         }
 
         if (!buffer.length)
-            return m.reply('💔 Error al descargar el archivo, darling~')
+            return m.reply('💔 خطأ في تحميل الملف، حبيبي~')
 
         await conn.sendMessage(
             m.chat,
@@ -39,7 +39,7 @@ let handler = async (m, { conn }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('💔 No pude recuperar el mensaje, darling... intenta de nuevo~')
+        m.reply('💔 No pude recuperar el رسالة, حبيبي... intenta de nuevo~')
     }
 }
 

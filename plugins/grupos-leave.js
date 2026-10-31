@@ -1,15 +1,15 @@
 import { database } from '../lib/database.js'
 
 const handler = async (m, { conn }) => {
-    if (!m.isGroup) return m.reply('「 ⚠️ 」 Este comando solo es para grupos.')
+    if (!m.isGroup) return m.reply('「 ⚠️ 」 الأمر ده للجروبات بس.')
 
     await conn.sendMessage(m.chat, {
         image: { url: 'https://i.imgur.com/0Z2vY6L.jpeg' },
         caption:
-            `🌸💗 *¡KYAAAAAH~!! Me voy...* 💗🌸\n\n` +
-            `No lloren por mí, mis Darlings~ 😼\n\n` +
-            `Fue un honor volar con ustedes en mi Franxx ♡\n` +
-            `❝ Hasta la próxima... si es que vuelvo 🌷💗 ❞`
+            `🌸💗 *كياااه~!! أنا ماشي...* 💗🌸\n\n` +
+            `متزعلوش عليّا يا حبايب~ 😼\n\n` +
+            `كان شرف إني أطير معاكم في الفرانكس بتاعي ♡\n` +
+            `❝ لحد المرة الجاية... لو رجعت 🌷💗 ❞`
     })
 
     await conn.groupLeave(m.chat)

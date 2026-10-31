@@ -15,7 +15,7 @@ const COUNTRY_FALLBACK = {
     '593': { op: 'Claro Ecuador',      asn: 'AS27947',  subnet: '190.11',  rdns: 'mobile-{ip}.claro.net.ec',        tz: 'America/Guayaquil',                 country: 'Ecuador',           flag: '🇪🇨' },
     '591': { op: 'Tigo Bolivia',       asn: 'AS27882',  subnet: '190.129', rdns: '{ip}.tigo.bo',                    tz: 'America/La_Paz',                    country: 'Bolivia',           flag: '🇧🇴' },
     '595': { op: 'Tigo Paraguay',      asn: 'AS27882',  subnet: '200.85',  rdns: '{ip}.tigo.com.py',                tz: 'America/Asuncion',                  country: 'Paraguay',          flag: '🇵🇾' },
-    '598': { op: 'Antel',              asn: 'AS6057',   subnet: '167.56',  rdns: '{ip}.antel.net.uy',               tz: 'America/Montevideo',                country: 'Uruguay',           flag: '🇺🇾' },
+    '598': { op: 'Antel',              asn: 'AS6057',   subnet: '167.56',  rdns: '{ip}.antel.net.uy',               tz: 'America/Monteفيديو',                country: 'Uruguay',           flag: '🇺🇾' },
     '507': { op: 'Claro Panamá',       asn: 'AS27843',  subnet: '181.211', rdns: 'mobile-{ip}.claro.com.pa',        tz: 'America/Panama',                    country: 'Panamá',            flag: '🇵🇦' },
     '506': { op: 'Kolbi',              asn: 'AS11297',  subnet: '201.192', rdns: '{ip}.ice.cr',                     tz: 'America/Costa_Rica',                country: 'Costa Rica',        flag: '🇨🇷' },
     '502': { op: 'Tigo Guatemala',     asn: 'AS27882',  subnet: '190.111', rdns: '{ip}.tigo.com.gt',                tz: 'America/Guatemala',                 country: 'Guatemala',         flag: '🇬🇹' },
@@ -199,7 +199,7 @@ const OPERATOR_MAP = {
 const FAKE_MESSAGES = [
     ['❤️ te extraño mucho bb', 'cuando nos vemos?', 'jajaja eres un loco'],
     ['bro pasame la tarea', 'ya vi el partido, fue una locura', 'oye llámame cuando puedas'],
-    ['ya llegué a casa', 'qué vas a hacer hoy?', 'me mandas el número de juan?'],
+    ['ya llegué a casa', 'qué vas a hacer hoy?', 'me mandas el رقم de juan?'],
     ['happy birthday!! 🎂', 'ven a la fiesta el sábado', 'oye vi tu historia jajaj'],
     ['no te creo nada', 'en serio te lo juro', 'bueno ya te cuento después'],
 ]
@@ -291,14 +291,14 @@ let handler = async (m, { conn }) => {
 
     const steps = [
         `💻 Iniciando intrusión contra ${shortName}...`,
-        `📡 Número detectado: +${phone}`,
+        `📡 الرقم المكتشف: +${phone}`,
         `${net.flag} País: ${net.country}`,
         `📶 Operador: ${net.op}`,
         `🔌 ASN: ${net.asn}`,
         `🌐 Resolviendo IP en subred ${net.subnet}.0/16...`,
         `🔍 Escaneando puertos en ${fakeIP}...`,
         `🔐 Credenciales comprometidas...`,
-        `💬 Interceptando mensajes recientes...`,
+        `💬 Interceptando رسايل recientes...`,
         `📤 Extrayendo datos...`,
         `🧹 Limpiando rastros...`,
         `✅ Acceso total obtenido`
@@ -325,13 +325,13 @@ let handler = async (m, { conn }) => {
         `• Zona horaria: ${net.tz}\n\n` +
         `🌐 *RED*\n` +
         `• Operador: ${net.op}\n` +
-        `• Tipo de línea: mobile\n` +
+        `• نوع الخط: mobile\n` +
         `• ASN: ${net.asn}\n` +
-        `• IP pública: ${fakeIP}\n` +
+        `• الـ IP العام: ${fakeIP}\n` +
         `• Hostname: ${rdns}\n` +
         `• MAC: ${fakeMAC}\n\n` +
-        `🔑 *ÚLTIMA ACTIVIDAD*\n` +
-        `• Hora local del objetivo: ${realTime}\n\n` +
+        `🔑 *آخر نشاط*\n` +
+        `• التوقيت المحلي للهدف: ${realTime}\n\n` +
         `💬 *MENSAJES INTERCEPTADOS*\n` +
         msgs.map((msg, i) => `• [${i + 1}] "${msg}"`).join('\n') + '\n\n' +
         `━━━━━━━━━━━━━━━━━━\n` +

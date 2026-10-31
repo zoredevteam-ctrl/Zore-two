@@ -23,16 +23,16 @@ function getPhone(jid) {
 }
 
 const handler = async (m, { conn, isOwner }) => {
-  if (!isOwner) return m.reply('👑 *ACCESO RESTRINGIDO*\nEste comando solo puede ser ejecutado por mi creador.')
+  if (!isOwner) return m.reply('👑 *الوصول مقيّد*\nالأمر ده مطوّري بس اللي ينفذه.')
 
   const active = (global.conns || []).filter(c => isSocketReady(c))
 
   if (active.length === 0) {
-    return m.reply(`✦ Zero Two\n\n  ◇ No hay SubBots conectados actualmente.`)
+    return m.reply(`✦ Flash Bot MD\n\n  ◇ No hay SubBots conectados actualmente.`)
   }
 
   const now = Date.now()
-  let lista = `✦ Zero Two\n\n  ◆ SubBots conectados › ${active.length}\n\n`
+  let lista = `✦ Flash Bot MD\n\n  ◆ SubBots conectados › ${active.length}\n\n`
 
   active.forEach((sock, i) => {
     const nombre = sock.user?.name || sock.user?.verifiedName || 'Desconocido'

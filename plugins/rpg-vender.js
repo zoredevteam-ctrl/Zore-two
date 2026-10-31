@@ -1,13 +1,13 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO WAIFU — VENDER ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 const handler = async (m, { conn, args, db }) => {
     const sender = m.sender
 
     if (!db.waifus?.[sender]?.coleccion?.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n🌸 No tienes waifus para vender, Darling~ 💔\n⟡ Usa *#rw* para conseguir una 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو تبيعها، حبيبي~ 💔\n⟡ Usa *#rw* عشان تجيب واحدة 💕`
         }, { quoted: m })
     }
 
@@ -17,7 +17,7 @@ const handler = async (m, { conn, args, db }) => {
 
     if (idx < 0 || idx >= col.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n🌸 Ese número no existe~ usa *#col* para ver tu colección 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 الرقم ده مش موجود~ usa *#col* عشان تشوف مجموعتك 💕`
         }, { quoted: m })
     }
 
@@ -46,16 +46,16 @@ const handler = async (m, { conn, args, db }) => {
 
     const nota = waifu.duplicado
         ? `♻️ _Era duplicada — vendida al precio completo_`
-        : `💡 _Precio reducido al 60% por ser única. ¡Guarda las especiales, Darling~!_`
+        : `💡 _Precio reducido al 60% por ser única. ¡Guarda las especiales, حبيبي~!_`
 
     const caption =
-        `${waifu.rareza.color} *¡WAIFU VENDIDA!* ${waifu.rareza.color}\n\n` +
+        `${waifu.rareza.color} *تم بيع ويفو!* ${waifu.rareza.color}\n\n` +
         `✨ *${waifu.nombre}*\n` +
         `${waifu.rareza.stars} *${waifu.rareza.nombre}*\n\n` +
         `💰 Recibiste: *+${precioFinal} ${global.moneda || 'Stamps'}*\n` +
         `👛 Total ahora: *${db.waifus[sender].stamps} ${global.moneda || 'Stamps'}*\n\n` +
         `${nota}\n\n` +
-        `💕 *Zero Two* © ZoreDevTeam`
+        `💕 *Flash Bot MD* © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     await conn.sendMessage(m.chat, {
         image: { url: waifu.imageUrl },

@@ -1,9 +1,9 @@
 let handler = async (m, { conn }) => {
     try {
         const link = 'https://chat.whatsapp.com/' + await conn.groupInviteCode(m.chat)
-        await m.reply(`🌸 *Link del grupo, darling~*\n\n${link}`)
+        await m.reply(`🌸 *لينك الجروب، حبيبي~*\n\n${link}`)
     } catch (e) {
-        await m.reply('💔 Darling, no pude obtener el link del grupo~')
+        await m.reply('💔 حبيبي, no pude obtener el link del جروب~')
     }
 }
 

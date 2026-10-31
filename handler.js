@@ -37,6 +37,101 @@ const isPremiumJid = jid => {
 const PREFIXES = ['#', '.', '/', '$']
 const getPrefix = body => PREFIXES.find(p => body.startsWith(p)) || null
 
+// ── تعريب أسماء الأوامر ───────────────────────────────────────────────────
+// تكتب الأمر بالعربي → يتحوّل للأمر الأصلي تلقائياً. الأسماء الأصلية تفضل شغالة.
+const AR_ALIASES = {
+    'قائمه': 'menu', 'القائمه': 'menu', 'اوامر': 'menu', 'الأوامر': 'menu',
+    'اوامري': 'menu', 'منيو': 'menu', 'مساعده': 'menu', 'مساعدة': 'menu', 'help': 'menu',
+    'معلومات': 'infobot', 'info': 'infobot',
+    'مالك': 'owner', 'المالك': 'owner', 'المطور': 'owner', 'مطور': 'owner', 'creator': 'owner',
+    'تسجيل': 'reg', 'سجل': 'reg',
+    'الغاء_تسجيل': 'unreg', 'الغاءتسجيل': 'unreg',
+    'وقت': 'horario', 'الساعه': 'horario', 'ساعه': 'horario',
+    'سرعه': 'p', 'السرعه': 'p', 'بنق': 'p', 'ping': 'p',
+    'تقرير': 'report', 'ابلاغ': 'report',
+    'رقص': 'dance', 'حضن': 'hug', 'قتل': 'kill', 'بوسه': 'kiss', 'بوس': 'kiss',
+    'حزن': 'sad', 'وايفو': 'waifu',
+    'زواج': 'ship', 'شيب': 'ship', 'جوزني': 'ship',
+    'رول': 'rw', 'كلب': 'rw',
+    'كولكشن': 'col', 'كوليكشن': 'col', 'مجموعتي': 'col',
+    'هديه': 'dar', 'هبه': 'dar', 'اعطاء': 'dar',
+    'بيع': 'vender', 'بعت': 'vender',
+    'شعر': 'poema', 'قصيده': 'poema',
+    'حجره': 'ppt', 'حجر': 'ppt', 'ملقوف': 'ppt',
+    'هاك': 'hack', 'اختراق': 'hack',
+    'ذكاء': 'iq', 'نسبه_ذكاء': 'iq',
+    'ديث_نوت': 'deathnote', 'ديثنوت': 'deathnote',
+    'كيرا': 'kira', 'محكمه': 'kira',
+    'رصيد': 'bal', 'فلوسي': 'bal', 'balance': 'bal',
+    'ترتيب': 'leaderboard', 'المتصدرين': 'leaderboard', 'توب': 'leaderboard',
+    'تيك_توك': 'tt', 'تيكتوك': 'tt', 'tiktok': 'tt',
+    'فيسبوك': 'fb', 'فيس': 'fb',
+    'انستا': 'ig', 'انستجرام': 'ig',
+    'بنترست': 'pinterest',
+    'يوتيوب': 'play', 'اغنيه': 'play', 'صوت': 'play',
+    'تحميل': 'play2', 'نزل': 'play2',
+    'تطبيق': 'apk', 'برنامج': 'apk',
+    'ملصق': 'attp', 'ستيكر': 'attp',
+    'صوره': 'toimg', 'لصوره': 'toimg',
+    'فحص': 'inspect',
+    'رفع': 'tourl', 'لينك': 'tourl',
+    'طقس': 'clima', 'الجو': 'clima',
+    'تحسين': 'hd', 'وضوح': 'hd',
+    'ترجم': 'traducir', 'ترجمه': 'traducir',
+    'فتح': 'vv', 'شوف': 'vv',
+    'تذكير': 'recordar', 'فكرني': 'recordar',
+    'حفظ': 'save', 'خزن': 'save',
+    'جلب': 'fetch', 'هات': 'fetch',
+    'ذكاء_صناعي': 'ia', 'بوت_ذكي': 'ia', 'ai': 'ia',
+    'بوكيمون': 'pokedex', 'بوكيدكس': 'pokedex',
+    'مضاد_بوت': 'antibot', 'antiبوت': 'antibot',
+    'مضاد_لينك': 'antilink', 'مضاد_روابط': 'antilink',
+    'استدعاء': 'invocar', 'نادي': 'invocar',
+    'هيئه': 'staff', 'المشرفين': 'staff', 'ادمنز': 'staff',
+    'خاملين': 'inactivos', 'الخاملين': 'inactivos',
+    'كتم': 'mute', 'اسكت': 'mute',
+    'الغاء_كتم': 'unmute', 'اتكلم': 'unmute',
+    'فتح_جروب': 'open', 'افتح': 'open',
+    'غلق_جروب': 'close', 'اقفل': 'close',
+    'رابط': 'link', 'لينك_جروب': 'link',
+    'تنبيه': 'hidetag', 'اعلان': 'hidetag', 'نوتفاي': 'hidetag',
+    'انذار': 'warn', 'تحذير': 'warn', 'حذر': 'warn',
+    'انذارات': 'warnlist', 'الانذارات': 'warnlist',
+    'حذف_انذار': 'delwarn', 'مسح_انذار': 'delwarn',
+    'خروج': 'leave', 'اطلع': 'leave',
+    'تفعيل': 'nable', 'فيتشر': 'nable',
+    'تنزيل': 'demote', 'شيل_ادمن': 'demote',
+    'ترقيه': 'promote', 'خليه_ادمن': 'promote', 'رفع_ادمن': 'promote',
+    'طرد': 'kick', 'اطرد': 'kick', 'هش': 'kick',
+    'وضع_المشرفين': 'modoadmin', 'مشرفين_فقط': 'modoadmin',
+    'كود': 'code', 'ربط': 'code',
+    'بوتات': 'bots', 'البوتات': 'bots',
+    'قناه': 'rcanal', 'القناه': 'rcanal', 'channel': 'rcanal',
+    'اضف_مالك': 'addowner', 'ضيف_مالك': 'addowner',
+    'مشرف_تلقائي': 'autoadmin', 'ادمن_تلقائي': 'autoadmin',
+    'ارسل_تيك_توك': 'enviartt',
+    'جيب_الامر': 'getplugin', 'هات_الامر': 'getplugin',
+    'دخول': 'join', 'انضم': 'join',
+    'طرد_الكل': 'kickall', 'اطرد_الكل': 'kickall',
+    'معرف': 'lid', 'الايدي': 'lid',
+    'اعاده_تشغيل': 'restart', 'ريستارت': 'restart',
+    'تحديث': 'update', 'حدث': 'update',
+    'نشر': 'revsall', 'انشر': 'revsall',
+    'تقييم': 'e', 'نفذ': 'e',
+    'ليزبيان': 'lesbian', 'باك': 'pack', 'بوسي': 'pussy', 'تيتاس': 'tetas', 'اكس': 'xnxx',
+}
+
+const arNormalize = s => (s || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[\u064B-\u0652]/g, '')
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/\s+/g, '_')
+
+const resolveAlias = s => AR_ALIASES[arNormalize(s)] || s
+
 // ── Similitud de comandos ─────────────────────────────────────────────────────
 
 const similarity = (a, b) => {
@@ -164,8 +259,10 @@ export const handler = async (m, conn, plugins) => {
 
         const body        = m.body.slice(prefix.length).trim()
         const args        = body.split(/ +/)
-        const commandName = args.shift()?.toLowerCase()
-        if (!commandName) return
+        const rawCommand  = args.shift()?.toLowerCase()
+        if (!rawCommand) return
+        const commandName = resolveAlias(rawCommand)
+        const displayName = rawCommand
 
         // ── Buscar plugin ─────────────────────────────────────────────────
         let cmd = null
@@ -206,10 +303,10 @@ export const handler = async (m, conn, plugins) => {
 
             const sugerencias = similares.length
                 ? similares.map(s => `*${prefix + s.cmd}* » *${s.score}%*`).join('\n')
-                : 'Sin resultados'
+                : 'مفيش نتائج'
 
             return conn.sendMessage(m.chat, {
-                text: `El comando *(${prefix + commandName})* no existe.\n- Use *${prefix}menu* para ver los comandos.\n\n*Similares:*\n${sugerencias}`
+                text: `الأمر *(${prefix + displayName})* غير موجود.\n- اكتب *${prefix}القائمة* لعرض كل الأوامر.\n\n*أوامر مشابهة:*\n${sugerencias}`
             }, { quoted: m })
         }
 
@@ -263,25 +360,25 @@ export const handler = async (m, conn, plugins) => {
 
         // ── Validaciones de acceso ────────────────────────────────────────
         if (isGroup && database.data.groups[m.chat]?.modoadmin && !isAdmin && !isOwner) {
-            return m.reply('⚙️ *𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾*\n\n🔒 *MODO ADMIN ACTIVO*\n_Solo los administradores pueden usar comandos en este grupo._')
+            return m.reply('⚙️ *𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾*\n\n🔒 *وضع الأدمن شغال*\n_الأدمنز بس اللي يستخدموا الأوامر في الجروب ده._')
         }
 
         if (database.data.users[m.sender]?.banned && !isOwner) {
-            return m.reply('🚫 *ESTÁS BANEADO*\nNo puedes usar los comandos del bot.')
+            return m.reply('🚫 *انت محظور*\nمش مسموحلك تستخدم أوامر البوت.')
         }
 
-        if (cmd.rowner   && !isROwner)    return m.reply('👑 *ACCESO DENEGADO*\nEste comando solo puede ser ejecutado por el creador principal.')
-        if (cmd.owner    && !isOwner)     return m.reply('👑 *ACCESO RESTRINGIDO*\nEste comando solo puede ser ejecutado por mi creador.')
-        if (cmd.premium  && !isPremium)   return m.reply('💎 *USUARIO PREMIUM*\nEste comando es exclusivo para miembros Premium.')
-        if (cmd.register && !isRegistered) return m.reply(`📝 *REGISTRO REQUERIDO*\nUsa: *${prefix}reg nombre.edad*`)
-        if (cmd.group    && !isGroup)     return m.reply('🏢 *SOLO GRUPOS*\nEste comando solo está habilitado para grupos.')
-        if (cmd.admin    && !isAdmin)     return m.reply('👮 *ERES ADMIN?*\nEste comando es solo para administradores del grupo.')
-        if (cmd.botAdmin && !isBotAdmin)  return m.reply('🤖 *ERROR DE PERMISOS*\nNecesito ser administrador del grupo para ejecutar esta acción.')
-        if (cmd.private  && isGroup)      return m.reply('💬 *CHAT PRIVADO*\nEscríbeme al privado para usar este comando.')
+        if (cmd.rowner   && !isROwner)    return m.reply('👑 *الوصول مرفوض*\nالأمر ده المطوّر الرئيسي بس اللي ينفذه.')
+        if (cmd.owner    && !isOwner)     return m.reply('👑 *الوصول مقيّد*\nالأمر ده مطوّري بس اللي ينفذه.')
+        if (cmd.premium  && !isPremium)   return m.reply('💎 *حساب مميز*\nالأمر ده للحسابات المميزة بس.')
+        if (cmd.register && !isRegistered) return m.reply(`📝 *التسجيل مطلوب*\nUsa: *${prefix}reg nombre.edad*`)
+        if (cmd.group    && !isGroup)     return m.reply('🏢 *للجروبات بس*\nالأمر ده للجروبات بس.')
+        if (cmd.admin    && !isAdmin)     return m.reply('👮 *انت أدمن؟*\nالأمر ده لأدمنز الجروب بس.')
+        if (cmd.botAdmin && !isBotAdmin)  return m.reply('🤖 *خطأ في الصلاحيات*\nلازم أكون أدمن الجروب عشان أنفذ الحركة دي.')
+        if (cmd.private  && isGroup)      return m.reply('💬 *شات خاص*\nابعتلي خاص عشان تستخدم الأمر ده.')
 
         if (cmd.limit && !isPremium && !isOwner) {
             const userLimit = database.data.users[m.sender].limit || 0
-            if (userLimit < 1) return m.reply(`⚠️ *SIN LÍMITES*\nSe han agotado tus límites diarios.\n💎 Los usuarios premium tienen límites ilimitados.`)
+            if (userLimit < 1) return m.reply(`⚠️ *مفيش حدود*\nخلصت حدودك اليومية.\n💎 الحسابات المميزة عندها حدود مفتوحة.`)
             database.data.users[m.sender].limit -= 1
             database.save().catch(() => {})
         }
@@ -311,8 +408,8 @@ export const handler = async (m, conn, plugins) => {
             }
 
             const debug =
-                `❌ *ERROR EN COMANDO*\n\n` +
-                `📌 Comando: ${prefix + commandName}\n\n` +
+                `❌ *خطأ في الأمر*\n\n` +
+                `📌 الأمر: ${prefix + displayName}\n\n` +
                 `🧾 Mensaje:\n${message.slice(0, 500)}\n\n` +
                 `📍 Archivo: ${file || 'desconocido'}\n` +
                 `📍 Línea: ${line || '?'}`
@@ -323,6 +420,6 @@ export const handler = async (m, conn, plugins) => {
 
     } catch (e) {
         const msg = e?.message || String(e)
-        if (m?.reply) m.reply(`❌ *ERROR GLOBAL*\n\n🧾 ${msg.slice(0, 400)}`)
+        if (m?.reply) m.reply(`❌ *خطأ عام*\n\n🧾 ${msg.slice(0, 400)}`)
     }
 }

@@ -1,6 +1,6 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO WAIFU — CLAIM ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 const handler = async (m, { conn, db }) => {
     const chat = m.chat
@@ -9,9 +9,9 @@ const handler = async (m, { conn, db }) => {
     // ¿Hay spawn activo?
     if (!global.waifuSpawns?.has(chat)) {
         return conn.sendMessage(chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                  `🌸 No hay ninguna waifu esperando, Darling~\n` +
-                  `⟡ Usa *#rw* para invocar una 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                  `🌸 مفيش أي ويفو مستنية، حبيبي~\n` +
+                  `⟡ Usa *#rw* عشان تستدعي واحدة 💕`
         }, { quoted: m })
     }
 
@@ -55,19 +55,19 @@ const handler = async (m, { conn, db }) => {
     const tiempoStr = mins > 0 ? `${mins}m ${segs}s` : `${segs}s`
 
     const duplicadoTexto = esDuplicado
-        ? `\n♻️ _Ya tenías esta waifu — ¡duplicado guardado!_`
+        ? `\n♻️ _Ya tenías esta ويفو — ¡duplicado guardado!_`
         : ''
 
     const caption =
-        `${spawn.rareza.color} *¡WAIFU RECLAMADA!* ${spawn.rareza.color}\n\n` +
+        `${spawn.rareza.color} *تم صيد ويفو!* ${spawn.rareza.color}\n\n` +
         `💗 *${nombre}* fue el más rápido~\n\n` +
         `✨ *${spawn.nombre}*\n` +
         `${spawn.rareza.stars} *${spawn.rareza.nombre}*\n` +
         `⏱️ Reclamada en: *${tiempoStr}*\n` +
-        `📦 Colección total: *${coleccion.length} waifus*` +
+        `📦 إجمالي المجموعة: *${coleccion.length} ويفو*` +
         `${duplicadoTexto}\n\n` +
-        `⟡ Usa *#col* para ver tu colección 💕\n` +
-        `💗 *Zero Two* © ZoreDevTeam`
+        `⟡ Usa *#col* عشان تشوف مجموعتك 💕\n` +
+        `💗 *Flash Bot MD* © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     await m.react('💗')
 

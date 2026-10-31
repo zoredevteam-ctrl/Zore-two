@@ -28,26 +28,26 @@ const TOXIC_WORDS = [
     'corrida','eyacular','masturbar','masturbacion',
     'porno','pornografia','porn','hentai','orgasmo',
     'dildo','vibrador','prostituta','prostitutas',
-    'nudes','nude','onlyfans','xxx','xnxx','xvideos','pornhub','xhamster',
+    'nudes','nude','onlyfans','xxx','xnxx','xفيديوهات','pornhub','xhamster',
 ]
 
 const escapeRegex = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const TOXIC_REGEX = new RegExp(`\\b(${TOXIC_WORDS.map(escapeRegex).join('|')})\\b`, 'gi')
 
 const WARN1 = (name) => [
-    `Oye ${name} 😕 eso que dijiste no está bien. Te doy una advertencia, la próxima te vas 💔`,
-    `${name} para... 😞 eso aquí no se dice. *Advertencia 1* — no desperdicies esta oportunidad 🌸`,
-    `Ay ${name} 🥺 no esperaba eso de ti. Cuida tus palabras, ¿sí? Esta es tu única advertencia 💗`,
-    `${name} 😤 eso estuvo mal y lo sabes. *Primera y última advertencia* de mi parte 🌸`,
-    `Oye ${name} 😔 te lo digo con respeto — eso no va aquí. Tienes una advertencia, no falles 💗`,
+    `Oye ${name} 😕 اللي قلته ده مش صح. بهديك انذار، اللي بعده بتمشي 💔`,
+    `${name} para... 😞 ده ميتقالش هنا. *Advertencia 1* — ماتضيّعش الفرصة دي 🌸`,
+    `Ay ${name} 🥺 ماتوقعتش ده منك. خلي بالك من كلامك، تمام؟ ده انذارك الوحيد 💗`,
+    `${name} 😤 ده كان غلط وانت عارف. *أول وآخر انذار* مني 🌸`,
+    `Oye ${name} 😔 بقولها باحترام — ده مش مكانه هنا. عندك انذار، ماتغلطش 💗`,
 ][Math.floor(Math.random() * 5)]
 
 const WARN2 = (name) => [
-    `${name} ya te lo dije 😔 y no me hiciste caso. Me duele pero... *adiós* 💔`,
-    `${name} tuviste tu oportunidad y la dejaste ir 😞 *Hasta aquí llegamos* 🌸`,
-    `De verdad ${name} que me pesa 🥺 pero ya no puedo hacer nada. *Salida del grupo* 💗`,
-    `${name} sin drama y sin rencores 😤 pero las reglas son las reglas. *Adiós* 🌸`,
-    `Suspiro... ${name} ya sabías lo que pasaría 😮‍💨 *Hasta luego* 💔`,
+    `${name} قلتلك قبل كده 😔 ومسمعتش كلامي. بيوجعني بس... *سلام* 💔`,
+    `${name} كانت عندك فرصة وضيّعتها 😞 *خلاص كده كفاية* 🌸`,
+    `بجد ${name} اللي بيثقل عليّا 🥺 بس مش قادر أعمل حاجة. *خروج من الجروب* 💗`,
+    `${name} بدون دراما وبدون زعل 😤 pero القوانين هي القوانين. *سلام* 🌸`,
+    `Suspiro... ${name} كنت عارف اللي هيحصل 😮‍💨 *سلام* 💔`,
 ][Math.floor(Math.random() * 5)]
 
 const metaCache = new Map()
@@ -79,7 +79,7 @@ export const run = async (conn, { messages, type }) => {
             mtype === 'conversation'          ? msg.conversation
             : mtype === 'extendedTextMessage' ? msg.extendedTextMessage?.text
             : mtype === 'imageMessage'        ? msg.imageMessage?.caption
-            : mtype === 'videoMessage'        ? msg.videoMessage?.caption
+            : mtype === 'فيديوMessage'        ? msg.videoMessage?.caption
             : ''
 
         if (!text) return
@@ -137,13 +137,13 @@ export const run = async (conn, { messages, type }) => {
                     await conn.groupParticipantsUpdate(chat, [sender], 'remove')
                 } catch {
                     await conn.sendMessage(chat, {
-                        text: `Quise sacar a ${nameTag} pero no tengo permisos 😞`,
+                        text: `عايز أطلّع ${nameTag} بس معنديش صلاحيات 😞`,
                         mentions: mention
                     })
                 }
             } else {
                 await conn.sendMessage(chat, {
-                    text: `${nameTag} merece salir pero necesito ser admin 😔`,
+                    text: `${nameTag} يستاهل يطلع بس لازم أكون أدمن 😔`,
                     mentions: mention
                 })
             }
@@ -153,6 +153,6 @@ export const run = async (conn, { messages, type }) => {
         }
 
     } catch (e) {
-        console.log('[ANTI-TOXIC] Error:', e.message)
+        console.log('[ANTI-TOXIC] خطأ:', e.message)
     }
 }

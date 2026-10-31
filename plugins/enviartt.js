@@ -8,7 +8,7 @@ let handler = async (m, { conn, args }) => {
     let url = args[0] || (m.quoted && m.quoted.text ? m.quoted.text.trim() : '')
     
     if (!url || !url.includes('tiktok.com')) {
-        return m.reply('💗 *Darling, necesito un link de TikTok.*\n\nEjemplo: `#enviartt https://vt.tiktok.com/...` o responde a un link con el comando.')
+        return m.reply('💗 *حبيبي, محتاج لينك تيك توك.*\n\nEjemplo: `#enviartt https://vt.tiktok.com/...` أو رد على لينك بالأمر.')
     }
 
     await m.react('⏳')
@@ -17,12 +17,12 @@ let handler = async (m, { conn, args }) => {
         // 1. Obtener el ID REAL del canal usando el link (AUTOMÁTICO)
         let inviteCode = LINK_CANAL.split('/').pop()
         let metadata = await conn.newsletterMetadata("invite", inviteCode).catch(e => {
-            console.error("Error al obtener metadata:", e)
+            console.error("خطأ في جلب الميتاداتا:", e)
             return null
         })
 
         if (!metadata || !metadata.id) {
-            throw 'No pude encontrar el ID del canal. Asegúrate de que el bot sea administrador.'
+            throw 'مش لقيت ID القناة. اتأكد إن البوت أدمن.'
         }
 
         const JID_CANAL = metadata.id // Aquí ya tenemos el 120363...
@@ -31,7 +31,7 @@ let handler = async (m, { conn, args }) => {
         const res = await fetch(`https://rest.apicausas.xyz/api/v1/descargas/tiktok?url=${encodeURIComponent(url)}&apikey=${API_KEY}`)
         const json = await res.json()
 
-        if (!json.status) throw 'La API de TikTok no respondió correctamente.'
+        if (!json.status) throw 'API تيك توك مردّتش صح.'
 
         const videoUrl = json.data.download.url
         const videoRes = await fetch(videoUrl)
@@ -40,9 +40,9 @@ let handler = async (m, { conn, args }) => {
         // 3. Enviar al canal oficial
         await conn.sendMessage(JID_CANAL, {
             video: buffer,
-            caption: `💗 *TikTok de:* ${json.data.autor}\n📝 ${json.data.titulo}\n\n✨ _Enviado por Zero Two Bot_`,
-            mimetype: 'video/mp4',
-            fileName: `video.mp4`
+            caption: `💗 *تيك توك بتاع:* ${json.data.autor}\n📝 ${json.data.titulo}\n\n✨ _مُرسل من Flash Bot MD_`,
+            mimetype: 'فيديو/mp4',
+            fileName: `فيديو.mp4`
         })
 
         await m.react('✅')
@@ -51,7 +51,7 @@ let handler = async (m, { conn, args }) => {
     } catch (e) {
         console.error(e)
         await m.react('❌')
-        m.reply(`💔 *Error:* ${e.message || e}\n\n_Revisa que la Bot sea Administradora en el canal._`)
+        m.reply(`💔 *خطأ:* ${e.message || e}\n\n_اتأكد إن البوت أدمن في القناة._`)
     }
 }
 

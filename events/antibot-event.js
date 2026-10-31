@@ -59,7 +59,7 @@ export const run = async (conn, update) => {
             try {
                 await conn.groupParticipantsUpdate(id, [participant], 'remove')
             } catch (e) {
-                console.log('[ANTIBOT] Error al expulsar:', e.message)
+                console.log('[ANTIBOT] خطأ al expulsar:', e.message)
                 continue
             }
 
@@ -89,7 +89,7 @@ export const run = async (conn, update) => {
             }
 
             await conn.sendMessage(id, {
-                text: `🌸💗 *¡KYAAAAAH! ¡BOT DETECTADO Y EXPULSADO!* 💗🌸\n\n¡No quiero ningún robot imitador en *mi* paraíso rosado!!\nSolo acepto darlings humanos que me quieran de verdad... ¡tú no eres real!\n\n¡Fuera de aquí @${number}! Vuelve cuando seas una persona de carne y hueso, kyaaah~ 🌷💗`,
+                text: `🌸💗 *¡KYAAAAAH! بوت مكتشف ومطرود!* 💗🌸\n\nمش عايز أي روبوت مقلّد في جنتي الوردية!!\nبقبل بس حبيبيs humanos que me quieran de verdad... ¡tú no eres real!\n\n¡Fuera de aquí @${number}! Vuelve cuando seas una persona de carne y hueso, kyaaah~ 🌷💗`,
                 mentions: [participant],
                 contextInfo
             })

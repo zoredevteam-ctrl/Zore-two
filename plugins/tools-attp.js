@@ -3,12 +3,12 @@ const handler = async (m, { conn, args }) => {
 
     if (!text) {
         await m.react('🌸')
-        return m.reply(`💗 *¿Qué texto quieres en el sticker animado, darling?* 🌸\n\nEjemplo: *.attp Te amo Zero Two 💕*`)
+        return m.reply(`💗 *¿Qué texto quieres en el sticker animado, حبيبي?* 🌸\n\nEjemplo: *.attp Te amo Flash Bot MD 💕*`)
     }
 
     if (text.length > 35) {
         await m.react('💔')
-        return m.reply('💔 El texto es muy largo mi amor~ máximo 35 caracteres para que quede bonito~')
+        return m.reply('💔 النص طويل أوي يا حبيبي~ أقصى 35 حرف عشان يطلع حلو~')
     }
 
     await m.react('🍬')
@@ -30,7 +30,7 @@ const handler = async (m, { conn, args }) => {
     } catch (e) {
         console.error('❌ ATTP ERROR:', e.message || e)
         await m.react('💔')
-        m.reply('💔 Uy mi Amor... mi poder rosa falló esta vez~\nInténtalo otra vez papi 🌸')
+        m.reply('💔 أوه حبيبي... قوتي الوردية فشلت المرة دي~\nجرّب تاني يا بابا 🌸')
     }
 }
 

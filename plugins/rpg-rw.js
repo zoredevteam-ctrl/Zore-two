@@ -1,6 +1,6 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO WAIFU — SPAWN ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 if (!global.waifuSpawns) global.waifuSpawns = new Map()
 
@@ -15,16 +15,16 @@ const getRareza = () => {
 
 const fetchWaifu = async () => {
     try {
-        const res = await fetch('https://api.waifu.pics/sfw/waifu')
+        const res = await fetch('https://api.ويفو.pics/sfw/ويفو')
         const j = await res.json()
-        if (j?.url) return { imageUrl: j.url, nombre: 'Waifu Misteriosa', fuente: 'waifu.pics', rareza: getRareza() }
+        if (j?.url) return { imageUrl: j.url, nombre: 'ويفو غامضة', fuente: 'ويفو.pics', rareza: getRareza() }
     } catch {}
 
     try {
-        const res = await fetch('https://nekos.best/api/v2/waifu')
+        const res = await fetch('https://nekos.best/api/v2/ويفو')
         const j = await res.json()
         const r = j?.results?.[0]
-        if (r?.url) return { imageUrl: r.url, nombre: r.anime_name || 'Waifu Misteriosa', fuente: 'nekos.best', rareza: getRareza() }
+        if (r?.url) return { imageUrl: r.url, nombre: r.anime_name || 'ويفو غامضة', fuente: 'nekos.best', rareza: getRareza() }
     } catch {}
 
     try {
@@ -42,8 +42,8 @@ const handler = async (m, { conn }) => {
     if (global.waifuSpawns.has(chat)) {
         const actual = global.waifuSpawns.get(chat)
         return conn.sendMessage(chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                  `🌸 ¡Ya hay una waifu esperando en el grupo, Darling~!\n` +
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                  `🌸 ¡Ya hay una ويفو استنىndo en el جروب, حبيبي~!\n` +
                   `${actual.rareza.color} *${actual.nombre}* — ${actual.rareza.stars}\n\n` +
                   `⟡ ¡Cualquiera puede escribir *#c* para reclamarla! 💕`
         }, { quoted: m })
@@ -56,7 +56,7 @@ const handler = async (m, { conn }) => {
     if (!data) {
         await m.react('💔')
         return conn.sendMessage(chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n🌸 Mis sistemas fallaron, Darling~ 💔\nNo pude invocar a ninguna waifu esta vez.`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 أنظمتي فشلت، حبيبي~ 💔\nمش قدرت أستدعي أي ويفو المرة دي.`
         }, { quoted: m })
     }
 
@@ -71,19 +71,19 @@ const handler = async (m, { conn }) => {
         if (global.waifuSpawns.has(chat)) {
             global.waifuSpawns.delete(chat)
             conn.sendMessage(chat, {
-                text: `💔 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💔\n\n🌸 Nadie reclamó a *${data.nombre}* a tiempo~\n¡La próxima sean más rápidos, Darlings! 💕`
+                text: `💔 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💔\n\n🌸 محدش صطاد *${data.nombre}* في الوقت~\nالمرة الجاية كونوا أسرع، حبيبيs! 💕`
             }).catch(() => {})
         }
     }, 3 * 60 * 1000)
 
     const caption =
-        `${data.rareza.color} *¡WAIFU INVOCADA EN EL GRUPO!* ${data.rareza.color}\n\n` +
+        `${data.rareza.color} *تم استدعاء ويفو في الجروب!* ${data.rareza.color}\n\n` +
         `✨ *${data.nombre}*\n` +
         `${data.rareza.stars} *${data.rareza.nombre}*\n` +
         `💰 Valor: *${data.rareza.valor} ${global.moneda || 'Stamps'}*\n\n` +
-        `⟡ ¡El primero en escribir *#c* la reclama!\n` +
+        `⟡ ¡أول واحد يكتب *#c* يصطادها!\n` +
         `⏳ Desaparece en *3 minutos*~\n\n` +
-        `💕 *Zero Two* la invocó~ © ZoreDevTeam`
+        `💕 *Flash Bot MD* la invocó~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     await conn.sendMessage(chat, {
         image: { url: data.imageUrl },

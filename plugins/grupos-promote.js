@@ -3,9 +3,9 @@ const handler = async (m, { conn, who }) => {
 
     try {
         await conn.groupParticipantsUpdate(m.chat, [who], 'promote')
-        m.reply('✅ Usuario ahora es administrador')
+        m.reply('✅ العضو بقى أدمن')
     } catch {
-        m.reply('❌ No se pudo promover al usuario')
+        m.reply('❌ مش قدرت أرقّي العضو')
     }
 }
 

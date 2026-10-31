@@ -1,5 +1,5 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
-// ✦ [ PROTOCOLO DE SHIP ] — ZoreDevTeam
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
+// ✦ [ PROTOCOLO DE SHIP ] — 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 // ⟡ Fusión de fotos de perfil + corazón animado + porcentaje de amor
 
 import pkg from 'jimp'
@@ -21,12 +21,12 @@ const getPercent = (a, b) => {
 
 const getPhrase = (p) => {
     if (p === 100) return ['👑', '¡AMOR ABSOLUTO! El universo los creó el uno para el otro~ ✨']
-    if (p >= 90)  return ['💍', '¡ALMAS GEMELAS! Zero Two les da su bendición rosada~ 🌸']
-    if (p >= 75)  return ['🔥', '¡Pareja perfecta! Me muero de envidia darling~ 💕']
-    if (p >= 60)  return ['💗', 'Muy buena vibra... ¡casi casi se besan! 😘']
-    if (p >= 45)  return ['🌸', 'Hay chispa... pero falta un poquito más de amor~']
-    if (p >= 30)  return ['😅', 'Mmm... el amor está en proceso, Darling~ 💫']
-    if (p >= 15)  return ['💀', 'Esto es un ship de alto riesgo~ 😬']
+    if (p >= 90)  return ['💍', '¡ALMAS GEMELAS! Flash Bot MD les da su bendición rosada~ 🌸']
+    if (p >= 75)  return ['🔥', 'ثنائي مثالي! بموت من الغيرة حبيبي~ 💕']
+    if (p >= 60)  return ['💗', 'كيميا حلوة... كادوا يبوسوا بعض! 😘']
+    if (p >= 45)  return ['🌸', 'في شرارة... بس ناقص شوية حب~']
+    if (p >= 30)  return ['😅', 'اممم... الحب لسه في الطريق, حبيبي~ 💫']
+    if (p >= 15)  return ['💀', 'ده زواج عالي المخاطر~ 😬']
     return              ['💔', '¡Ship trágico! Romeo y Julieta versión catástrofe~ 😭']
 }
 
@@ -190,8 +190,8 @@ const handler = async (m, { conn, command }) => {
         } catch {
             await m.react('💔')
             return m.reply(
-                `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                `🌸 ¡Taggea a alguien, Darling~!\n` +
+                `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                `🌸 ¡منشن حد، حبيبي~!\n` +
                 `⟡ Uso: *.${command} @persona* o *.${command} @persona1 @persona2*`
             )
         }
@@ -224,12 +224,12 @@ const handler = async (m, { conn, command }) => {
     }
 
     const caption =
-        `💗 *¡SHIP ACTIVADO, DARLING~!* 🌸\n\n` +
+        `💗 *¡الزواج اتفعّل، DARLING~!* 🌸\n\n` +
         `✨ ${tag1} 💗 ${tag2} ✨\n\n` +
-        `${emoji} *Compatibilidad de amor:* *${percent}%*\n` +
+        `${emoji} *توافق الحب:* *${percent}%*\n` +
         `${bar}\n\n` +
         `🌸 ${phrase}\n\n` +
-        `> 💕 *Zero Two* los bendice~ © ZoreDevTeam`
+        `> 💕 *Flash Bot MD* los bendice~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     const contextInfo = {
         isForwarded: true,

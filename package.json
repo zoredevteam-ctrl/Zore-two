@@ -1,7 +1,7 @@
 {
-  "name": "Zore-two",
+  "name": "flash-bot-md",
   "version": "1.0.0",
-  "description": "WhatsApp Bot Multi Device - Fixed Version",
+  "description": "Flash Bot MD - WhatsApp Bot Multi Device",
   "main": "index.js",
   "type": "module",
   "directories": {
@@ -15,11 +15,11 @@
     "code": "node index.js code",
     "test2": "nodemon index.js"
   },
-  "homepage": "https://github.com/zoredevteam-ctrl/Zore-two",
-  "author": "zoredevteam-ctrl",
+  "homepage": "https://github.com/dwhhhg8-code/Zore-two",
+  "author": "𝖍𝖆𝖎𝖙𝖍𝖆𝖒",
   "license": "MIT",
   "dependencies": {
-    "@whiskeysockets/baileys": "github:Kone457/bails",
+    "@whiskeysockets/baileys": "github:dwhhhg8-code/flash-baileys",
     "axios": "^1.6.0",
     "jimp": "^0.16.1",
     "chalk": "^5.3.0",
@@ -37,7 +37,7 @@
     "readline-sync": "^1.4.10",
     "uuid": "^10.0.0",
     "yt-search": "^2.12.1",
-    "sharp": "^0.33.4",
+    "sharp": "^0.34.1",
     "fs-extra": "^11.2.0"
   }
 }

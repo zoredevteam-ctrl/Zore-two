@@ -1,8 +1,8 @@
 let handler = async (m, { conn, isOwner, usedPrefix, command }) => {
-    if (!m.isGroup) return m.reply('❌ Este comando solo funciona en grupos');
+    if (!m.isGroup) return m.reply('❌ الأمر ده بيشتغل في الجروبات بس');
 
     // Verificar si el usuario es el owner del bot
-    if (!isOwner) return m.reply('❌ Solo el owner del bot puede usar este comando');
+    if (!isOwner) return m.reply('❌ مالك البوت بس اللي يستخدم الأمر ده');
 
     try {
         // Obtener información del grupo
@@ -18,11 +18,11 @@ let handler = async (m, { conn, isOwner, usedPrefix, command }) => {
         );
 
         if (nonAdminParticipants.length === 0) {
-            return m.reply('❌ No hay miembros no administradores para eliminar');
+            return m.reply('❌ مفيش أعضاء مش أدمنز عشان أحذفهم');
         }
 
         // Enviar mensaje de inicio
-        await m.reply(`🔄 Iniciando eliminación de ${nonAdminParticipants.length} miembros...`);
+        await m.reply(`🔄 بدأ حذف ${nonAdminParticipants.length} miembros...`);
 
         // Eliminar a todos los miembros no administradores
         for (const participant of nonAdminParticipants) {
@@ -31,16 +31,16 @@ let handler = async (m, { conn, isOwner, usedPrefix, command }) => {
                 // Pequeña pausa para evitar sobrecarga
                 await new Promise(resolve => setTimeout(resolve, 500));
             } catch (err) {
-                console.error(`Error al eliminar a ${participant.id}:`, err);
+                console.error(`خطأ al eliminar a ${participant.id}:`, err);
             }
         }
 
         // Mensaje de finalización
-        await m.reply(`✅ Se han eliminado ${nonAdminParticipants.length} miembros del grupo`);
+        await m.reply(`✅ اتحذفوا ${nonAdminParticipants.length} أعضاء من الجروب`);
 
     } catch (error) {
-        console.error('Error al ejecutar kickall:', error);
-        await m.reply(`❌ Error: ${error.message}`);
+        console.error('خطأ في تنفيذ طرد الكل:', error);
+        await m.reply(`❌ خطأ: ${error.message}`);
     }
 };
 

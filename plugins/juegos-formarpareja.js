@@ -1,7 +1,7 @@
 let handler = async (m, { conn }) => {
     if (!m.isGroup) {
         await m.react('💔')
-        return m.reply('💔 Este comando solo funciona en grupos darling\~')
+        return m.reply('💔 الأمر ده بيشتغل في الجروبات بس حبيبي\~')
     }
 
     await m.react('🍬')
@@ -12,7 +12,7 @@ let handler = async (m, { conn }) => {
 
         if (participants.length < 3) {
             await m.react('🌸')
-            return m.reply('💗 Necesitamos al menos 3 personas en el grupo para formar una pareja linda\~')
+            return m.reply('💗 Necesitamos al menos 3 personas en el جروب para formar una pareja linda\~')
         }
 
         // ←←← MISMA LÓGICA QUE TENÍAS ANTES ←←←
@@ -25,8 +25,8 @@ let handler = async (m, { conn }) => {
         const toM = (id) => '@' + id.split('@')[0]
 
         // Mensaje mejorado pero fiel al original
-        const texto = `*${toM(a)}, Deberías casarte 💍 con ${toM(b)}...*\n` +
-                     `¡Hacen una bonita pareja darling! 💓\n\n` +
+        const texto = `*${toM(a)}, لازم تتجوز 💍 ${toM(b)}...*\n` +
+                     `¡بيكونوا ثنائي جميل حبيبي! 💓\n\n` +
                      `¿Qué dicen? ¿Se animan? Jajaja no me dejen sola con la curiosidad\~ 🌸`
 
         await conn.sendMessage(m.chat, {
@@ -39,7 +39,7 @@ let handler = async (m, { conn }) => {
     } catch (e) {
         console.error('❌ FORMARPAREJA ERROR:', e)
         await m.react('💔')
-        m.reply('💔 Uy darling... no pude formar la pareja esta vez\~\nInténtalo otra vez no me dejes sola 🌸')
+        m.reply('💔 Uy حبيبي... no pude formar la pareja esta vez\~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 

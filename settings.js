@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════╗
-// ║                  SETTINGS.JS — ZERO TWO                     ║
-// ║                  power by ZoreDevTeam                       ║
+// ║                  SETTINGS.JS — FLASH BOT MD                 ║
+// ║                  power by 𝖍𝖆𝖎𝖙𝖍𝖆𝖒                          ║
 // ╚══════════════════════════════════════════════════════════════╝
 
 import { watchFile, unwatchFile } from 'fs'
@@ -31,28 +31,28 @@ global.prems      = []
 global.botNumber  = ''
 
 // ─── INFO BOT ───────────────────────────────────────────────────────────────
-global.libreria   = 'Baileys'
-global.baileys    = 'V 6.7.17'
+global.libreria   = 'flash-baileys'
+global.baileys    = 'V 2.0.0'
 global.vs         = '1.0.0'
 global.botVersion = '1.0.0'
-global.nameqr     = '✯ Zero Two ✰'
-global.namebot    = 'Z E R O  T W O'
-global.botName    = 'Zero Two'
-global.botname    = 'Zero Two'
+global.nameqr     = '⚡ Flash Bot MD ✰'
+global.namebot    = 'F L A S H  B O T  M D'
+global.botName    = 'Flash Bot MD'
+global.botname    = 'Flash Bot MD'
 global.sessions   = './Sessions/Owner'
 global.jadi       = 'JadiBots'
 
 // ─── TEXTOS Y ETIQUETAS ─────────────────────────────────────────────────────
-global.packname   = '💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 💗'
-global.wm         = '💗◟𝓩𝓮𝓻𝓸 𝓣𝔀𝓸◞💗'
-global.author     = '© ZoreDevTeam'
-global.dev        = '© 🄿🄾🅆🄴🅁🄴🄳 ZoreDevTeam'
-global.botText    = '❖ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 ❖ - power by ZoreDevTeam'
-global.botTag     = '✰ 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 ✰ (•̀ᴗ•́)و'
-global.devCredit  = '© ZoreDevTeam'
-global.authorCredit = '© ZoreDevTeam'
-global.etiqueta   = '💗 ZoreDevTeam 💗'
-global.textbot    = '🌸 Zero Two, una guerrera que transforma cada batalla en una danza mortal con su Franxx. 💗⚔️🌸'
+global.packname   = '⚡ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 ⚡'
+global.wm         = '⚡◟𝕗𝕝𝕒𝕤𝕙◞⚡'
+global.author     = '© 𝖍𝖆𝖎𝖙𝖍𝖆𝖒'
+global.dev        = '© 𝓟𝓸𝔀𝓮𝓻𝓮𝓭 𝖇𝖞 𝖍𝖆𝖎𝖙𝖍𝖆𝖒'
+global.botText    = '⚡ 𝐅𝐋𝐀𝐒𝐇 𝐁𝐎𝐓 𝐌𝐃 ⚡ - power by 𝖍𝖆𝖎𝖙𝖍𝖆𝖒'
+global.botTag     = '⚡ 𝐅𝐋𝐀𝐒𝐇 𝐁𝐎𝐓 𝐌𝐃 ⚡ (•̀ᴗ•́)و'
+global.devCredit  = '© 𝖍𝖆𝖎𝖙𝖍𝖆𝖒'
+global.authorCredit = '© 𝖍𝖆𝖎𝖙𝖍𝖆𝖒'
+global.etiqueta   = '⚡ Flash Bot MD ⚡'
+global.textbot    = '⚡ Flash Bot MD, بوت واتساب سريع وقوي بيحوّل كل أمر لحركة خاطفة. ⚡'
 
 // ─── MONEDA / JUEGO ─────────────────────────────────────────────────────────
 global.moneda        = 'Stamps'
@@ -60,32 +60,33 @@ global.currencySymbol = 'Stamps'
 global.multiplier    = 60
 
 // ─── MENSAJES BIENVENIDA ────────────────────────────────────────────────────
-global.welcom1 = '¡Bienvenido a mi paraíso rosado! 💗\n✨ Soy Zero Two ✨\n🌸 Edita este mensaje con setwelcome 🌸'
-global.welcom2 = '💔 ¡Hasta la próxima, Darling! Gracias por estar aquí~\n🌸 ¡Espero verte pronto de nuevo! 🌸\n💗 Edita este mensaje con setbye 💗'
+global.welcom1 = '⚡ أهلاً بيك في عالم Flash Bot MD ⚡\n✨ نورت الجروب ✨\n🌸 عدّل الرسالة دي بأمر setwelcome 🌸'
+global.welcom2 = '👋 إلى اللقاء!\n⚡ شكراً إنك كنت معانا\n🌸 عدّل الرسالة دي بأمر setbye 🌸'
 
 // ─── BANNER ─────────────────────────────────────────────────────────────────
-global.banner    = 'https://wallpapers.com/images/hd/zero-two-pictures-1j4mw86y6ncyfvj2.jpg'
-global.bannerUrl = 'https://wallpapers.com/images/hd/zero-two-pictures-1j4mw86y6ncyfvj2.jpg'
-global.avatar    = 'https://wallpapers.com/images/featured/zero-two-pictures-j468lgu4oedsxfla.jpg'
-global.iconUrl   = 'https://wallpapers.com/images/featured/zero-two-pictures-j468lgu4oedsxfla.jpg'
-global.icon      = 'https://upload.yotsuba.giize.com/u/fGlQQJo7.jpg'
+// ✏️ حط رابط صورة البانر بتاعتك هنا
+global.banner    = 'https://files.catbox.moe/2loy0h.jpg'
+global.bannerUrl = global.banner
+global.avatar    = global.banner
+global.iconUrl   = global.banner
+global.icon      = global.banner
 global.catalogo  = null
 global.catalogImage = null
 
 // ─── PREFIJO ────────────────────────────────────────────────────────────────
 global.prefix    = '.'
-global.botEmoji  = '💗'
-global.emoji     = '💗'
-global.emoji2    = '🌸'
-global.emoji3    = '💕'
+global.botEmoji  = '⚡'
+global.emoji     = '⚡'
+global.emoji2    = '✨'
+global.emoji3    = '🔥'
 
 // ─── LINKS ──────────────────────────────────────────────────────────────────
 global.groupLink     = 'https://chat.whatsapp.com/tu-link-grupo'
-global.communityLink = 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y'
-global.channelLink   = 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y'
-global.gitHubRepo    = 'https://github.com/zoredevteam-ctrl/Zore-two.git'
-global.emailContact  = 'Zoredevteam@gmail.com'
-global.correo        = 'Zoredevteam@gmail.com'
+global.communityLink = 'https://whatsapp.com/channel/0029Vb8QIpSJ3juu0VHRyU0v'
+global.channelLink   = 'https://whatsapp.com/channel/0029Vb8QIpSJ3juu0VHRyU0v'
+global.gitHubRepo    = 'https://github.com/dwhhhg8-code/Zore-two.git'
+global.emailContact  = 'haitham@flashbot.md'
+global.correo        = 'haitham@flashbot.md'
 
 global.gp1       = global.groupLink
 global.comunidad1 = global.communityLink
@@ -94,12 +95,12 @@ global.md        = global.gitHubRepo
 
 // ─── CANAL / NEWSLETTER ─────────────────────────────────────────────────────
 // rcanal = link del canal de WhatsApp
-global.rcanal         = 'https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y'
+global.rcanal         = 'https://whatsapp.com/channel/0029Vb8QIpSJ3juu0VHRyU0v'
 
 // JID del canal — formato: 120363XXXXXXXXX@newsletter
 // Cómo obtenerlo: WhatsApp Web → F12 → Network → busca "newsletter"
 global.newsletterJid  = '120363404822730259@newsletter'
-global.newsletterName = '💗 𝐙𝐄𝐑𝐎 𝐓𝐖𝐎 💗'
+global.newsletterName = '⚡ 𝐅𝐋𝐀𝐒𝐇 𝐁𝐎𝐓 𝐌𝐃 ⚡'
 
 // Compatibilidad con settings anterior
 global.newsChannels = { primary: global.newsletterJid }
@@ -219,15 +220,15 @@ global.opts = { ...global.opts, autoread: true, queque: false }
 for (const dir of ['./Sessions', './Sessions/Owner', './Sessions/SubBots', './Sessions/Subs', global.jadi]) {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true })
-        console.log(chalk.greenBright(`✅ Carpeta ${dir} creada.`))
+        console.log(chalk.greenBright(`✅ تم إنشاء المجلد ${dir}`))
     }
 }
 
-console.log(chalk.greenBright('✅ settings.js cargado correctamente.'))
+console.log(chalk.greenBright('✅ تم تحميل settings.js بنجاح.'))
 
 // ─── HOT RELOAD ──────────────────────────────────────────────────────────────
 watchFile(scriptPath, () => {
     unwatchFile(scriptPath)
-    console.log(chalk.redBright("🔄 Update 'settings.js'"))
+    console.log(chalk.redBright("🔄 تم تحديث 'settings.js'"))
     import(`${scriptPath}?update=${Date.now()}`)
 })

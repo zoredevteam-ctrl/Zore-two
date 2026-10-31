@@ -9,7 +9,7 @@ let handler = async (m, { conn }) => {
         const participants = groupMetadata.participants
         
         // 2. Filtramos solo a los que son administradores
-        const admins = participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin')
+        const admins = participants.filter(p => p.admin === 'أدمن' || p.admin === 'superأدمن')
         const adminJids = admins.map(a => a.id)
 
         // 3. Intentamos obtener la foto del grupo
@@ -21,9 +21,9 @@ let handler = async (m, { conn }) => {
             pp = 'https://i.ibb.co/WPnWnBR/avatar-contact.png' 
         }
 
-        // 4. Construimos el mensaje con la estética de Zero Two
-        let texto = `✦ 𝓩𝓮𝓻𝓸 𝓣𝔀𝓸\n\n`
-        texto += `👑 *STAFF DEL GRUPO*\n`
+        // 4. Construimos el mensaje con la estética de Flash Bot MD
+        let texto = `✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n`
+        texto += `👑 *طاقم الجروب*\n`
         texto += `💠 *${groupName}*\n\n`
         texto += `> *Administradores:*\n`
 
@@ -43,7 +43,7 @@ let handler = async (m, { conn }) => {
 
     } catch (e) {
         console.error(e)
-        await m.reply('❌ Ocurrió un error al intentar obtener la lista de administradores.')
+        await m.reply('❌ حصل خطأ وأنا بحاول أجيب قائمة الأدمنز.')
     }
 }
 

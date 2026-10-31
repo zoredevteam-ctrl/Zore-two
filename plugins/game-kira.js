@@ -1,6 +1,6 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO KIRA — DEATH NOTE RP ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 import { generateWAMessageFromContent } from '@whiskeysockets/baileys'
 
@@ -9,8 +9,8 @@ let handler = async (m, { conn, who, prefix }) => {
     if (!who) {
         return conn.sendMessage(m.chat, {
             text: `╔══「 🩸 𝕵𝖚𝖎𝖈𝖎𝖔 𝖉𝖊 𝕶𝖎𝖗𝖆 」══╗\n\n` +
-                  `꒰ 👁️ ꒱ Necesito un objetivo, Darling~\n` +
-                  `⟡ Uso: *${prefix}kira @usuario*\n\n` +
+                  `꒰ 👁️ ꒱ محتاج هدف، حبيبي~\n` +
+                  `⟡ Uso: *${prefix}kira @عضو*\n\n` +
                   `╚══「 💕 © 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎 」══╝`
         }, { quoted: m })
     }
@@ -23,8 +23,8 @@ let handler = async (m, { conn, who, prefix }) => {
     const kiraText =
         `🩸 *𝕰𝖑 𝕵𝖚𝖎𝖈𝖎𝖔 𝖍𝖆 𝖈𝖔𝖒𝖊𝖓𝖟𝖆𝖉𝖔* 🩸\n\n` +
         `👁️ Objetivo detectado: @${targetNum}\n` +
-        `📓 El cuaderno está abierto...\n\n` +
-        `_¿Qué destino le espera a *${targetName}*?_\n` +
+        `📓 El cuaderno está مفتوح...\n\n` +
+        `_¿Qué destino le استنى a *${targetName}*?_\n` +
         `_Elige sabiamente, pues la decisión es final~_`
 
     const buttons = [
@@ -53,7 +53,7 @@ let handler = async (m, { conn, who, prefix }) => {
             name: 'quick_reply',
             buttonParamsJson: JSON.stringify({
                 display_text: '🕊️ Perdonar la vida',
-                id: `${prefix}say 📓 Kira ha cerrado el cuaderno... por ahora~`
+                id: `${prefix}say 📓 Kira ha مقفول el cuaderno... por ahora~`
             })
         }
     ]

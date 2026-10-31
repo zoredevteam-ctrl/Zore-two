@@ -6,7 +6,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   if (!query) {
     await conn.sendMessage(
       msg.chat,
-      { text: `❌ Error:\n> Debes escribir un texto.` },
+      { text: `❌ خطأ:\n> لازم تكتب نص.` },
       { quoted: msg }
     )
 
@@ -31,7 +31,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
     if (!json.status || !json.result) {
       return conn.sendMessage(
         msg.chat,
-        { text: '⚠️ No obtuve respuesta de la api.', edit: key },
+        { text: '⚠️ مفيش رد من الـ API.', edit: key },
         { quoted: msg }
       )
     }
@@ -44,7 +44,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   } catch (e) {
     await conn.sendMessage(
       msg.chat,
-      { text: `❌ Error:\n${e.message}`, edit: key },
+      { text: `❌ خطأ:\n${e.message}`, edit: key },
       { quoted: msg }
     )
   }

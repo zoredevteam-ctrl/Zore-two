@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════╗
-// ║                  RCANAL INFO — ZERO TWO                     ║
-// ║                  power by ZoreDevTeam                       ║
+// ║                  RCANAL INFO — FLASH BOT MD                     ║
+// ║                  power by 𝖍𝖆𝖎𝖙𝖍𝖆𝖒                       ║
 // ╚══════════════════════════════════════════════════════════════╝
 
 import { database } from '../lib/database.js'
@@ -9,11 +9,11 @@ const plugin = async (m, { conn }) => {
     await global.sendWithCtx(conn, m.chat, {
         text:
 `╭──────────────────────────╮
-│   💗 *CANAL ZERO TWO* 💗    │
+│   💗 *قناة FLASH BOT MD* 💗    │
 ╰──────────────────────────╯
 
-📡 Síguenos en nuestro canal oficial:
-› 🌸 Actualizaciones del bot
+📡 تابعنا على قناتنا الرسمية:
+› 🌸 تحديثات البوت
 › 💎 Noticias y novedades
 › 🎁 Sorteos y eventos especiales
 › 🔧 Mantenimientos y cambios
@@ -26,7 +26,7 @@ ${global.rcanal}
 }
 
 plugin.command     = ['rcanal', 'canal', 'channel']
-plugin.description = 'Muestra info del canal oficial de Zero Two'
+plugin.description = 'يعرض معلومات قناة Flash Bot MD الرسمية'
 plugin.owner       = false
 plugin.group       = false
 plugin.private     = false

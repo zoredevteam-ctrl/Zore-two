@@ -10,7 +10,7 @@ const require = createRequire(__dirname)
 
 let handler = async (m, { conn, args }) => {
     const _body = args.join(' ')
-    if (!_body) return m.reply('💗 Darling, ingresa código a evaluar~')
+    if (!_body) return m.reply('💗 حبيبي, اكتب كود عشان ينفّذ~')
 
     const _text = (/^return\s/.test(_body) ? '' : 'return ') + _body
     let _return

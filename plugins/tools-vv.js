@@ -4,8 +4,8 @@ let handler = async (m, { conn, text }) => {
     let q = m.quoted ? m.quoted : m
     let mime = (q.msg || q).mimetype || ''
     
-    if (!mime) return m.reply('¿Dónde está el archivo, genio? Responde a una imagen o video.')
-    if (!/image|video/.test(mime)) return m.reply('Solo permito imágenes o videos.')
+    if (!mime) return m.reply('¿Dónde está el ملف, genio? Responde a una صورة o فيديو.')
+    if (!/image|video/.test(mime)) return m.reply('أنا بقبل صور أو فيديوهات بس.')
 
     await m.react('⏳')
 
@@ -26,7 +26,7 @@ let handler = async (m, { conn, text }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('Falló. Qué sorpresa.')
+        m.reply('فشل. يا مفاجأة.')
     }
 }
 

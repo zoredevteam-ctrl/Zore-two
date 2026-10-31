@@ -6,7 +6,7 @@ const handler = async (m, { conn }) => {
     const entries = Object.entries(warns).filter(([, v]) => v.count > 0)
 
     if (!entries.length) {
-        return m.reply('✨ Nadie tiene advertencias todavía~ ¡Qué grupo más bueno! 💕')
+        return m.reply('✨ Nadie tiene advertencias todavía~ ¡Qué جروب más bueno! 💕')
     }
 
     const mentions = entries.map(([uid]) => uid)

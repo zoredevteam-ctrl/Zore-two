@@ -30,7 +30,7 @@ function multipart(fields, fileField) {
 
 async function startTask() {
   const resp = await fetch(`https://api.iloveimg.com/v1/start/${TOOL}`, { headers: BASE_HEADERS })
-  if (!resp.ok) throw new Error(`Error inicio tarea (${resp.status})`)
+  if (!resp.ok) throw new Error(`خطأ inicio tarea (${resp.status})`)
   const data = await resp.json()
   return { server: data.server, task: data.task }
 }
@@ -42,7 +42,7 @@ async function uploadImage(server, task, imageBuffer, filename) {
     headers: { ...BASE_HEADERS, 'content-type': contentType },
     body
   })
-  if (!resp.ok) throw new Error(`Error subiendo imagen (${resp.status})`)
+  if (!resp.ok) throw new Error(`خطأ في رفع الصورة (${resp.status})`)
   return await resp.json()
 }
 
@@ -60,7 +60,7 @@ async function processImage(server, task, serverFilename, filename, multiplier =
     headers: { ...BASE_HEADERS, 'content-type': contentType },
     body
   })
-  if (!resp.ok) throw new Error(`Error procesando imagen (${resp.status})`)
+  if (!resp.ok) throw new Error(`خطأ في معالجة الصورة (${resp.status})`)
   return await resp.json()
 }
 
@@ -68,7 +68,7 @@ async function downloadResult(server, task) {
   const resp = await fetch(`https://${server}/v1/download/${task}`, {
     headers: { 'user-agent': UA, 'referer': 'https://www.iloveimg.com/' }
   })
-  if (!resp.ok) throw new Error(`Error descargando resultado (${resp.status})`)
+  if (!resp.ok) throw new Error(`خطأ descargando resultado (${resp.status})`)
   return Buffer.from(await resp.arrayBuffer())
 }
 
@@ -84,11 +84,11 @@ let handler = async (m, { conn, usedPrefix, command }) => {
   let mime = (q.msg || q).mimetype || ''
 
   if (!mime) {
-    return m.reply(`🖼️ *Mejorar calidad de imagen (HD)*\n\nResponde a una imagen con *${usedPrefix + command}*\n\nFunción: Escala la imagen x4 usando IA`)
+    return m.reply(`🖼️ *Mejorar calidad de صورة (HD)*\n\nResponde a una صورة con *${usedPrefix + command}*\n\nFunción: Escala la صورة x4 usando IA`)
   }
 
   if (!/image\/(jpe?g|png|webp)/.test(mime)) {
-    return m.reply('❌ El formato debe ser una imagen (JPG, PNG, WEBP)')
+    return m.reply('❌ El formato debe ser una صورة (JPG, PNG, WEBP)')
   }
 
   m.react('⏳')
@@ -113,7 +113,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
   } catch (e) {
     console.error(e)
     m.react('❌')
-    m.reply(`❌ Error al procesar la imagen:\n${e.message}`)
+    m.reply(`❌ خطأ في معالجة الصورة:\n${e.message}`)
   }
 }
 

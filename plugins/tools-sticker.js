@@ -143,7 +143,7 @@ export async function sticker(buffer, url, packname = '', author = '') {
     if (!buffer && url) {
         buffer = await fetchBuffer(url)
     }
-    if (!buffer) throw new Error('No se proporcionó buffer ni URL válida.')
+    if (!buffer) throw new Error('مفيش بافر ولا رابط صالح.')
 
     // Detectar si es video/gif o imagen
     // Los primeros bytes de GIF son "GIF8", de MP4 hay ftyp, de webp animado tiene ANIM

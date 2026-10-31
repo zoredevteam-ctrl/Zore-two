@@ -8,9 +8,9 @@ let handler = async (m, { conn, prefix, isAdmin, isBotAdmin }) => {
         who = m.quoted.sender
     }
 
-    if (!who) return m.reply(`Menciona o responde a un usuario.\nEjemplo: *${prefix}unmute @usuario*`)
-    if (!isAdmin) return m.reply('👮 Solo administradores pueden usar este comando.')
-    if (!isBotAdmin) return m.reply('🤖 Necesito ser admin para esto.')
+    if (!who) return m.reply(`منشن أو رد على عضو.\nEjemplo: *${prefix}unmute @عضو*`)
+    if (!isAdmin) return m.reply('👮 الأدمنز بس اللي يقدروا يستخدموا الأمر ده.')
+    if (!isBotAdmin) return m.reply('🤖 لازم أكون أدمن عشان أعمل ده.')
 
     if (who.endsWith('@lid') || isNaN(who.split('@')[0])) {
         try {
@@ -21,7 +21,7 @@ let handler = async (m, { conn, prefix, isAdmin, isBotAdmin }) => {
     }
 
     const muted = database.data?.groups?.[m.chat]?.muted
-    if (!muted || !muted.includes(who)) return m.reply('Este usuario no está muteado.')
+    if (!muted || !muted.includes(who)) return m.reply('العضو ده مش مكتوم.')
 
     database.data.groups[m.chat].muted = muted.filter(j => j !== who)
     await database.save()

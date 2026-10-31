@@ -5,10 +5,10 @@ let handler = async (m, { conn }) => {
         try {
             await conn.groupSettingUpdate(m.chat, 'unlocked')
         } catch {
-            return m.reply('*😔 No pude abrir el grupo.*')
+            return m.reply('*😔 مش قدرت أفتح الجروب.*')
         }
     }
-    m.reply('*❀ Grupo abierto.*\n> Ya pueden volver a escribir sus ocurrencias.')
+    m.reply('*❀ الجروب اتفتح.*\n> تاني تقدروا تكتبوا كلامكم.')
 }
 
 handler.help = ['open']

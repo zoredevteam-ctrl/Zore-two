@@ -5,7 +5,7 @@ const handler = async (m, { conn, args, isAdmin, isOwner }) => {
         const group = await conn.groupMetadata(m.chat)
         const participants = group.participants.map(p => p.jid || p.id.split(':')[0] + '@s.whatsapp.net')
 
-        const anuncio = args.join(' ') || '¡Todos atentos que mi Darling quiere decir algo! 💗'
+        const anuncio = args.join(' ') || '¡Todos atentos que mi حبيبي quiere decir algo! 💗'
 
         const mentions = participants.map(p => `@${p.split('@')[0]}`).join(' ')
 
@@ -13,7 +13,7 @@ const handler = async (m, { conn, args, isAdmin, isOwner }) => {
             `💞 *¡MI DARLING HA INVOCADO A TODO EL GRUPO!* 🌸\n\n` +
             `💗 *Anuncio:* ${anuncio}\n\n` +
             `${mentions}\n\n` +
-            `¡Respondan rapidito no me dejen sola esperando~ 💕`
+            `¡Respondan rapidito no me dejen sola استنىndo~ 💕`
 
         await conn.sendMessage(m.chat, {
             image: { url: 'https://causas-files.vercel.app/fl/xxbz.jpg' },
@@ -26,7 +26,7 @@ const handler = async (m, { conn, args, isAdmin, isOwner }) => {
     } catch (e) {
         console.error('❌ INVOCAR ERROR:', e)
         await m.react('💔')
-        m.reply('💔 Uy darling... la invocación falló esta vez~\nInténtalo de nuevo no me dejes sola 🌸')
+        m.reply('💔 Uy حبيبي... الاستدعاء فشل المرة دي~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 

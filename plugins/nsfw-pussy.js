@@ -4,7 +4,7 @@ import { database } from '../lib/database.js'
 let handler = async (m, { conn }) => {
 
     if (!database.data.groups?.[m.chat]?.nsfw)
-        return m.reply('🚫 El contenido NSFW está desactivado.\n\nUn admin debe usar *.on nsfw*.')
+        return m.reply('🚫 محتوى NSFW متعطّل.\n\nأي أدمن لازم يستخدم *.on nsfw*.')
 
     await m.react('👿')
 
@@ -13,7 +13,7 @@ let handler = async (m, { conn }) => {
 
     if (!json.success) {
         await m.react('🎈')
-        return m.reply('Error al obtener la imagen.')
+        return m.reply('خطأ في جلب الصورة.')
     }
 
     let img = json.message

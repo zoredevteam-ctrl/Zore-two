@@ -6,9 +6,9 @@ let handler = async (m, { conn, args, command }) => {
 
     if (!opciones.includes(usuario)) {
         await m.react('🌸')
-        return m.reply(`💗 *¡Juguemos Piedra, Papel o Tijera darling!* 🌸\n\n` +
+        return m.reply(`💗 *¡Juguemos Piedra, Papel o Tijera حبيبي!* 🌸\n\n` +
                        `Usa: *#ppt piedra* | *#ppt papel* | *#ppt tijera*\n\n` +
-                       `¡Zero Two te está esperando para jugar\~ 💕`)
+                       `¡Flash Bot MD te está استنىndo para jugar\~ 💕`)
     }
 
     const bot = opciones[Math.floor(Math.random() * opciones.length)]
@@ -18,22 +18,22 @@ let handler = async (m, { conn, args, command }) => {
 
     if (usuario === bot) {
         resultado = '¡EMPATE! 💗'
-        frase = '¡Somos demasiado parecidas darling\~ 😘'
+        frase = '¡إحنا شبه بعض أوي حبيبي\~ 😘'
     } else if (
         (usuario === 'piedra' && bot === 'tijera') ||
         (usuario === 'papel' && bot === 'piedra') ||
         (usuario === 'tijera' && bot === 'papel')
     ) {
         resultado = '¡GANASTE! 🎉'
-        frase = '¡Ay nooo me ganaste darling! Eres demasiado fuerte\~ 💞'
+        frase = '¡Ay nooo me ganaste حبيبي! Eres demasiado fuerte\~ 💞'
     } else {
         resultado = '¡PERDISTE! 💔'
-        frase = '¡Jajaja te gané mi amor! La próxima vez te dejo ganar\~ 🍬'
+        frase = '¡Jajaja te gané حبيبي! La próxima vez te dejo ganar\~ 🍬'
     }
 
-    const caption = `✨ *¡ZERO TWO VS ${m.pushName || 'Darling'}!* ✨\n\n` +
+    const caption = `✨ *¡FLASH BOT MD VS ${m.pushName || 'Darling'}!* ✨\n\n` +
                    `Tú elegiste: *${usuario.toUpperCase()}*\n` +
-                   `Zero Two eligió: *${bot.toUpperCase()}*\n\n` +
+                   `Flash Bot MD eligió: *${bot.toUpperCase()}*\n\n` +
                    `*${resultado}*\n` +
                    `${frase}\n\n` +
                    `¿Quieres revancha? Solo escribe *#ppt piedra* (o papel/tijera) 💗`

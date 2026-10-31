@@ -7,14 +7,14 @@ let handler = async (m, { conn, args, command }) => {
 
     try {
         let type = isNsfw ? 'nsfw' : 'sfw'
-        let res = await fetch(`https://api.waifu.pics/${type}/waifu`)
+        let res = await fetch(`https://api.ويفو.pics/${type}/ويفو`)
         let json = await res.json()
 
-        if (!json.url) throw new Error('Sin imagen 💔')
+        if (!json.url) throw new Error('بدون صورة 💔')
 
         let caption = isNsfw 
-            ? `💞 *¡Waifu +18 solo para ti, darling\~!* 🔥\n\n¡Está bien spicy! 😏 No mires mucho\~`
-            : `🌸 *¡Waifu random para mi darling favorito!* 💗\n\n¿Cuál es tu favorita? Dime no me dejes sola\~`
+            ? `💞 *ويفو +18 ليك لوحدك، حبيبي\~!* 🔥\n\nحلوة وحارّة! 😏 No mires mucho\~`
+            : `🌸 *ويفو عشوائية لأحلى حبيبي favorito!* 💗\n\n¿إيه المفضلة عندك؟ قولي ومتسيبنيش لوحدي\~`
 
         await conn.sendMessage(m.chat, {
             image: { url: json.url },
@@ -26,7 +26,7 @@ let handler = async (m, { conn, args, command }) => {
     } catch (e) {
         console.error('❌ WAIFU ERROR:', e)
         await m.react('💔')
-        m.reply(`💔 Uy darling... las waifus se escondieron\~\nInténtalo de nuevo no me dejes sola 🌸`)
+        m.reply(`💔 Uy حبيبي... الويفو اتخبّت\~\nجرّب تاني ومتسيبنيش لوحدي 🌸`)
     }
 }
 

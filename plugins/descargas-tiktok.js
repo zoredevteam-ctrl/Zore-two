@@ -1,6 +1,6 @@
-// 💗  ──  Z E R O  T W O  S Y S T E M  ──  💗
+// 💗  ──  F L A S H  B O T  M D  S Y S T E M  ──  💗
 // ✦ [ PROTOCOLO DE BÚSQUEDA TIKTOK ]
-// ⟡ Design & Control: ZoreDevTeam
+// ⟡ Design & Control: 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 const formatNum = (n) => {
     try {
@@ -19,7 +19,7 @@ const fixUrl = (url) => {
     return null
 }
 
-// ─── MOTOR DE BÚSQUEDA ZERO TWO ──────────────────────────────────────────────
+// ─── MOTOR DE BÚSQUEDA FLASH BOT MD ──────────────────────────────────────────────
 
 const searchTikTok = async (query) => {
     // Intento 1: Tikwm
@@ -38,7 +38,7 @@ const searchTikTok = async (query) => {
                 thumb: fixUrl(v.cover) || fixUrl(v.origin_cover)
             }
         }
-    } catch (e) { console.error('Error Tikwm:', e.message) }
+    } catch (e) { console.error('خطأ Tikwm:', e.message) }
 
     // Intento 2: AlyaBot (Fallback)
     try {
@@ -54,7 +54,7 @@ const searchTikTok = async (query) => {
             videoUrl: fixUrl(v.play) || fixUrl(v.url),
             thumb: fixUrl(v.cover) || fixUrl(v.thumbnail)
         }
-    } catch (e) { console.error('Error AlyaBot:', e.message) }
+    } catch (e) { console.error('خطأ AlyaBot:', e.message) }
 
     return null
 }
@@ -67,10 +67,10 @@ let handler = async (m, { conn, args, prefix, command }) => {
 
     if (!query) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                  `🌸 *¡Oye, Darling!* Necesito que me digas qué buscar~\n` +
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                  `🌸 *¡Oye, حبيبي!* Necesito que me digas qué buscar~\n` +
                   `¿Crees que puedo leer tu mente? _(bueno, casi... pero no)_ 💕\n\n` +
-                  `⟡ Uso correcto: *${prefix + command} <lo que buscas>*`
+                  `⟡ الاستخدام الصحيح: *${prefix + command} <lo que buscas>*`
         }, { quoted: m })
     }
 
@@ -82,10 +82,10 @@ let handler = async (m, { conn, args, prefix, command }) => {
         if (!result) {
             await m.react('💔')
             return conn.sendMessage(m.chat, {
-                text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                      `🌸 *Hmph...* Lo busqué por todas partes, Darling,\n` +
+                text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                      `🌸 *Hmph...* Lo busqué por todas partes, حبيبي,\n` +
                       `pero no encontré nada para: *${query}* 💔\n\n` +
-                      `Intenta con otras palabras~ ¡No me rindas tan fácil!`
+                      `جرّب بكلمات تانية~ ماتخلّنيش أستسلم بسهولة!`
             }, { quoted: m })
         }
 
@@ -94,32 +94,32 @@ let handler = async (m, { conn, args, prefix, command }) => {
         let finalUrl = result.videoUrl
         if (!finalUrl && result.videoId) {
             try {
-                const r = await fetch(`https://www.tikwm.com/api/?url=https://www.tiktok.com/@${result.autor}/video/${result.videoId}`)
+                const r = await fetch(`https://www.tikwm.com/api/?url=https://www.tiktok.com/@${result.autor}/فيديو/${result.videoId}`)
                 const j = await r.json()
                 if (j?.code === 0) finalUrl = fixUrl(j.data?.play)
             } catch (e) {}
         }
 
-        if (!finalUrl) throw new Error('No pude interceptar el flujo del video, Darling 💔')
+        if (!finalUrl) throw new Error('مش قدرت أمسك الفيديو يا حبيبي 💔')
 
-        const caption = `> ⟪💗⟫ *¡Lo encontré para ti, Darling~!*\n\n` +
-                        `🌸 *[ DATOS DEL VIDEO ]*\n` +
+        const caption = `> ⟪💗⟫ *لقيتهولك يا حبيبي~!*\n\n` +
+                        `🌸 *[ بيانات الفيديو ]*\n` +
                         `  ⟡ Título: *${result.titulo}*\n` +
                         `  ⟡ Autor: *@${result.autor}*\n` +
                         `  ⟡ Likes: *${formatNum(result.likes)}* 💗\n` +
                         `  ⟡ Vistas: *${formatNum(result.plays)}* 👁️\n\n` +
-                        `💕 *Zero Two* siempre cumple~ © ZoreDevTeam`
+                        `💕 *Flash Bot MD* siempre cumple~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
         await m.react('📤')
 
         await conn.sendMessage(m.chat, {
             video: { url: finalUrl },
             caption,
-            mimetype: 'video/mp4',
+            mimetype: 'فيديو/mp4',
             contextInfo: {
                 externalAdReply: {
-                    title: '💗 ZERO TWO — TIKTOK SEARCH',
-                    body: `Buscando para ti: ${query}`,
+                    title: '💗 FLASH BOT MD — TIKTOK SEARCH',
+                    body: `ببحث ليك عن: ${query}`,
                     mediaType: 1,
                     thumbnailUrl: result.thumb || global.icon,
                     renderLargerThumbnail: true
@@ -130,13 +130,13 @@ let handler = async (m, { conn, args, prefix, command }) => {
         await m.react('✅')
 
     } catch (e) {
-        console.error('[ZERO TWO ERROR]', e.message)
+        console.error('[FLASH BOT MD ERROR]', e.message)
         await m.react('💔')
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                  `🌸 *¡Ugh, Darling!* Algo salió mal en mi sistema~ 😤\n` +
-                  `⟡ Error: _${e.message}_\n\n` +
-                  `Inténtalo de nuevo, ¿sí? 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                  `🌸 *¡Ugh, حبيبي!* Algo salió mal en mi sistema~ 😤\n` +
+                  `⟡ خطأ: _${e.message}_\n\n` +
+                  `جرّب تاني، تمام؟ 💕`
         }, { quoted: m })
     }
 }

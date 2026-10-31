@@ -1,23 +1,23 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO POEMAS ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 const poemas = [
     { texto: "En el silencio de tus ojos encontré el universo que nunca supe buscar.", tema: "mirada" },
-    { texto: "Eres el verso más exquisito que la vida escribió en secreto para mí.", tema: "amor" },
-    { texto: "Si el tiempo se detuviera en tu mirada, viviría en una eternidad perfecta.", tema: "tiempo" },
-    { texto: "Tu voz es la melodía que mi alma esperaba escuchar para empezar a latir.", tema: "voz" },
-    { texto: "No te busqué entre las estrellas, te encontré iluminando mi propia oscuridad.", tema: "encuentro" },
-    { texto: "En la geometría de tu sonrisa hallé la respuesta a todas mis preguntas.", tema: "sonrisa" },
-    { texto: "Eres ese sueño del que nunca quiero despertar, la realidad más dulce.", tema: "sueño" },
-    { texto: "Aunque el destino nos separe, mi alma siempre conocerá el camino hacia ti.", tema: "destino" },
-    { texto: "No eres un capítulo de mi historia, eres la razón por la que escribo.", tema: "historia" },
-    { texto: "El amor no se mide en el tiempo, sino en la forma en que me miras.", tema: "mirada" },
-    { texto: "Cada vez que cierro los ojos te veo, cada vez que los abro te busco.", tema: "amor" },
-    { texto: "Eres la tormenta que no quiero que pase y la calma que necesito sentir.", tema: "sentimientos" },
-    { texto: "Guardé cada palabra tuya como si fueran las últimas flores del invierno.", tema: "palabras" },
-    { texto: "Tu nombre es el poema que mi corazón recita sin que nadie se lo pida.", tema: "nombre" },
-    { texto: "No sé si el paraíso existe, pero sé que se parece mucho a estar contigo.", tema: "paraíso" }
+    { texto: "انت أرقى بيت شعر كتبته الحياة في السر ليّا.", tema: "amor" },
+    { texto: "لو الوقت وقف في نظرة عينيك، هعيش في أبدية كاملة.", tema: "tiempo" },
+    { texto: "صوتك هو اللحن اللي روحي كانت مستنية تسمعه عشان تبدأ تدق.", tema: "voz" },
+    { texto: "مدورتكش بين النجوم، لقيتك بتنوّر عتمتي.", tema: "encuentro" },
+    { texto: "في هندسة ضحكتك لقيت إجابة كل أسئلتي.", tema: "sonrisa" },
+    { texto: "انت الحلم اللي عمري ما عايز أصحى منه، أحلى حقيقة.", tema: "sueño" },
+    { texto: "حتى لو القدر فرّقنا، روحي دايماً هتعرف الطريق ليك.", tema: "destino" },
+    { texto: "انت مش فصل في قصتي، انت السبب إني بكتب.", tema: "historia" },
+    { texto: "الحب مبيتقاسش بالوقت، بالطريقة اللي بتبصلي بيها.", tema: "mirada" },
+    { texto: "كل مرة أقفل عينيا أشوفك، وكل مرة أفتحها أدور عليك.", tema: "amor" },
+    { texto: "انت العاصفة اللي مش عايزها تعدي، والهدوء اللي محتاج أحسه.", tema: "sentimientos" },
+    { texto: "حفظت كل كلمة منك كأنها آخر زهور الشتا.", tema: "palabras" },
+    { texto: "اسمك هو القصيدة اللي قلبي بيقراها من غير ما حد يطلب.", tema: "اسم" },
+    { texto: "مش عارف الجنة موجودة ولا لأ، بس عارف إنها شبه تكون معاك.", tema: "paraíso" }
 ]
 
 const decoradores = ['🌸', '💗', '✨', '🌙', '💕', '🌺', '💫', '🎐']
@@ -40,9 +40,9 @@ let handler = async (m, { conn, args }) => {
     const thumb = await getThumbBuffer()
 
     const texto =
-        `╔══「 ${deco} 𝑷𝒐𝒆𝒎𝒂𝒔 𝒅𝒆 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 ${deco} 」══╗\n\n` +
+        `╔══「 ${deco} 𝑷𝒐𝒆𝒎𝒂𝒔 𝒅𝒆 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 ${deco} 」══╗\n\n` +
         `❝ ${poema.texto} ❞\n\n` +
-        `╚══「 💕 © ZoreDevTeam 」══╝`
+        `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
 
     await conn.sendMessage(m.chat, {
         text: texto,
@@ -55,7 +55,7 @@ let handler = async (m, { conn, args }) => {
             },
             externalAdReply: {
                 title: global.botName,
-                body: '💗 Un poema para ti~',
+                body: '💗 قصيدة ليك~',
                 thumbnail: thumb,
                 sourceUrl: global.rcanal,
                 mediaType: 1,

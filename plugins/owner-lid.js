@@ -9,15 +9,15 @@ const handler = async (m, { conn }) => {
   const esLID = objetivo.endsWith('@lid')
   const tipo = esLID
     ? 'LID oculto (@lid)'
-    : 'Número visible (@s.whatsapp.net)'
+    : 'الرقم ظاهر (@s.whatsapp.net)'
 
   const numero = objetivo.replace(/\D/g, '')
 
   const mensaje = `
-📡 *Información del usuario detectado:*
+📡 *معلومات العضو المكتشف:*
 👤 *Identificador:* ${objetivo}
 📱 *Número:* +${numero}
-🔐 *Tipo de cuenta:* ${tipo}
+🔐 *نوع الحساب:* ${tipo}
 `.trim()
 
   await m.reply(mensaje)

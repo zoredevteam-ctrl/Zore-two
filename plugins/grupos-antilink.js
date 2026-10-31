@@ -15,17 +15,17 @@ let handler = async (m, { conn, isAdmin, isBotAdmin, text }) => {
     // Comando para activar/desactivar: #antilink on/off
     if (isAdmin && (text === 'on' || text === 'off')) {
         database.data.groups[m.chat].antilink = (text === 'on')
-        return m.reply(`✦ 𝓩𝓮𝓻𝓸 𝓣𝔀𝓸\n\n🛡️ *Anti-Link ${text === 'on' ? 'Activado' : 'Desactivado'}*\n${text === 'on' ? 'Expulsaré a cualquiera que envíe enlaces de grupos.' : 'Ya pueden enviar enlaces con libertad.'}`)
+        return m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n🛡️ *Anti-Link ${text === 'on' ? 'Activado' : 'Desactivado'}*\n${text === 'on' ? 'Expulsaré a cualquiera que envíe enlaces de grupos.' : 'Ya pueden enviar enlaces con libertad.'}`)
     }
 
     // Lógica de detección
     const isGroupLink = linkRegex.test(m.body)
     
     if (isGroupLink && database.data.groups[m.chat].antilink) {
-        if (isAdmin) return m.reply('🛡️ *Anti-Link:* Eres admin, no te expulsaré pero evita el spam, darling~')
-        if (!isBotAdmin) return m.reply('⚠️ No soy admin, no puedo expulsar al spammer.')
+        if (isAdmin) return m.reply('🛡️ *Anti-Link:* انت أدمن، مش هطردك بس بلاش سپام، حبيبي~')
+        if (!isBotAdmin) return m.reply('⚠️ أنا مش أدمن، مش قادر أطرد السپامر.')
 
-        await m.reply(`✦ 𝓩𝓮𝓻𝓸 𝓣𝔀𝓸\n\n🚫 *Enlace detectado*\nAdiós, darling. Las reglas son claras.`)
+        await m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n🚫 *لينك مكتشف*\nسلام, حبيبي. Las reglas son claras.`)
         
         // Borrar mensaje
         await conn.sendMessage(m.chat, { delete: m.key })

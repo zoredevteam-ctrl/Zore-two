@@ -1,6 +1,6 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO SAVE — GUARDAR AL PRIVADO ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 import { generateForwardMessageContent, generateWAMessageFromContent } from '@whiskeysockets/baileys'
 
@@ -18,9 +18,9 @@ let handler = async (m, { conn }) => {
     if (!m.quoted) {
         await m.react('⚠️')
         return m.reply(
-            `╔══「 💗 Zero Two 」══╗\n\n` +
-            `꒰ 🌸 ꒱ ¡Responde al mensaje que quieres guardar, Darling~!\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `╔══「 💗 Flash Bot MD 」══╗\n\n` +
+            `꒰ 🌸 ꒱ ¡Responde al رسالة que quieres guardar, حبيبي~!\n\n` +
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
 
@@ -56,10 +56,10 @@ let handler = async (m, { conn }) => {
 
             await m.react('🍬')
             return conn.sendMessage(m.chat, {
-                text: `╔══「 💗 Zero Two 」══╗\n\n` +
-                      `꒰ ✅ ꒱ ¡Ya te lo envié al privado, Darling~!\n` +
+                text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
+                      `꒰ ✅ ꒱ ¡بعتّهولك في الخاص، حبيبي~!\n` +
                       `꒰ 🌸 ꒱ Revisa nuestro chat~ 💕\n\n` +
-                      `╚══「 © ZoreDevTeam 」══╝`,
+                      `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: ctx
             }, { quoted: m })
         } catch {}
@@ -69,9 +69,9 @@ let handler = async (m, { conn }) => {
             await conn.copyNForward(m.sender, m.quoted, false)
             await m.react('🍬')
             return conn.sendMessage(m.chat, {
-                text: `╔══「 💗 Zero Two 」══╗\n\n` +
-                      `꒰ ✅ ꒱ ¡Listo, ya está en tu privado~!\n\n` +
-                      `╚══「 💕 © ZoreDevTeam 」══╝`,
+                text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
+                      `꒰ ✅ ꒱ ¡تم, ya está في الخاص بتاعك~!\n\n` +
+                      `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: ctx
             }, { quoted: m })
         } catch {}
@@ -90,7 +90,7 @@ let handler = async (m, { conn }) => {
             null
 
         // Media
-        const isMedia = ['imageMessage', 'videoMessage', 'audioMessage',
+        const isMedia = ['imageMessage', 'فيديوMessage', 'audioMessage',
                          'stickerMessage', 'documentMessage'].includes(mtype)
 
         if (isMedia) {
@@ -98,7 +98,7 @@ let handler = async (m, { conn }) => {
                 const buffer = await conn.downloadMediaMessage(m.quoted)
                 const mediaType = {
                     imageMessage:    'image',
-                    videoMessage:    'video',
+                    videoMessage:    'فيديو',
                     audioMessage:    'audio',
                     stickerMessage:  'sticker',
                     documentMessage: 'document'
@@ -115,9 +115,9 @@ let handler = async (m, { conn }) => {
                 await conn.sendMessage(m.sender, payload)
                 await m.react('🍬')
                 return conn.sendMessage(m.chat, {
-                    text: `╔══「 💗 Zero Two 」══╗\n\n` +
-                          `꒰ ✅ ꒱ ¡Media guardada en tu privado, Darling~! 💕\n\n` +
-                          `╚══「 © ZoreDevTeam 」══╝`,
+                    text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
+                          `꒰ ✅ ꒱ ¡Media guardada en tu privado, حبيبي~! 💕\n\n` +
+                          `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                     contextInfo: ctx
                 }, { quoted: m })
             } catch {}
@@ -125,28 +125,28 @@ let handler = async (m, { conn }) => {
 
         if (text) {
             await conn.sendMessage(m.sender, {
-                text: `╔══「 💗 Zero Two guardó esto para ti 」══╗\n\n${text}\n\n╚══「 💕 © ZoreDevTeam 」══╝`,
+                text: `╔══「 💗 Flash Bot MD حفظلك ده 」══╗\n\n${text}\n\n╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: ctx
             })
             await m.react('🍬')
             return conn.sendMessage(m.chat, {
-                text: `╔══「 💗 Zero Two 」══╗\n\n` +
-                      `꒰ ✅ ꒱ ¡Texto enviado a tu privado~! 💕\n\n` +
-                      `╚══「 © ZoreDevTeam 」══╝`,
+                text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
+                      `꒰ ✅ ꒱ ¡النص اتبعت للخاص بتاعك~! 💕\n\n` +
+                      `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: ctx
             }, { quoted: m })
         }
 
-        throw new Error('No pude extraer contenido del mensaje.')
+        throw new Error('مش قدرت أستخرج محتوى الرسالة.')
 
     } catch (e) {
         console.error('[SAVE ERROR]', e.message)
         await m.react('💔')
         return m.reply(
-            `╔══「 💗 Zero Two 」══╗\n\n` +
-            `꒰ 💔 ꒱ No pude enviarlo, Darling~\n` +
-            `꒰ 💡 ꒱ Mándame un *"Hola"* al privado primero para desbloquear el chat~ 🌸\n\n` +
-            `╚══「 © ZoreDevTeam 」══╝`
+            `╔══「 💗 Flash Bot MD 」══╗\n\n` +
+            `꒰ 💔 ꒱ مش قدرت أبعته، حبيبي~\n` +
+            `꒰ 💡 ꒱ Mándame un *"أهلاً"* في الخاص primero para desbloquear el chat~ 🌸\n\n` +
+            `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
 }

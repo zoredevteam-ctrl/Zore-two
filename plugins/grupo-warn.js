@@ -11,7 +11,7 @@ const handler = async (m, { conn, args, who }) => {
         target = m.quoted.sender
     }
 
-    if (!target) return m.reply('💗 Menciona o responde a alguien darling~')
+    if (!target) return m.reply('💗 Menciona o responde a alguien حبيبي~')
 
     // Resolver LID a JID
     if (target.endsWith('@lid') || isNaN(target.split('@')[0])) {
@@ -33,7 +33,7 @@ const handler = async (m, { conn, args, who }) => {
         return m.reply('ꕦ No puedo advertir a un desarrollador de mi staff~ 𖤐')
     }
 
-    const reason = args.slice(1).join(' ') || 'Sin razón especificada'
+    const reason = args.slice(1).join(' ') || 'بدون سبب محدد'
 
     if (!warns[target]) warns[target] = { count: 0, reasons: [] }
     warns[target].count++
@@ -45,11 +45,11 @@ const handler = async (m, { conn, args, who }) => {
     if (count >= 3) {
         await conn.sendMessage(m.chat, {
             text:
-                `𖤐 *¡ADVERTENCIA #${count}!* 𖤐\n\n` +
+                `𖤐 *¡انذار #${count}!* 𖤐\n\n` +
                 `ꕦ Usuario: @${target.split('@')[0]}\n` +
                 `ꕦ Razón: ${reason}\n\n` +
-                `💔 *Superó las 3 advertencias y fue expulsado...*\n` +
-                `Vuela lejos darling~ 🌸`,
+                `💔 *عدّى الـ3 انذارات واتطرد...*\n` +
+                `طير بعيد يا حبيبي~ 🌸`,
             mentions: [target]
         }, { quoted: m })
 
@@ -64,11 +64,11 @@ const handler = async (m, { conn, args, who }) => {
     } else {
         await conn.sendMessage(m.chat, {
             text:
-                `𖤐 *¡ADVERTENCIA #${count}!* 𖤐\n\n` +
+                `𖤐 *¡انذار #${count}!* 𖤐\n\n` +
                 `ꕦ Usuario: @${target.split('@')[0]}\n` +
                 `ꕦ Razón: ${reason}\n\n` +
                 `ꙮ Advertencias: *${count}/3*\n` +
-                `💗 La próxima te vas volando darling~ 🌸`,
+                `💗 المرة الجاية هتطير حبيبي~ 🌸`,
             mentions: [target]
         }, { quoted: m })
     }

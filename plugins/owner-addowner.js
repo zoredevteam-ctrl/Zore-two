@@ -1,24 +1,24 @@
 let handler = async (m, { conn, args, isOwner }) => {
     if (!isOwner) {
         await m.react('💔')
-        return m.reply('💔 Solo el owner principal puede añadir otros owners darling\~')
+        return m.reply('💔 Solo el owner principal puede añadir otros owners حبيبي\~')
     }
 
     let number = args[0] ? args[0].replace(/[^0-9]/g, '') : (m.quoted ? m.quoted.sender : null)
     if (!number) {
         await m.react('🌸')
-        return m.reply('💗 Menciona o responde a un usuario, o escribe su número después del comando darling\~\nEjemplo: *#addowner 57xxxxxxxxxx*')
+        return m.reply('💗 منشن أو رد على عضو، أو اكتب رقمه بعد الأمر حبيبي\~\nEjemplo: *#addowner 57xxxxxxxxxx*')
     }
 
     number += '@s.whatsapp.net'
 
     if (global.owner.includes(number)) {
-        return m.reply('💔 Ese usuario ya es owner darling\~')
+        return m.reply('💔 العضو ده مالك بالفعل حبيبي\~')
     }
 
     global.owner.push(number)
     await conn.sendMessage(m.chat, { 
-        text: `💗 *¡Nuevo owner añadido darling!* 🌸\n\n` +
+        text: `💗 *¡Nuevo owner añadido حبيبي!* 🌸\n\n` +
               `Usuario: @${number.split('@')[0]}\n` +
               `Ahora tiene control total del bot 💕`, 
         mentions: [number] 

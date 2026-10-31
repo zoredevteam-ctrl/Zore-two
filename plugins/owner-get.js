@@ -16,7 +16,7 @@ let handler = async (m, { conn, args }) => {
         if (!/text|json/.test(contentType)) {
             if (contentType.includes('image')) {
                 return await conn.sendMessage(m.chat, { image: { url: text }, caption: text }, { quoted: m })
-            } else if (contentType.includes('video')) {
+            } else if (contentType.includes('فيديو')) {
                 return await conn.sendMessage(m.chat, { video: { url: text }, caption: text }, { quoted: m })
             } else if (contentType.includes('audio')) {
                 return await conn.sendMessage(m.chat, { audio: { url: text }, mimetype: 'audio/mpeg', ptt: false }, { quoted: m })
@@ -42,7 +42,7 @@ let handler = async (m, { conn, args }) => {
                         mimetype: 'audio/mpeg',
                         ptt: false
                     }, { quoted: m })
-                } else if (dlType.includes('video') || dlUrl.match(/\.(mp4|mkv|webm)(\?|$)/i)) {
+                } else if (dlType.includes('فيديو') || dlUrl.match(/\.(mp4|mkv|webm)(\?|$)/i)) {
                     await m.react('✅')
                     return await conn.sendMessage(m.chat, {
                         video: { url: dlUrl },
@@ -61,7 +61,7 @@ let handler = async (m, { conn, args }) => {
         await m.react('✅')
     } catch (e) {
         await m.react('💔')
-        await m.reply(`💔 Darling, algo salió mal... [Error: ${e}]`)
+        await m.reply(`💔 حبيبي, حصلت مشكلة... [خطأ: ${e}]`)
     }
 }
 

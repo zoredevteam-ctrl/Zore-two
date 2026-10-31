@@ -7,8 +7,8 @@ import { database } from '../lib/database.js'
 const pendingKick = new Map()
 
 let handler = async (m, { conn, isAdmin, isOwner, db }) => {
-    if (!m.isGroup) return m.reply('💔 Solo funciona en grupos darling~')
-    if (!isAdmin && !isOwner) return m.reply('💔 Solo admins y owner pueden usar este comando')
+    if (!m.isGroup) return m.reply('💔 بيشتغل في الجروبات بس حبيبي~')
+    if (!isAdmin && !isOwner) return m.reply('💔 الأدمنز والمالك بس اللي يستخدموا الأمر ده')
 
     await m.react('⌛')
 
@@ -54,7 +54,7 @@ let handler = async (m, { conn, isAdmin, isOwner, db }) => {
 
     if (inactivos.length === 0) {
         await m.react('✅')
-        return m.reply(`✅ No hay usuarios inactivos (más de ${DIAS_INACTIVO} días sin mensajes) en este grupo.`)
+        return m.reply(`✅ مفيش أعضاء خاملين (أكتر من ${DIAS_INACTIVO} يوم من غير رسايل) في الجروب ده.`)
     }
 
     // ─── GUARDAR PENDIENTE ────────────────────────────────────────────
@@ -94,17 +94,17 @@ let handler = async (m, { conn, isAdmin, isOwner, db }) => {
 
     // ─── ARMAR MENSAJE ────────────────────────────────────────────────
     let txt = `⚠️ *${inactivos.length} USUARIOS INACTIVOS DETECTADOS*\n`
-    txt += `_(Sin mensajes hace más de ${DIAS_INACTIVO} días)_\n\n`
+    txt += `_(Sin رسايل hace más de ${DIAS_INACTIVO} días)_\n\n`
 
     for (const u of inactivos) {
         const diasTxt = u.dias !== null ? `${u.dias} días sin escribir` : 'Nunca ha escrito'
         txt += `• @${u.id.split('@')[0]} — ${diasTxt} · ${u.mensajesPorDia} msg/día\n`
     }
 
-    txt += `\n📊 *El bot lee todos los mensajes del grupo desde que entró.*\n`
-    txt += `_Estos datos son acumulados desde que el bot está en el grupo._\n\n`
-    txt += `✦ Responde *si* para expulsarlos ahora.\n`
-    txt += `✦ Responde *no* para cancelar.`
+    txt += `\n📊 *البوت بيقرا كل رسايل الجروب من ساعة ما دخل.*\n`
+    txt += `_البيانات دي متجمّعة من ساعة ما البوت دخل الجروب._\n\n`
+    txt += `✦ Responde *si* عشان تطردهم دلوقتي.\n`
+    txt += `✦ Responde *no* عشان تلغي.`
 
     await conn.sendMessage(m.chat, {
         text: txt,
@@ -130,7 +130,7 @@ handler.before = async (m, { conn, isAdmin, isOwner, isBotAdmin }) => {
 
     if (txt === 'si' || txt === 'sí') {
         if (!isBotAdmin) {
-            await m.reply('❌ No puedo expulsar, necesito ser admin del grupo.')
+            await m.reply('❌ مش قادر أطرد، لازم أكون أدمن الجروب.')
             pendingKick.delete(m.chat)
             return false
         }
@@ -151,13 +151,13 @@ handler.before = async (m, { conn, isAdmin, isOwner, isBotAdmin }) => {
 
         pendingKick.delete(m.chat)
         await m.react('✅')
-        return m.reply(`✅ *Expulsión completada*\n\n✦ Expulsados: ${expulsados}\n✦ Fallidos: ${fallidos}`)
+        return m.reply(`✅ *الطرد خلص*\n\n✦ Expulsados: ${expulsados}\n✦ Fallidos: ${fallidos}`)
     }
 
     if (txt === 'no') {
         pendingKick.delete(m.chat)
         await m.react('❌')
-        return m.reply('❌ Expulsión cancelada.')
+        return m.reply('❌ الطرد اتلغى.')
     }
 
     return true

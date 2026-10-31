@@ -51,12 +51,12 @@ const handler = async (m, { conn, args, prefix, command }) => {
         const thumb = await getThumb()
         return conn.sendMessage(m.chat, {
             text:
-                `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · Zero Two 」══╗\n\n` +
-                `꒰ ⚠️ ꒱ ¡Necesito un Pokémon, Darling~!\n` +
-                `⟡ Uso: *${prefix}${command} <nombre o número>*\n` +
+                `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · Flash Bot MD 」══╗\n\n` +
+                `꒰ ⚠️ ꒱ محتاج بوكيمون، حبيبي~!\n` +
+                `⟡ Uso: *${prefix}${command} <اسم o رقم>*\n` +
                 `⟡ Ejemplo: *${prefix}${command} pikachu*\n` +
                 `⟡ Ejemplo: *${prefix}${command} 25*\n\n` +
-                `╚══「 💕 © ZoreDevTeam 」══╝`,
+                `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
             contextInfo: makeCtx(thumb)
         }, { quoted: m })
     }
@@ -71,10 +71,10 @@ const handler = async (m, { conn, args, prefix, command }) => {
             const thumb = await getThumb()
             return conn.sendMessage(m.chat, {
                 text:
-                    `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · Zero Two 」══╗\n\n` +
-                    `꒰ 💔 ꒱ No encontré ese Pokémon, Darling~\n` +
-                    `⟡ Verifica el nombre o número e intenta de nuevo.\n\n` +
-                    `╚══「 💕 © ZoreDevTeam 」══╝`,
+                    `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · Flash Bot MD 」══╗\n\n` +
+                    `꒰ 💔 ꒱ مالقيتش البوكيمون ده، حبيبي~\n` +
+                    `⟡ Verifica el اسم o رقم e intenta de nuevo.\n\n` +
+                    `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: makeCtx(thumb)
             }, { quoted: m })
         }
@@ -92,7 +92,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
         const descripcion = (
             species.flavor_text_entries.find(e => e.language.name === 'es')
             || species.flavor_text_entries.find(e => e.language.name === 'en')
-        )?.flavor_text?.replace(/\f|\n/g, ' ') || 'Sin descripción disponible.'
+        )?.flavor_text?.replace(/\f|\n/g, ' ') || 'لا يوجد وصف.'
 
         const generacion = species.generation.name.replace('generation-', 'Gen ').toUpperCase()
         const habitat    = species.habitat?.name || 'Desconocido'
@@ -155,7 +155,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
             `*╭── ⟡ [ ✦ MOVIMIENTOS ] ⟡*\n` +
             `*│* ${movimientos}\n` +
             `*╰─────────────── ✦*\n\n` +
-            `> 💗 Pokédex por Zero Two~ © ZoreDevTeam`
+            `> 💗 بوكيدكس من Flash Bot MD~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
         // ── Enviar con imagen ─────────────────────────────────────────────
         if (imgUrl) {
@@ -185,10 +185,10 @@ const handler = async (m, { conn, args, prefix, command }) => {
         const thumb = await getThumb()
         conn.sendMessage(m.chat, {
             text:
-                `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · Error 」══╗\n\n` +
-                `꒰ 💔 ꒱ ¡Algo falló, Darling~!\n` +
+                `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · خطأ 」══╗\n\n` +
+                `꒰ 💔 ꒱ ¡حصلت مشكلة، حبيبي~!\n` +
                 `⟡ ${e.message}\n\n` +
-                `╚══「 💕 © ZoreDevTeam 」══╝`,
+                `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
             contextInfo: makeCtx(thumb)
         }, { quoted: m })
     }

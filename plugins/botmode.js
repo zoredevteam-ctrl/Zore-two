@@ -15,14 +15,14 @@ let handler = async (m, { conn, args, db }) => {
     const accion = (args[0] || '').toLowerCase()
 
     if (!['on', 'off'].includes(accion)) {
-        return m.reply(`❓ Uso correcto:\n• *.bot on* — Activar bot\n• *.bot off* — Desactivar bot`)
+        return m.reply(`❓ الاستخدام الصحيح:\n• *.bot on* — Activar bot\n• *.bot off* — Desتفعيل bot`)
     }
 
     if (accion === 'on' && !group.botOff) {
-        return m.reply('✅ El bot ya está *activado* en este grupo darling~')
+        return m.reply('✅ البوت *مفعّل* بالفعل في الجروب ده حبيبي~')
     }
     if (accion === 'off' && group.botOff) {
-        return m.reply('🔴 El bot ya está *desactivado* en este grupo darling~')
+        return m.reply('🔴 El bot ya está *معطّل* en este جروب حبيبي~')
     }
 
     // ─── NEWSLETTER ───────────────────────────────────────────────────
@@ -56,7 +56,7 @@ let handler = async (m, { conn, args, db }) => {
         await database.save()
         await m.react('🟢')
         return conn.sendMessage(m.chat, {
-            text: `🟢 *Bot activado en este grupo*\n\n_¡Estoy lista para ayudar darling! 💗🌸_`,
+            text: `🟢 *البوت اتفعّل في الجروب ده*\n\n_أنا جاهزة أساعد حبيبي! 💗🌸_`,
             contextInfo
         }, { quoted: m })
     }
@@ -67,7 +67,7 @@ let handler = async (m, { conn, args, db }) => {
         await database.save()
         await m.react('🔴')
         return conn.sendMessage(m.chat, {
-            text: `🔴 *Bot desactivado en este grupo*\n\n_Ya no responderé comandos aquí darling~ 💔_\n_Solo owners y admins pueden reactivarme._`,
+            text: `🔴 *البوت متعطّل في الجروب ده*\n\n_مش هرد على أوامر هنا تاني حبيبي~ 💔_\n_المالكين والأدمنز بس اللي يقدروا يشغلوني تاني._`,
             contextInfo
         }, { quoted: m })
     }

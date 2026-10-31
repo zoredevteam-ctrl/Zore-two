@@ -4,7 +4,7 @@ let handler = async (m, { conn, args, prefix }) => {
 
     // 1. Validamos que haya puesto el tiempo
     if (!args[0]) {
-        return m.reply(`✦ 𝓩𝓮𝓻𝓸 𝓣𝔀𝓸\n\n⚠️ Te faltó el tiempo y el mensaje, darling.\n\nEjemplo:\n*${commandName} 10m Apagar la estufa*`)
+        return m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n⚠️ نسيت الوقت والرسالة، حبيبي.\n\nEjemplo:\n*${commandName} 10m اطفي البوتاجاز*`)
     }
 
     // 2. Expresión regular para separar el número de la letra (s, m, h, d)
@@ -12,7 +12,7 @@ let handler = async (m, { conn, args, prefix }) => {
     const match = args[0].match(timeRegex)
 
     if (!match) {
-        return m.reply(`✦ 𝓩𝓮𝓻𝓸 𝓣𝔀𝓸\n\n⚠️ Formato de tiempo inválido.\nUsa *s* (segundos), *m* (minutos), *h* (horas) o *d* (días).\n\nEjemplo: *15m*`)
+        return m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n⚠️ صيغة الوقت غير صحيحة.\nUsa *s* (segundos), *m* (minutos), *h* (horas) o *d* (días).\n\nEjemplo: *15m*`)
     }
 
     // 3. Calculamos los milisegundos
@@ -29,18 +29,18 @@ let handler = async (m, { conn, args, prefix }) => {
     const recordatorio = args.slice(1).join(' ').trim()
 
     if (!recordatorio) {
-        return m.reply('⚠️ Darling, ¿y qué se supone que debo recordarte? Escribe un mensaje.\n\nEjemplo: *10m revisar el código*')
+        return m.reply('⚠️ حبيبي, وأفكرك بإيه بالظبط؟ اكتب رسالة.\n\nEjemplo: *10m راجع الكود*')
     }
 
     // 5. Confirmamos que el recordatorio fue guardado
-    await m.reply(`✦ 𝓩𝓮𝓻𝓸 𝓣𝔀𝓸\n\n✅ *Recordatorio guardado*\n\nTe avisaré en *${amount}${unit}*, darling~`)
+    await m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n✅ *التذكير اتحفظ*\n\nهفكرك بعد *${amount}${unit}*, حبيبي~`)
     
     // Validamos si m.react existe antes de usarlo (por si acaso tu simple.js no lo tiene)
     if (m.react) await m.react('⏰')
 
     // 6. Ejecutamos el temporizador
     setTimeout(async () => {
-        const textoAviso = `✦ 𝓩𝓮𝓻𝓸 𝓣𝔀𝓸 · 𝓡𝓮𝓬𝓸𝓻𝓭𝓪𝓽𝓸𝓻𝓲𝓸\n\nHola darling, me pediste que te recordara esto:\n\n» ${recordatorio}`
+        const textoAviso = `✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · 𝓡𝓮𝓬𝓸𝓻𝓭𝓪𝓽𝓸𝓻𝓲𝓸\n\nأهلاً حبيبي, طلبت مني أفكرك بده:\n\n» ${recordatorio}`
         
         // Enviamos el mensaje
         await conn.sendMessage(m.chat, { 

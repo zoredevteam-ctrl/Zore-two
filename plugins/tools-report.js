@@ -8,17 +8,17 @@ const handler = async (m, { conn, args, prefix }) => {
     }
 
     const sender = m.sender.split('@')[0];
-    const pushName = m.pushName || 'Sin nombre';
+    const pushName = m.pushName || 'بدون اسم';
     const chat = m.isGroup ? m.chat : '💬 Chat Privado';
     const time = new Date().toLocaleString('es-ES', { timeZone: 'America/Bogota' });
 
     const reportMsg =
-        `「 🚨 *ERROR REPORTADO* 🚨 」\n\n` +
+        `「 🚨 *خطأ مُبلّغ عنه* 🚨 」\n\n` +
         `✦ 👤 *Usuario:* ${pushName}\n` +
         `✦ 📱 *Número:* @${sender}\n` +
         `✦ 🏠 *Desde:* ${chat}\n` +
         `✦ 🕐 *Fecha:* ${time}\n\n` +
-        `「 💬 *Error:* 」\n` +
+        `「 💬 *خطأ:* 」\n` +
         `❝ ${reason} ❞`;
 
     try {
@@ -30,7 +30,7 @@ const handler = async (m, { conn, args, prefix }) => {
         await m.reply(
             `「 ✅ *Reporte enviado* 」\n\n` +
             `❝ ${reason} ❞\n\n` +
-            `✦ Será revisado pronto 🙏`
+            `✦ هيتراجع قريب 🙏`
         );
 
     } catch (err) {

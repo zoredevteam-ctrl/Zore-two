@@ -1,6 +1,6 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO WAIFU — INTERCAMBIO/DAR ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 const handler = async (m, { conn, args, db }) => {
     const sender = m.sender
@@ -8,10 +8,10 @@ const handler = async (m, { conn, args, db }) => {
 
     if (!mention || mention === sender) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n` +
-                  `🌸 Menciona a quien quieres darle la waifu, Darling~\n` +
-                  `⟡ Uso: *#dar @usuario <número de la waifu>*\n` +
-                  `⟡ Usa *#col* para ver los números de tu colección 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
+                  `🌸 Menciona a quien quieres darle la ويفو, حبيبي~\n` +
+                  `⟡ Uso: *#dar @عضو <رقم de la ويفو>*\n` +
+                  `⟡ Usa *#col* عشان تشوف أرقام مجموعتك 💕`
         }, { quoted: m })
     }
 
@@ -20,7 +20,7 @@ const handler = async (m, { conn, args, db }) => {
 
     if (!db.waifus?.[sender]?.coleccion?.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n🌸 No tienes waifus para dar, Darling~ 💔`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو para dar, حبيبي~ 💔`
         }, { quoted: m })
     }
 
@@ -29,7 +29,7 @@ const handler = async (m, { conn, args, db }) => {
 
     if (idx < 0 || idx >= col.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝒁𝒆𝒓𝒐 𝑻𝒘𝒐* 💗\n\n🌸 Ese número no existe en tu colección~ usa *#col* para verla 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 الرقم ده مش موجود في مجموعتك~ usa *#col* عشان تشوفها 💕`
         }, { quoted: m })
     }
 
@@ -53,11 +53,11 @@ const handler = async (m, { conn, args, db }) => {
     try { const n = await conn.getName(mention); if (n) nombrePara = n } catch {}
 
     const caption =
-        `${waifu.rareza.color} *¡WAIFU TRANSFERIDA!* ${waifu.rareza.color}\n\n` +
+        `${waifu.rareza.color} *تم تحويل ويفو!* ${waifu.rareza.color}\n\n` +
         `💗 *${nombreDe}* le regaló a *${nombrePara}*~\n\n` +
         `✨ *${waifu.nombre}*\n` +
         `${waifu.rareza.stars} *${waifu.rareza.nombre}*\n\n` +
-        `💕 ¡Qué gesto tan bonito, Darling~! © ZoreDevTeam`
+        `💕 ¡Qué gesto tan bonito, حبيبي~! © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     await conn.sendMessage(m.chat, {
         image: { url: waifu.imageUrl },

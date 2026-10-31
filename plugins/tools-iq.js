@@ -7,12 +7,12 @@ let handler = async (m, { conn, db }) => {
 
     // ─── NIVEL SEGÚN IQ ───────────────────────────────────────────────
     const nivel =
-        iq >= 180 ? '🧬 *Genio supremo* — Einstein te envidiaría 💡'
+        iq >= 180 ? '🧬 *عبقري* — أينشتاين يحسدك 💡'
         : iq >= 140 ? '🎓 *Superdotado* — Mente brillante ✨'
-        : iq >= 120 ? '📚 *Muy inteligente* — Por encima del promedio 🌟'
+        : iq >= 120 ? '📚 *ذكي جداً* — أعلى من المتوسط 🌟'
         : iq >= 100 ? '🙂 *Normal* — Promedio mundial 🌍'
-        : iq >= 80  ? '😅 *Por debajo del promedio* — Tranquilo darling 💗'
-        : iq >= 50  ? '🥴 *Bastante bajo* — Pero te quiero igual 🌸'
+        : iq >= 80  ? '😅 *أقل من المتوسط* — Tranquilo حبيبي 💗'
+        : iq >= 50  ? '🥴 *منخفض جداً* — بس بحبك بردو 🌸'
         : '🪨 *IQ de roca* — No te preocupes, las rocas son fuertes 💀'
 
     // ─── NEWSLETTER / CANAL ───────────────────────────────────────────
@@ -41,7 +41,7 @@ let handler = async (m, { conn, db }) => {
     }
 
     // ─── MENSAJE ──────────────────────────────────────────────────────
-    const msg = `🧠 *Calculando IQ...*\n\n👤 Usuario: @${m.sender.split('@')[0]}\n📊 Tu IQ es: *${iq}*\n\n${nivel}`
+    const msg = `🧠 *بحسب الـ IQ...*\n\n👤 Usuario: @${m.sender.split('@')[0]}\n📊 الـ IQ بتاعك: *${iq}*\n\n${nivel}`
 
     await conn.sendMessage(m.chat, {
         text: msg,

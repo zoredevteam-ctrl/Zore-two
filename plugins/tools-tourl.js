@@ -1,4 +1,4 @@
-// dejar créditos a ZERO TWO
+// dejar créditos a FLASH BOT MD
 
 import { downloadContentFromMessage } from '@whiskeysockets/baileys'
 import FormData from 'form-data'
@@ -11,7 +11,7 @@ const sessions = new Map()
 function getMedia(msg) {
   if (!msg) return null
   if (msg.imageMessage) return { type: 'image', data: msg.imageMessage }
-  if (msg.videoMessage) return { type: 'video', data: msg.videoMessage }
+  if (msg.videoMessage) return { type: 'فيديو', data: msg.videoMessage }
   if (msg.stickerMessage) return { type: 'sticker', data: msg.stickerMessage }
   if (msg.audioMessage) return { type: 'audio', data: msg.audioMessage }
   return null
@@ -45,7 +45,7 @@ async function uploadCatbox(buffer) {
     headers: form.getHeaders()
   })
 
-  if (!res.data) throw new Error('Catbox error')
+  if (!res.data) throw new Error('Catbox خطأ')
   return res.data.trim()
 }
 
@@ -66,7 +66,7 @@ async function uploadCausas(buffer, mime) {
   )
 
   const url = data?.files?.[0]?.publicUrl
-  if (!url) throw new Error('Causas error')
+  if (!url) throw new Error('Causas خطأ')
   return url
 }
 
@@ -114,7 +114,7 @@ let handler = async (m, { conn }) => {
       const media = getMedia(msg.message)
 
       if (!media)
-        return m.reply('❌ Responde a un archivo')
+        return m.reply('❌ رد على ملف')
 
       sessions.set(m.sender, {
         media,
@@ -123,7 +123,7 @@ let handler = async (m, { conn }) => {
 
       return m.reply(
         `📤 Detectado: *${media.type}*\n\n` +
-        `Responde a este mensaje con:\n\n` +
+        `رد على الرسالة دي بـ:\n\n` +
         `👉 *.catbox*\n` +
         `👉 *.causas*`
       )
@@ -132,7 +132,7 @@ let handler = async (m, { conn }) => {
   } catch (e) {
     sessions.delete(m.sender)
     await m.react('❌')
-    m.reply(`❌ Error\n${e.message}`)
+    m.reply(`❌ خطأ\n${e.message}`)
   }
 }
 

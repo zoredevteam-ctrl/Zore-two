@@ -4,7 +4,7 @@ let handler = async (m, { args }) => {
     let ciudad = args.join(' ').trim()
     if (!ciudad) {
         await m.react('🌸')
-        return m.reply('💗 Escribe el nombre de la ciudad después del comando darling\~\nEjemplo: *#clima Medellín*')
+        return m.reply('💗 اكتب اسم المدينة بعد الأمر حبيبي\~\nEjemplo: *#clima Medellín*')
     }
 
     await m.react('🍬')
@@ -17,7 +17,7 @@ let handler = async (m, { args }) => {
 
         const texto = `💗 *Clima en ${ciudad.toUpperCase()}* 🌸\n\n` +
                       `${data}\n\n` +
-                      `¡Zero Two te desea un lindo día darling\~! 💕`
+                      `¡Flash Bot MD te desea un lindo día حبيبي\~! 💕`
 
         await m.reply(texto)
         await m.react('💗')
@@ -25,7 +25,7 @@ let handler = async (m, { args }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('💔 Uy darling... no pude obtener el clima de esa ciudad\~\nPrueba con otro nombre')
+        m.reply('💔 Uy حبيبي... no pude obtener el clima de esa ciudad\~\nجرّب اسم تاني')
     }
 }
 

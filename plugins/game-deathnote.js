@@ -1,6 +1,6 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO DEATH NOTE — RP ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
@@ -52,8 +52,8 @@ let handler = async (m, { conn, args, text, db }) => {
     if (!who) {
         return m.reply(
             `╔══「 📓 𝕯𝖊𝖆𝖙𝖍 𝕹𝖔𝖙𝖊 」══╗\n\n` +
-            `꒰ 💀 ꒱ Necesitas una víctima, Darling~\n` +
-            `⟡ Uso: *#dn @usuario <causa>*\n\n` +
+            `꒰ 💀 ꒱ محتاج ضحية، حبيبي~\n` +
+            `⟡ Uso: *#dn @عضو <causa>*\n\n` +
             `╚══「 🩸 © 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎 」══╝`
         )
     }
@@ -82,7 +82,7 @@ let handler = async (m, { conn, args, text, db }) => {
     // ── Mensaje de suspenso ──
     await conn.sendMessage(m.chat, {
         text: `📓 𝕯𝖊𝖆𝖙𝖍 𝕹𝖔𝖙𝖊 📓\n\n` +
-              `_"El humano cuyo nombre quede escrito en este cuaderno morirá..."_\n\n` +
+              `_"El humano cuyo اسم quede escrito en este cuaderno morirá..."_\n\n` +
               `✍️ *Escribiendo:* @${targetNum}\n` +
               `🩸 *Causa:* ${cause}\n\n` +
               `_...el destino se está sellando~_`,

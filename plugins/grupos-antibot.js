@@ -12,11 +12,11 @@ let handler = async (m, { conn, args, isAdmin, isOwner, db }) => {
     const accion = (args[0] || '').toLowerCase()
 
     if (!['on', 'off'].includes(accion)) {
-        return m.reply(`*「 🌸 ZERO TWO ANTIBOT 🌸 」*\n\nUso:\n*.antibot on* → Activar\n*.antibot off* → Desactivar\n\n¡Solo admins del grupo! 💗`)
+        return m.reply(`*「 🌸 FLASH BOT MD ANTIBOT 🌸 」*\n\nUso:\n*.antibot on* → Activar\n*.antibot off* → Desتفعيل\n\nللأدمنز بس! 💗`)
     }
 
     if (accion === 'on') {
-        if (chat.antibot) return m.reply('🌸💗 *¡El AntiBot ya estaba activado, mi darling!*')
+        if (chat.antibot) return m.reply('🌸💗 *مضاد البوت كان مفعّل بالفعل يا حبيبي!*')
         chat.antibot = true
         await database.save()
 
@@ -46,16 +46,16 @@ let handler = async (m, { conn, args, isAdmin, isOwner, db }) => {
         }
 
         return conn.sendMessage(m.chat, {
-            text: `🌸💗 *¡ANTIBOT ACTIVADO!* 💗🌸\n\nNingún robot imitador podrá entrar a *mi* paraíso rosado nunca más.\n¡Solo quiero darlings humanos que me amen de verdad, kyaaah~! ♡`,
+            text: `🌸💗 *¡ANTIBOT ACTIVADO!* 💗🌸\n\nمفيش روبوت مقلّد هيقدر يدخل جنتي الوردية تاني.\nعايز بس حبيبيs بشر يحبوني بجد، كياااه~! ♡`,
             contextInfo
         }, { quoted: m })
     }
 
     if (accion === 'off') {
-        if (!chat.antibot) return m.reply('🌸 *El AntiBot ya estaba desactivado.*')
+        if (!chat.antibot) return m.reply('🌸 *مضاد البوت كان معطّل بالفعل.*')
         chat.antibot = false
         await database.save()
-        return m.reply('🌸 *AntiBot desactivado...* Espero que no entren robots molestos, darling~ 💔')
+        return m.reply('🌸 *AntiBot معطّل...* اتمنى ميدخلوش روبوتات مزعجة، حبيبي~ 💔')
     }
 }
 

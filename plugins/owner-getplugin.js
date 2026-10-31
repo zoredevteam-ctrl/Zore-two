@@ -6,7 +6,7 @@ const handler = async (m, { conn, args, prefix, plugins }) => {
     if (!args[0]) {
         return m.reply(
             `「 📦 *GETPLUGIN* 」\n\n` +
-            `✦ *${prefix}getplugin <nombre>*\n\n` +
+            `✦ *${prefix}getplugin <اسم>*\n\n` +
             `❝ Plugins disponibles: ❞\n` +
             pluginList.map(v => `✦ ${v}`).join('\n')
         )
@@ -16,7 +16,7 @@ const handler = async (m, { conn, args, prefix, plugins }) => {
 
     if (!pluginList.includes(name)) {
         return m.reply(
-            `「 ⚠️ 」 No encontré el plugin *${name}*\n\n` +
+            `「 ⚠️ 」 مالقيتش الأمر *${name}*\n\n` +
             `❝ Plugins disponibles: ❞\n` +
             pluginList.map(v => `✦ ${v}`).join('\n')
         )
@@ -30,7 +30,7 @@ const handler = async (m, { conn, args, prefix, plugins }) => {
         }, { quoted: m })
     } catch (e) {
         console.error('[GETPLUGIN ERROR]', e)
-        m.reply('「 ❌ 」 No pude obtener el plugin.')
+        m.reply('「 ❌ 」 مش قدرت أجيب الأمر.')
     }
 }
 

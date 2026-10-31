@@ -1,6 +1,6 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO JADIBOT — SUB-BOTS ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 import fs from 'fs'
 import path from 'path'
@@ -78,29 +78,29 @@ const preCheck = async (m, conn, number) => {
 
     if (active.length >= MAX_SUBBOTS) {
         await sendStyled(conn, m,
-            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-            `꒰ 💔 ꒱ Límite alcanzado, Darling~\n` +
+            `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+            `꒰ 💔 ꒱ وصلت الحد، حبيبي~\n` +
             `꒰ 📊 ꒱ Activos: *${active.length}/${MAX_SUBBOTS}*\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         return false
     }
 
     if (global.subLocks.get(number)) {
         await sendStyled(conn, m,
-            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-            `꒰ ⏳ ꒱ Ya estoy procesando tu sesión~\n` +
-            `꒰ 🌸 ꒱ Ten paciencia, Darling~ 💕\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+            `꒰ ⏳ ꒱ بجهّز جلستك~\n` +
+            `꒰ 🌸 ꒱ Ten paciencia, حبيبي~ 💕\n\n` +
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         return false
     }
 
     if (active.find(c => c._number === number)) {
         await sendStyled(conn, m,
-            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-            `꒰ ✅ ꒱ Ya tienes un sub-bot activo, Darling~\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+            `꒰ ✅ ꒱ عندك بوت فرعي شغال بالفعل، حبيبي~\n\n` +
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         return false
     }
@@ -118,10 +118,10 @@ const handler = async (m, { conn, plugins, prefix }) => {
 
     if (active.length >= MAX_SUBBOTS) {
         return sendStyled(conn, m,
-            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-            `꒰ 💔 ꒱ Límite alcanzado, Darling~\n` +
+            `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+            `꒰ 💔 ꒱ وصلت الحد، حبيبي~\n` +
             `꒰ 📊 ꒱ Activos: *${active.length}/${MAX_SUBBOTS}*\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
 
@@ -134,19 +134,19 @@ const handler = async (m, { conn, plugins, prefix }) => {
             global.subLocks.delete(number)
         } else {
             return sendStyled(conn, m,
-                `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-                `꒰ ⏳ ꒱ Ya estoy procesando tu sesión~\n` +
-                `꒰ 🌸 ꒱ Ten paciencia, Darling~ 💕\n\n` +
-                `╚══「 💕 © ZoreDevTeam 」══╝`
+                `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+                `꒰ ⏳ ꒱ بجهّز جلستك~\n` +
+                `꒰ 🌸 ꒱ Ten paciencia, حبيبي~ 💕\n\n` +
+                `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
     }
 
     if (active.find(c => c._number === number)) {
         return sendStyled(conn, m,
-            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-            `꒰ ✅ ꒱ Ya tienes un sub-bot activo, Darling~\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+            `꒰ ✅ ꒱ عندك بوت فرعي شغال بالفعل، حبيبي~\n\n` +
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
 
@@ -158,21 +158,21 @@ const handler = async (m, { conn, plugins, prefix }) => {
     // Mensaje de método antes de empezar
     if (useCode) {
         await sendStyled(conn, m,
-            `╔══「 🔑 Código de Emparejamiento 」══╗\n\n` +
+            `╔══「 🔑 كود الربط 」══╗\n\n` +
             `꒰ 📱 ꒱ Abre WhatsApp → *Dispositivos vinculados*\n` +
-            `꒰ 🔗 ꒱ Toca *Vincular con número*\n` +
-            `꒰ ⌨️ ꒱ Ingresa el código que te mandaré~\n` +
-            `꒰ ⏳ ꒱ Espera un momento, Darling~\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `꒰ 🔗 ꒱ Toca *الربط بالرقم*\n` +
+            `꒰ ⌨️ ꒱ اكتب الكود اللي هبعتهولك~\n` +
+            `꒰ ⏳ ꒱ استنى un momento, حبيبي~\n\n` +
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     } else if (useQR) {
         await sendStyled(conn, m,
-            `╔══「 📷 Código QR 」══╗\n\n` +
+            `╔══「 📷 كود QR 」══╗\n\n` +
             `꒰ 📱 ꒱ Abre WhatsApp → *Dispositivos vinculados*\n` +
             `꒰ 🔗 ꒱ Toca *Vincular dispositivo*\n` +
-            `꒰ 📷 ꒱ Escanea el QR que te mandaré~\n` +
-            `꒰ ⏳ ꒱ Espera un momento, Darling~\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `꒰ 📷 ꒱ امسح الـ QR اللي هبعتهولك~\n` +
+            `꒰ ⏳ ꒱ استنى un momento, حبيبي~\n\n` +
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
 
@@ -253,11 +253,11 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                             await conn.sendMessage(m.chat, {
                                 image: qrBuffer,
                                 caption:
-                                    `╔══「 📷 Escanea el QR 」══╗\n\n` +
+                                    `╔══「 📷 امسح الـ QR 」══╗\n\n` +
                                     `꒰ 📱 ꒱ WhatsApp → *Dispositivos vinculados*\n` +
                                     `꒰ 🔗 ꒱ Toca *Vincular dispositivo* y escanea~\n` +
-                                    `꒰ ⏳ ꒱ Expira en *45 segundos*, Darling~\n\n` +
-                                    `╚══「 💕 © ZoreDevTeam 」══╝`
+                                    `꒰ ⏳ ꒱ Expira en *45 segundos*, حبيبي~\n\n` +
+                                    `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                             }, { quoted: m })
                             await m.react('📷')
                         } catch (e) {
@@ -280,10 +280,10 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                         if (!connected) {
                             await cleanUp(false)
                             notify(
-                                `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-                                `꒰ ⏰ ꒱ Tiempo agotado, Darling~\n` +
+                                `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+                                `꒰ ⏰ ꒱ Tiempo agotado, حبيبي~\n` +
                                 `꒰ 💔 ꒱ Usa *#code* o *#qr* para intentarlo de nuevo.\n\n` +
-                                `╚══「 💕 © ZoreDevTeam 」══╝`
+                                `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                             )
                             m.react('💔')
                         }
@@ -309,11 +309,11 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
 
                     await m.react('✅')
                     notify(
-                        `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
+                        `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
                         `꒰ ✅ ꒱ ¡Sub-bot *+${number}* conectado~! 💗\n` +
                         `꒰ 📊 ꒱ Activos: *${global.conns.length}/${MAX_SUBBOTS}*\n\n` +
-                        `꒰ 🌸 ꒱ ¡Bienvenido a la familia Zero Two~! 💕\n\n` +
-                        `╚══「 💕 © ZoreDevTeam 」══╝`
+                        `꒰ 🌸 ꒱ ¡Bienvenido لعيلة Flash Bot MD~! 💕\n\n` +
+                        `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                     )
                     return
                 }
@@ -323,10 +323,10 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                     if (fatal.includes(statusCode)) {
                         await cleanUp(true)
                         notify(
-                            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-                            `꒰ 💔 ꒱ Sub-bot *+${number}* cerrado~\n` +
-                            `꒰ 🌸 ꒱ Usa *#code* o *#qr* para reconectar.\n\n` +
-                            `╚══「 💕 © ZoreDevTeam 」══╝`
+                            `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+                            `꒰ 💔 ꒱ Sub-bot *+${number}* مقفول~\n` +
+                            `꒰ 🌸 ꒱ Usa *#code* o *#qr* عشان تعيد الربط.\n\n` +
+                            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                         )
                         return
                     }
@@ -336,10 +336,10 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                     if (retries >= MAX_RECONNECT) {
                         await cleanUp(false)
                         notify(
-                            `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-                            `꒰ 💔 ꒱ No pude reconectar *+${number}*~\n` +
+                            `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+                            `꒰ 💔 ꒱ مش قدرت أعيد الربط *+${number}*~\n` +
                             `꒰ 🌸 ꒱ Usa *#code* o *#qr* de nuevo.\n\n` +
-                            `╚══「 💕 © ZoreDevTeam 」══╝`
+                            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                         )
                         return
                     }
@@ -354,10 +354,10 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
         } catch (e) {
             await cleanUp(false)
             notify(
-                `╔══「 💗 Zero Two · Sub-Bot 」══╗\n\n` +
-                `꒰ ❌ ꒱ Error iniciando sub-bot~\n` +
+                `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
+                `꒰ ❌ ꒱ خطأ في تشغيل البوت الفرعي~\n` +
                 `⟡ _${e.message}_\n\n` +
-                `╚══「 💕 © ZoreDevTeam 」══╝`
+                `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
             m.react('💔')
         }

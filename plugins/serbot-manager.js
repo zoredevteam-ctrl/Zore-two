@@ -1,6 +1,6 @@
-// 💗 ── Z E R O  T W O  S Y S T E M ── 💗
+// 💗 ── F L A S H  B O T  M D  S Y S T E M ── 💗
 // ✦ [ PROTOCOLO GESTOR SUB-BOTS ]
-// ⟡ ZoreDevTeam
+// ⟡ 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 import ws from 'ws'
 import { existsSync } from 'fs'
@@ -63,17 +63,17 @@ const handler = async (m, { conn, command, isOwner }) => {
 
         if (!active.length) {
             return sendStyled(conn, m,
-                `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bots 」══╗\n\n` +
-                `꒰ 💤 ꒱ No hay sub-bots activos ahora~\n` +
-                `꒰ 🌸 ꒱ Usa *#code +número* para crear uno, Darling~\n\n` +
-                `╚══「 💕 © ZoreDevTeam 」══╝`
+                `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bots 」══╗\n\n` +
+                `꒰ 💤 ꒱ مفيش بوتات فرعية شغالة دلوقتي~\n` +
+                `꒰ 🌸 ꒱ Usa *#code +رقم* para crear uno, حبيبي~\n\n` +
+                `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
 
         const medals = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
         const lista = active.map((c, i) => {
             const num    = c.user?.jid?.split('@')[0] || c._number || '?'
-            const nombre = c.user?.name || 'Sin nombre'
+            const nombre = c.user?.name || 'بدون اسم'
             const reg    = global.subBotRegistry?.get(c._number)
             const uptime = reg?.connectedAt ? msToStr(Date.now() - reg.connectedAt) : '?'
             return `  ${medals[i] || `${i+1}.`} *${nombre}*\n     📱 +${num}\n     ⏱️ Activo: ${uptime}`
@@ -83,7 +83,7 @@ const handler = async (m, { conn, command, isOwner }) => {
             `╔══「 💗 Sub-Bots Activos 」══╗\n\n` +
             `꒰ 📊 ꒱ Total: *${active.length}/${global.subbotlimitt || 10}*\n\n` +
             `${lista}\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
 
@@ -95,10 +95,10 @@ const handler = async (m, { conn, command, isOwner }) => {
 
         if (!existsSync(dir)) {
             return sendStyled(conn, m,
-                `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
-                `꒰ 🚫 ꒱ No encontré sesión para *+${num}*, Darling~\n` +
-                `꒰ 🌸 ꒱ Usa *#code +número* para crear una.\n\n` +
-                `╚══「 💕 © ZoreDevTeam 」══╝`
+                `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bot 」══╗\n\n` +
+                `꒰ 🚫 ꒱ No encontré sesión para *+${num}*, حبيبي~\n` +
+                `꒰ 🌸 ꒱ Usa *#code +رقم* para crear una.\n\n` +
+                `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
 
@@ -117,10 +117,10 @@ const handler = async (m, { conn, command, isOwner }) => {
         } catch {}
 
         return sendStyled(conn, m,
-            `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
-            `꒰ ✅ ꒱ Sesión de *+${num}* eliminada, Darling~\n` +
-            `꒰ 🌸 ꒱ ¡Todo limpio! 💗\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bot 」══╗\n\n` +
+            `꒰ ✅ ꒱ جلسة *+${num}* eliminada, حبيبي~\n` +
+            `꒰ 🌸 ꒱ ¡كله تمام! 💗\n\n` +
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
 
@@ -128,16 +128,16 @@ const handler = async (m, { conn, command, isOwner }) => {
     if (['stop', 'pausarai', 'pausarbot'].includes(cmd)) {
         if (conn.user?.jid === global.conn?.user?.jid) {
             return sendStyled(conn, m,
-                `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Error 」══╗\n\n` +
-                `꒰ 🚫 ꒱ ¡No puedo pausar al bot principal, Darling~! 😤\n\n` +
-                `╚══「 💕 © ZoreDevTeam 」══╝`
+                `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · خطأ 」══╗\n\n` +
+                `꒰ 🚫 ꒱ ¡No puedo pausar al bot principal, حبيبي~! 😤\n\n` +
+                `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
 
         await sendStyled(conn, m,
-            `╔══「 💗 𝒁𝒆𝒓𝒐 𝑻𝒘𝒐 · Sub-Bot 」══╗\n\n` +
-            `꒰ 🔕 ꒱ Sub-bot pausado~ Hasta luego, Darling 💔\n\n` +
-            `╚══「 💕 © ZoreDevTeam 」══╝`
+            `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bot 」══╗\n\n` +
+            `꒰ 🔕 ꒱ Sub-bot pausado~ سلام, حبيبي 💔\n\n` +
+            `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         try { conn.ws.close() } catch {}
     }

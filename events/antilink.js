@@ -38,7 +38,7 @@ export const run = async (conn, upsert) => {
 
             await conn.sendMessage(id, { delete: msg.key })
             await conn.sendMessage(id, {
-                text: `「 🔗 *ANTILINK* 」\n\n✦ @${senderNum} los links no están permitidos.`,
+                text: `「 🔗 *ANTILINK* 」\n\n✦ @${senderNum} اللينكات مش مسموحة.`,
                 mentions: [sender]
             })
         }

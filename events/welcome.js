@@ -21,9 +21,9 @@ export const run = async (conn, update) => {
 
             const texto =
                 `🌸💗 *¡KYAAAAAH~!!* 💗🌸\n\n` +
-                `¡Mira nada más! Un nuevo *Darling* acaba de entrar a *mi* paraíso rosado~ 😼\n\n` +
+                `بص كده! *حبيبي* لسه داخل جنتي الوردية~ 😼\n\n` +
                 `¡Bienvenido/a @${user}!! ♡\n\n` +
-                `¡Estoy tan feliz de tenerte aquí conmigo, mi Darling más especial! Kyaaah~ Ven aquí, no te escapes 🌷💗`
+                `¡Estoy tan feliz de tenerte aquí conmigo, mi حبيبي más especial! Kyaaah~ Ven aquí, no te escapes 🌷💗`
 
             await conn.sendMessage(id, {
                 image: { url: ppuser },

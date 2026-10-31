@@ -3,12 +3,12 @@ import * as cheerio from 'cheerio'
 
 let handler = async (m, { args, usedPrefix }) => {
     if (!global.db.data.chats[m.chat].nsfw) {
-        return m.reply('🚫 El contenido NSFW está desactivado en este grupo.\n\nUn admin puede activarlo con *#nable nsfw on*')
+        return m.reply('🚫 محتوى NSFW متعطّل في الجروب ده.\n\nأي أدمن يقدر يفعّله بـ *#nable nsfw on*')
     }
 
     const query = args.join(" ").trim()
     if (!query) {
-        return m.reply('Ingresa el título o URL del video de XNXX.\nEjemplo: *#xnxx mia khalifa*')
+        return m.reply('اكتب عنوان أو رابط فيديو XNXX.\nEjemplo: *#xnxx mia khalifa*')
     }
 
     try {
@@ -26,18 +26,18 @@ let handler = async (m, { args, usedPrefix }) => {
             await conn.sendMessage(m.chat, {
                 video: videoBuffer,
                 caption: caption,
-                mimetype: 'video/mp4'
+                mimetype: 'فيديو/mp4'
             }, { quoted: m })
             return
         }
 
         const res = await search(query)
         const list = res.result.slice(0, 10).map((v, i) => `${i+1}. ${v.title}\n   ${v.link}`).join('\n\n')
-        await m.reply(`*XNXX - BÚSQUEDA*\n\n${list}\n\nCopia la URL para descargar con #xnxx <url>`)
+        await m.reply(`*XNXX - بحث*\n\n${list}\n\nانسخ الرابط للتحميل بأمر #xnxx <url>`)
 
     } catch (e) {
         console.error(e)
-        m.reply('❌ Error al procesar el comando.')
+        m.reply('❌ خطأ في تنفيذ الأمر.')
     }
 }
 
@@ -73,7 +73,7 @@ async function search(query) {
         const href = $(el).find('a').attr('href')
         if (!href) return
         const url = 'https://www.xnxx.com' + href
-        const title = $(el).find('a').attr('title') || $(el).find('span').text().trim() || 'Sin título'
+        const title = $(el).find('a').attr('title') || $(el).find('span').text().trim() || 'بدون عنوان'
         results.push({ title, link: url })
     })
 
