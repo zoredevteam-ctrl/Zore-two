@@ -81,7 +81,7 @@ const handler = async (m, { conn, command, isOwner }) => {
 
         return sendStyled(conn, m,
             `╔══「 💗 Sub-Bots Activos 」══╗\n\n` +
-            `꒰ 📊 ꒱ Total: *${active.length}/${global.subbotlimitt || 10}*\n\n` +
+            `꒰ 📊 ꒱ Total: *${active.length}/${global.maxSubBots || 100}*\n\n` +
             `${lista}\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )

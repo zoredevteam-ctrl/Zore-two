@@ -12,11 +12,10 @@ import {
   makeCacheableSignalKeyStore,
   useMultiFileAuthState,
   fetchLatestBaileysVersion,
-  jidDecode,
   DisconnectReason
 } from '@whiskeysockets/baileys'
 import { exec } from 'child_process'
-import { smsg } from './lib/simple.js'
+import { smsg, bind } from './lib/simple.js'
 import { database } from './lib/database.js'
 import { handler, loadEvents } from './handler.js'
 import { readdirSync } from 'fs'
@@ -108,7 +107,7 @@ async function loadEventFiles (conn) {
   }
 }
 
-global.sessionName = global.sessionName || './Sessions/Owner'
+global.sessionName = global.sessionName || global.sessions || './Sessions/Owner'
 try { fs.mkdirSync(global.sessionName, { recursive: true }) } catch (e) { log.error(`تعذّر إنشاء مجلد الجلسة: ${e.message}`) }
 
 const methodCodeQR = process.argv.includes('--qr')
@@ -130,7 +129,7 @@ let phoneNumber = ''
 
 if (methodCodeQR) opcion = '1'
 else if (methodCode) opcion = '2'
-else if (!fs.existsSync('./Sessions/Owner/creds.json')) {
+else if (!fs.existsSync(`${global.sessionName}/creds.json`)) {
   opcion = readlineSync.question(
     chalk.bold.white('\nاختر طريقة الربط:\n') +
     chalk.blueBright('1. بكود QR\n') +
@@ -167,18 +166,10 @@ async function startBot () {
 
   global.conn = conn
 
-  conn.decodeJid = jid => {
-    if (!jid) return jid
-    if (/:\d+@/gi.test(jid)) {
-      const decode = jidDecode(jid) || {}
-      return decode.user && decode.server ? decode.user + '@' + decode.server : jid
-    }
-    return jid
-  }
-
+  bind(conn)
   conn.ev.on('creds.update', saveCreds)
 
-  if (opcion === '2' && !fs.existsSync('./Sessions/Owner/creds.json')) {
+  if (opcion === '2' && !fs.existsSync(`${global.sessionName}/creds.json`)) {
     setTimeout(async () => {
       try {
         if (!state.creds.registered) {
@@ -225,15 +216,15 @@ async function startBot () {
         startBot()
       } else if (reason === DisconnectReason.loggedOut) {
         log.warn('تم تسجيل الخروج. جاري حذف الجلسة...')
-        exec('rm -rf ./Sessions/Owner/*')
+        exec(`rm -rf ${global.sessionName}/*`)
         process.exit(1)
       } else if (reason === DisconnectReason.forbidden) {
         log.error('الوصول مرفوض. جاري حذف الجلسة...')
-        exec('rm -rf ./Sessions/Owner/*')
+        exec(`rm -rf ${global.sessionName}/*`)
         process.exit(1)
       } else if (reason === DisconnectReason.multideviceMismatch) {
         log.warn('عدم توافق الأجهزة. جاري إعادة التشغيل...')
-        exec('rm -rf ./Sessions/Owner/*')
+        exec(`rm -rf ${global.sessionName}/*`)
         process.exit(0)
       } else {
         log.error(`انقطاع غير معروف: ${reason}`)

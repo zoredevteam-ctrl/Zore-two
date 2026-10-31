@@ -15,7 +15,7 @@ import {
     Browsers,
     DisconnectReason
 } from '@whiskeysockets/baileys'
-import { smsg }                  from '../lib/simple.js'
+import { smsg, bind }            from '../lib/simple.js'
 import { handler as mainHandler } from '../handler.js'
 
 if (!Array.isArray(global.conns))            global.conns          = []
@@ -23,7 +23,7 @@ if (!(global.subBotRegistry instanceof Map)) global.subBotRegistry = new Map()
 if (!global.subLocks)                        global.subLocks        = new Map()
 
 const SUBBOT_DIR         = global.jadi || 'JadiBots'
-const MAX_SUBBOTS        = 100
+const MAX_SUBBOTS        = global.maxSubBots || 100
 const PAIRING_TIMEOUT_MS = 120_000
 const MAX_RECONNECT      = 6
 const BASE_DELAY_MS      = 1_500
@@ -228,6 +228,8 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
 
             sock._number     = number
             sock.sessionPath = sessionPath
+
+            bind(sock)
 
             sock.ev.on('creds.update', saveCreds)
 

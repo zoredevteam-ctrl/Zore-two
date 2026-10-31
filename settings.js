@@ -31,6 +31,7 @@ global.botName    = 'Flash Bot MD'
 global.botname    = 'Flash Bot MD'
 global.sessions   = './Sessions/Owner'
 global.jadi       = 'JadiBots'
+global.maxSubBots = 100
 
 // ─── TEXTOS Y ETIQUETAS ─────────────────────────────────────────────────────
 global.packname   = '⚡ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 ⚡'
