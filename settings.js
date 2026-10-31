@@ -65,7 +65,7 @@ global.welcom2 = '👋 إلى اللقاء!\n⚡ شكراً إنك كنت معا
 
 // ─── BANNER ─────────────────────────────────────────────────────────────────
 // ✏️ حط رابط صورة البانر بتاعتك هنا
-global.banner    = 'https://files.catbox.moe/2loy0h.jpg'
+global.banner    = 'https://files.evogb.win/nQR7jG.png'
 global.bannerUrl = global.banner
 global.avatar    = global.banner
 global.iconUrl   = global.banner

@@ -1,161 +1,240 @@
-import fs from 'fs'
 import fetch from 'node-fetch'
 import { database } from '../lib/database.js'
 
-const handler = async (m, { conn, usedPrefix, prefix }) => {
-    try {
-        const botname = global.botname || global.botName || 'Flash Bot MD'
+const SECCIONES = [
+    {
+        "name": "نظام الويفو",
+        "emoji": "💎",
+        "cmds": [
+            "c",
+            "كولكشن",
+            "هديه",
+            "رول",
+            "بيع"
+        ]
+    },
+    {
+        "name": "الأنمي والتفاعل",
+        "emoji": "🌸",
+        "cmds": [
+            "رقص",
+            "حضن",
+            "قتل",
+            "بوسه",
+            "حزن",
+            "ديث_نوت",
+            "كيرا",
+            "زواج",
+            "وايفو"
+        ]
+    },
+    {
+        "name": "ترفيه وألعاب",
+        "emoji": "🎮",
+        "cmds": [
+            "formarpareja",
+            "formarpareja5",
+            "هاك",
+            "ذكاء",
+            "شعر",
+            "حجره"
+        ]
+    },
+    {
+        "name": "الاقتصاد",
+        "emoji": "💰",
+        "cmds": [
+            "رصيد",
+            "ترتيب"
+        ]
+    },
+    {
+        "name": "التحميلات",
+        "emoji": "📥",
+        "cmds": [
+            "تطبيق",
+            "يوتيوب",
+            "تحميل",
+            "tiktoksearch",
+            "تيك_توك"
+        ]
+    },
+    {
+        "name": "ملصقات وأدوات",
+        "emoji": "🔧",
+        "cmds": [
+            "ملصق",
+            "طقس",
+            "detectarsyntax",
+            "جلب",
+            "flux",
+            "تحسين",
+            "وقت",
+            "ذكاء_صناعي",
+            "فحص",
+            "بوكيمون",
+            "تذكير",
+            "حفظ",
+            "صوره",
+            "رفع",
+            "ترجم",
+            "ver",
+            "فتح"
+        ]
+    },
+    {
+        "name": "الذكاء الاصطناعي",
+        "emoji": "🧠",
+        "cmds": [
+            "llama"
+        ]
+    },
+    {
+        "name": "الجروبات",
+        "emoji": "👥",
+        "cmds": [
+            "advertencias",
+            "advertir",
+            "مضاد_بوت",
+            "مضاد_لينك",
+            "bot",
+            "غلق_جروب",
+            "حذف_انذار",
+            "تنبيه",
+            "خاملين",
+            "استدعاء",
+            "خروج",
+            "رابط",
+            "كتم",
+            "تفعيل",
+            "فتح_جروب",
+            "هيئه",
+            "الغاء_كتم"
+        ]
+    },
+    {
+        "name": "البوت الفرعي",
+        "emoji": "🤖",
+        "cmds": [
+            "كود",
+            "بوتات"
+        ]
+    },
+    {
+        "name": "الرئيسي",
+        "emoji": "🏠",
+        "cmds": [
+            "معلومات",
+            "قائمه",
+            "سرعه",
+            "مالك",
+            "الغاء_تسجيل",
+            "تسجيل"
+        ]
+    },
+    {
+        "name": "المطور",
+        "emoji": "👑",
+        "cmds": [
+            "ارسل_تيك_توك",
+            "دخول",
+            "اضف_مالك",
+            "مشرف_تلقائي",
+            "تقييم",
+            "جيب_الامر",
+            "طرد_الكل",
+            "معرف",
+            "اعاده_تشغيل",
+            "نشر",
+            "تحديث"
+        ]
+    },
+    {
+        "name": "متنوعة",
+        "emoji": "✨",
+        "cmds": [
+            "فيسبوك",
+            "انستا",
+            "بنترست",
+            "تنزيل",
+            "طرد",
+            "ترقيه",
+            "وضع_المشرفين",
+            "newsletter",
+            "قناه"
+        ]
+    },
+    {
+        "name": "NSFW",
+        "emoji": "🔞",
+        "cmds": [
+            "ليزبيان",
+            "باك",
+            "بوسي",
+            "تيتاس",
+            "اكس"
+        ]
+    }
+]
 
-        // ── الإحصائيات ───────────────────────────────
+function makeCtx() {
+    return {
+        isForwarded: true,
+        forwardingScore: 999,
+        forwardedNewsletterMessageInfo: {
+            newsletterJid:   global.newsletterJid  || '120363404822730259@newsletter',
+            newsletterName:  global.newsletterName || 'Flash Bot MD',
+            serverMessageId: -1
+        }
+    }
+}
+
+const handler = async (m, { conn, usedPrefix, prefix, args }) => {
+    const p = usedPrefix || prefix || global.prefix || '.'
+    try {
+        const cat = (args?.[0] || '').trim()
+
+        // ── عرض قسم واحد (عند الضغط على زر) ─────────────
+        if (cat) {
+            const sec = SECCIONES.find(s => s.name === cat || s.name.includes(cat))
+            if (!sec) return m.reply(`❌ مفيش قسم بالاسم ده يا حبيبي~\nاكتب *${p}القائمة* وشوف الأقسام.`)
+            const body = sec.cmds.map(c => `  ꕦ ${p}${c}`).join('\n')
+            return conn.sendMessage(m.chat, {
+                text: `${sec.emoji} *${sec.name}*\n\n${body}\n\n⚡ *~Flash Bot MD*`,
+                contextInfo: makeCtx()
+            }, { quoted: m })
+        }
+
+        // ── القائمة الرئيسية ─────────────────────────────
+        const botname         = global.botName || 'Flash Bot MD'
         const totalUsers      = Object.keys(database.data.users || {}).length
         const registeredUsers = Object.values(database.data.users || {}).filter(u => u.registered).length
 
-        // ── عدّ الأوامر بدون تكرار ───────────────────
-        let totalCmds = 0
-        try {
-            const pluginFiles = fs.readdirSync('./plugins').filter(f => f.endsWith('.js'))
-            const allCmds = new Set()
-            for (const file of pluginFiles) {
-                try {
-                    const plugin = (await import(`../plugins/${file}`)).default
-                    const cmds = plugin?.command || [file.replace('.js', '')]
-                    for (const cmd of (Array.isArray(cmds) ? cmds : [cmds])) allCmds.add(cmd)
-                } catch {}
-            }
-            totalCmds = allCmds.size
-        } catch {}
+        const sec2   = process.uptime()
+        const uptime = `${String(Math.floor(sec2/3600)).padStart(2,'0')}:${String(Math.floor(sec2/60)%60).padStart(2,'0')}:${String(Math.floor(sec2)%60).padStart(2,'0')}`
 
-        // ── مدة التشغيل ──────────────────────────────
-        const sec = process.uptime()
-        const h   = Math.floor(sec / 3600)
-        const min = Math.floor(sec / 60) % 60
-        const s   = Math.floor(sec) % 60
-        const uptime = `${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(s).padStart(2,'0')}`
-
-        // ── التحية حسب الوقت ─────────────────────────
         const hora = parseInt(new Date().toLocaleTimeString('ar-EG', {
             timeZone: 'Africa/Cairo', hour: '2-digit', hour12: false
         }))
-        let saludo, carita
-        if      (hora >= 5  && hora < 12) { saludo = 'صباح الخير';  carita = '(＊^▽^＊) ☀️' }
-        else if (hora >= 12 && hora < 18) { saludo = 'مساء الخير';  carita = '(｡•̀ᴗ-)✧ ⚡' }
-        else                              { saludo = 'مساء الخير';  carita = '(◕‿◕✿) 🌙'   }
+        const [saludo, carita] =
+            hora >= 5  && hora < 12 ? ['صباح الخير', '(＊^▽^＊) ☀️']  :
+            hora >= 12 && hora < 18 ? ['مساء الخير', '(｡•̀ᴗ-)✧ 🌸'] :
+                                      ['مساء الخير', '(◕‿◕✿) 🌙']
 
-        // ── حركة "اقرأ المزيد" ───────────────────────
-        const readMore = String.fromCharCode(8206).repeat(4000)
+        const readMore = String.fromCharCode(8206).repeat(3000)
 
-        // ── الأقسام ──────────────────────────────────
-        const p = usedPrefix || prefix || global.prefix || '.'
-        const seccionesTexto = `*╭── ⟡ [ ✦ الأنمي والتفاعل ] ⟡*
-> ✧ ${p}رقص
-> ✧ ${p}حضن
-> ✧ ${p}قتل
-> ✧ ${p}بوسة
-> ✧ ${p}حزن
-> ✧ ${p}وايفو
-> ✧ ${p}زواج
-*╰─────────────── ✦*
+        const seccionesTexto = SECCIONES.map(s =>
+            `*╭── ⟡ [ ${s.emoji} ${s.name} ] ⟡*\n` +
+            s.cmds.map(c => `> ✧ ${p}${c}`).join('\n') +
+            `\n*╰─────────────── ✦*`
+        ).join('\n\n')
 
-*╭── ⟡ [ ✦ نظام الويفو ] ⟡*
-> ✧ ${p}رول — صيد ويفو
-> ✧ ${p}كولكشن — مجموعتك
-> ✧ ${p}هدية — اهدي ويفو
-> ✧ ${p}بيع — بيع ويفو
-*╰─────────────── ✦*
+        const totalCmds = new Set(SECCIONES.flatMap(s => s.cmds)).size
 
-*╭── ⟡ [ ✦ ترفيه وألعاب ] ⟡*
-> ✧ ${p}ديث_نوت
-> ✧ ${p}كيرا
-> ✧ ${p}زواج / ${p}شيب
-> ✧ ${p}شعر
-> ✧ ${p}حجرة
-> ✧ ${p}هاك
-> ✧ ${p}ذكاء
-*╰─────────────── ✦*
-
-*╭── ⟡ [ ✦ الاقتصاد ] ⟡*
-> ✧ ${p}رصيد — رصيدك
-> ✧ ${p}ترتيب — المتصدرين
-*╰─────────────── ✦*
-
-*╭── ⟡ [ ✦ التحميلات ] ⟡*
-> ✧ ${p}تيك_توك
-> ✧ ${p}فيسبوك
-> ✧ ${p}انستا
-> ✧ ${p}بنترست
-> ✧ ${p}تحميل
-> ✧ ${p}تطبيق
-*╰─────────────── ✦*
-
-*╭── ⟡ [ ✦ ملصقات وأدوات ] ⟡*
-> ✧ ${p}ملصق
-> ✧ ${p}صورة
-> ✧ ${p}فحص
-> ✧ ${p}رفع
-> ✧ ${p}طقس
-> ✧ ${p}تحسين
-> ✧ ${p}ترجم
-> ✧ ${p}شوف
-> ✧ ${p}تذكير
-> ✧ ${p}حفظ
-> ✧ ${p}جلب
-*╰─────────────── ✦*
-
-*╭── ⟡ [ ✦ الذكاء الاصطناعي ] ⟡*
-> ✧ ${p}ذكاء_صناعي
-*╰─────────────── ✦*
-
-*╭── ⟡ [ ✦ الجروبات ] ⟡*
-> ✧ ${p}مضاد_بوت
-> ✧ ${p}مضاد_لينك
-> ✧ ${p}استدعاء / ${p}هيئة
-> ✧ ${p}خاملين
-> ✧ ${p}كتم / ${p}الغاء_كتم
-> ✧ ${p}فتح_جروب / ${p}غلق_جروب
-> ✧ ${p}رابط
-> ✧ ${p}تنبيه
-> ✧ ${p}انذار / ${p}انذارات
-> ✧ ${p}حذف_انذار
-> ✧ ${p}خروج
-> ✧ ${p}تفعيل
-> ✧ ${p}تنزيل / ${p}ترقية
-> ✧ ${p}طرد
-> ✧ ${p}وضع_المشرفين
-*╰─────────────── ✦*
-
-*╭── ⟡ [ ✦ البوت الفرعي ] ⟡*
-> ✧ ${p}كود
-> ✧ ${p}بوتات
-*╰─────────────── ✦*
-
-*╭── ⟡ [ ✦ الرئيسي ] ⟡*
-> ✧ ${p}القائمة / ${p}اوامر
-> ✧ ${p}معلومات
-> ✧ ${p}تسجيل / ${p}الغاء_تسجيل
-> ✧ ${p}مالك
-> ✧ ${p}وقت
-> ✧ ${p}سرعة
-> ✧ ${p}تقرير
-*╰─────────────── ✦*
-
-*╭── ⟡ [ ✦ المطور ] ⟡*
-> ✧ ${p}اضف_مالك
-> ✧ ${p}مشرف_تلقائي
-> ✧ ${p}جيب_الامر
-> ✧ ${p}دخول
-> ✧ ${p}طرد_الكل
-> ✧ ${p}معرف
-> ✧ ${p}قناة
-> ✧ ${p}اعادة_تشغيل
-> ✧ ${p}تحديث
-> ✧ ${p}نشر
-*╰─────────────── ✦*`
-
-        // ── نص القائمة ───────────────────────────────
         const menuTexto = `✦ ⋆｡°✩ قائمة 𝐅𝐋𝐀𝐒𝐇 𝐁𝐎𝐓 𝐌𝐃 ✩°｡⋆ ✦
 ❝ أهلاً *${m.pushName}*، ${saludo}! ${carita}
 أنا *${botname}* ودي قائمتي،
-اتمنى تستعملها صح... ⚡ ❞
+اضغط على الأزرار أو اكتب الأمر. ⚡ ❞
 
 ⚡ *الأوامر:* ${totalCmds} متاح
 ⚡ *المستخدمين:* ${totalUsers} معروف
@@ -166,37 +245,33 @@ ${seccionesTexto}
 
 ✦ *~Flash Bot MD* ʚɞ (´｡• ᵕ •｡\`)`.trim()
 
-        // ── البانر ───────────────────────────────────
+        // ── البانر ───────────────────────────────────────
         let buffer = null
         try { buffer = await global.getBannerBuffer(database.data) } catch {}
         if (!buffer) {
-            try {
-                const response = await fetch(global.banner)
-                buffer = await response.buffer()
-            } catch {}
+            try { buffer = await (await fetch(global.banner)).buffer() } catch {}
         }
 
-        // ── أزرار سريعة ──────────────────────────────
+        // ── أزرار الأقسام (تفتح من الداخل) ───────────────
         const interactiveButtons = [
-            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '⚡ القائمة', id: '.القائمة' }) },
-            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '👑 المطور', id: '.مالك' }) },
-            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '📢 القناة', id: '.قناة' }) },
-            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '💰 رصيدي', id: '.رصيد' }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '💎 نظام الويفو', id: `${p}القائمة نظام الويفو` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '🌸 الأنمي والتفاعل', id: `${p}القائمة الأنمي والتفاعل` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '🎮 ترفيه وألعاب', id: `${p}القائمة ترفيه وألعاب` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '💰 الاقتصاد', id: `${p}القائمة الاقتصاد` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '📥 التحميلات', id: `${p}القائمة التحميلات` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '🔧 ملصقات وأدوات', id: `${p}القائمة ملصقات وأدوات` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '🧠 الذكاء الاصطناعي', id: `${p}القائمة الذكاء الاصطناعي` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '👥 الجروبات', id: `${p}القائمة الجروبات` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '🤖 البوت الفرعي', id: `${p}القائمة البوت الفرعي` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '🏠 الرئيسي', id: `${p}القائمة الرئيسي` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '👑 المطور', id: `${p}القائمة المطور` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '✨ متنوعة', id: `${p}القائمة متنوعة` }) },
+            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '🔞 NSFW', id: `${p}القائمة NSFW` }) },
         ]
 
-        const ctx = {
-            isForwarded: true,
-            forwardingScore: 999,
-            forwardedNewsletterMessageInfo: {
-                newsletterJid:   global.newsletterJid  || '120363404822730259@newsletter',
-                newsletterName:  global.newsletterName || 'Flash Bot MD',
-                serverMessageId: -1
-            }
-        }
-
         const content = buffer
-            ? { image: buffer, mimetype: 'image/jpeg', caption: menuTexto, interactiveButtons, contextInfo: ctx }
-            : { text: menuTexto, interactiveButtons, contextInfo: ctx }
+            ? { image: buffer, mimetype: 'image/jpeg', caption: menuTexto, interactiveButtons, contextInfo: makeCtx() }
+            : { text: menuTexto, interactiveButtons, contextInfo: makeCtx() }
 
         await conn.sendMessage(m.chat, { ...content, mentions: [m.sender] }, { quoted: m })
 
@@ -206,7 +281,7 @@ ${seccionesTexto}
     }
 }
 
-handler.help    = ['menu', 'القائمة', 'اوامر']
+handler.help    = ['menu']
 handler.tags    = ['main']
 handler.command = ['menu', 'help', 'ayuda', 'القائمة', 'قائمة', 'اوامر', 'منيو', 'مساعدة', 'مساعده']
 export default handler
