@@ -94,7 +94,7 @@ let handler = async (m, { conn, isAdmin, isOwner, db }) => {
 
     // ─── ARMAR MENSAJE ────────────────────────────────────────────────
     let txt = `⚠️ *${inactivos.length} USUARIOS INACTIVOS DETECTADOS*\n`
-    txt += `_(Sin رسايل أكتر من ${DIAS_INACTIVO} días)_\n\n`
+    txt += `_(من غير رسايل أكتر من ${DIAS_INACTIVO} يوم)_\n\n`
 
     for (const u of inactivos) {
         const diasTxt = u.dias !== null ? `${u.dias} يوم من غير كتابة` : 'Nunca ha escrito'

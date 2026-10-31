@@ -21,7 +21,7 @@ let handler = async (m) => {
         texto += `🕒 *${z.name}:* ${hora}\n`
     })
 
-    texto += `\n¡Flash Bot MD صاحية معاك دايماً حبيبي\~! 💕`
+    texto += `\nFlash Bot MD صاحية معاك دايماً يا حبيبي\~! 💕`
 
     return m.reply(texto)
 }

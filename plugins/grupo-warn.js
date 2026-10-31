@@ -45,7 +45,7 @@ const handler = async (m, { conn, args, who }) => {
     if (count >= 3) {
         await conn.sendMessage(m.chat, {
             text:
-                `𖤐 *¡انذار #${count}!* 𖤐\n\n` +
+                `𖤐 *انذار #${count}!* 𖤐\n\n` +
                 `ꕦ العضو: @${target.split('@')[0]}\n` +
                 `ꕦ السبب: ${reason}\n\n` +
                 `💔 *عدّى الـ3 انذارات واتطرد...*\n` +
@@ -64,7 +64,7 @@ const handler = async (m, { conn, args, who }) => {
     } else {
         await conn.sendMessage(m.chat, {
             text:
-                `𖤐 *¡انذار #${count}!* 𖤐\n\n` +
+                `𖤐 *انذار #${count}!* 𖤐\n\n` +
                 `ꕦ العضو: @${target.split('@')[0]}\n` +
                 `ꕦ السبب: ${reason}\n\n` +
                 `ꙮ Advertencias: *${count}/3*\n` +

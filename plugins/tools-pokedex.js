@@ -194,7 +194,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
     }
 }
 
-handler.help    = ['pokedex <nombre o número>']
+handler.help    = ['pokedex <اسم أو رقم>']
 handler.tags    = ['tools']
 handler.command = ['pokedex', 'dex', 'pokemon', 'poke']
 

@@ -13,7 +13,7 @@ const handler = async (msg, { conn, args, usedPrefix }) => {
 
     return conn.sendMessage(
       msg.chat,
-      { text: `✳️ Usa:\n${usedPrefix} play2 <nombre del video>` },
+      { text: `✳️ استخدم:\n${usedPrefix} play2 <اسم الفيديو>` },
       { quoted: msg }
     )
   }
