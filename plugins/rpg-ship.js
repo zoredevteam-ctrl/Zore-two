@@ -20,14 +20,14 @@ const getPercent = (a, b) => {
 }
 
 const getPhrase = (p) => {
-    if (p === 100) return ['👑', '¡AMOR ABSOLUTO! El universo los creó el uno para el otro~ ✨']
-    if (p >= 90)  return ['💍', '¡ALMAS GEMELAS! Flash Bot MD les da su bendición rosada~ 🌸']
+    if (p === 100) return ['👑', 'حب مطلق! الكون خلقهما لبعض~ ✨']
+    if (p >= 90)  return ['💍', 'توأم روح! Flash Bot MD بيديهم بركتها الوردية~ 🌸']
     if (p >= 75)  return ['🔥', 'ثنائي مثالي! بموت من الغيرة حبيبي~ 💕']
     if (p >= 60)  return ['💗', 'كيميا حلوة... كادوا يبوسوا بعض! 😘']
     if (p >= 45)  return ['🌸', 'في شرارة... بس ناقص شوية حب~']
     if (p >= 30)  return ['😅', 'اممم... الحب لسه في الطريق, حبيبي~ 💫']
     if (p >= 15)  return ['💀', 'ده زواج عالي المخاطر~ 😬']
-    return              ['💔', '¡Ship trágico! Romeo y Julieta versión catástrofe~ 😭']
+    return              ['💔', 'زواج مأساوي! روميو وجولييت نسخة كارثة~ 😭']
 }
 
 const heartBar = (p) => {
@@ -191,8 +191,8 @@ const handler = async (m, { conn, command }) => {
             await m.react('💔')
             return m.reply(
                 `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                `🌸 ¡منشن حد، حبيبي~!\n` +
-                `⟡ Uso: *.${command} @persona* o *.${command} @persona1 @persona2*`
+                `🌸 منشن حد يا حبيبي~!\n` +
+                `⟡ الاستخدام: *.${command} @persona* o *.${command} @persona1 @persona2*`
             )
         }
     }
@@ -224,12 +224,12 @@ const handler = async (m, { conn, command }) => {
     }
 
     const caption =
-        `💗 *¡الزواج اتفعّل، DARLING~!* 🌸\n\n` +
+        `💗 *الزواج اتفعّل يا حبيبي~!* 🌸\n\n` +
         `✨ ${tag1} 💗 ${tag2} ✨\n\n` +
         `${emoji} *توافق الحب:* *${percent}%*\n` +
         `${bar}\n\n` +
         `🌸 ${phrase}\n\n` +
-        `> 💕 *Flash Bot MD* los bendice~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
+        `> 💕 *Flash Bot MD* بيباركهم~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     const contextInfo = {
         isForwarded: true,

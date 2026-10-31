@@ -39,12 +39,12 @@ let handler = async (m, { conn }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('💔 No pude recuperar el رسالة, حبيبي... intenta de nuevo~')
+        m.reply('💔 مش قدرت أجيب الرسالة يا حبيبي... جرّب تاني~')
     }
 }
 
 handler.command = ['ver']
-handler.help = ['ver (responde a un mensaje de 1 vista)']
+handler.help = ['ver (رد على رسالة من نظرة واحدة)']
 handler.tags = ['tools']
 
 export default handler

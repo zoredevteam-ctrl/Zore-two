@@ -1,13 +1,13 @@
 let handler = async (m, { conn, args, isOwner }) => {
     if (!isOwner) {
         await m.react('💔')
-        return m.reply('💔 Solo el owner principal puede añadir otros owners حبيبي\~')
+        return m.reply('💔 المالك الرئيسي بس اللي يقدر يضيف مالكين تانيين حبيبي\~')
     }
 
     let number = args[0] ? args[0].replace(/[^0-9]/g, '') : (m.quoted ? m.quoted.sender : null)
     if (!number) {
         await m.react('🌸')
-        return m.reply('💗 منشن أو رد على عضو، أو اكتب رقمه بعد الأمر حبيبي\~\nEjemplo: *#addowner 57xxxxxxxxxx*')
+        return m.reply('💗 منشن أو رد على عضو، أو اكتب رقمه بعد الأمر حبيبي\~\nمثال: *#addowner 57xxxxxxxxxx*')
     }
 
     number += '@s.whatsapp.net'
@@ -18,16 +18,16 @@ let handler = async (m, { conn, args, isOwner }) => {
 
     global.owner.push(number)
     await conn.sendMessage(m.chat, { 
-        text: `💗 *¡Nuevo owner añadido حبيبي!* 🌸\n\n` +
-              `Usuario: @${number.split('@')[0]}\n` +
-              `Ahora tiene control total del bot 💕`, 
+        text: `💗 *مالك جديد اتضاف يا حبيبي!* 🌸\n\n` +
+              `العضو: @${number.split('@')[0]}\n` +
+              `دلوقتي عنده تحكم كامل في البوت 💕`, 
         mentions: [number] 
     }, { quoted: m })
 
     await m.react('💗')
 }
 
-handler.help = ['addowner <número o @user>']
+handler.help = ['addowner <رقم أو @عضو>']
 handler.tags = ['owner']
 handler.command = ['addowner', 'añadirowner']
 handler.owner = true

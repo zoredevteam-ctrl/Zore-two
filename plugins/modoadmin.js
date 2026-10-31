@@ -13,7 +13,7 @@ let handler = async (m, { conn, args, db, prefix }) => {
         chat.modoadmin = false;
         m.reply('⚙️ *𝖅0𝕽𝕿 𝕾𝖄𝕾𝕿𝕰𝕸𝕾*\n\n🔓 *وضع الأدمن: معطّل*\n_النظام رجع مفتوح لكل الأعضاء._');
     } else {
-        m.reply(`⚠️ *خطأ في الصياغة.*\n\nالاستخدام الصحيح:\n> *${prefix}modoأدمن on*\n> *${prefix}modoأدمن off*`);
+        m.reply(`⚠️ *خطأ في الصياغة.*\n\nالاستخدام الصحيح:\n> *${prefix}modoadmin on*\n> *${prefix}modoadmin off*`);
     }
 };
 

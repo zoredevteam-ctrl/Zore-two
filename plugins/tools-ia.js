@@ -12,14 +12,14 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
 
     return conn.sendMessage(
       msg.chat,
-      { text: `✳️ Usa:\n.ia <texto>` },
+      { text: `✳️ استخدم:\n.ia <texto>` },
       { quoted: msg }
     )
   }
 
   const { key } = await conn.sendMessage(
     msg.chat,
-    { text: 'Procesando...\n> Duarte es femboy 😅' },
+    { text: 'جاري المعالجة...\n> Duarte es femboy 😅' },
     { quoted: msg }
   )
 

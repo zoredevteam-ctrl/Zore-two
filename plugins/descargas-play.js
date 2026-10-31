@@ -27,14 +27,14 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   try {
     const search = await yts(query)
     if (!search.videos?.length)
-      throw new Error('No se encontró el audio.')
+      throw new Error('مالقيتش الصوت.')
 
     const url = search.videos[0].url
     const api = `https://nexevo.boxmine.xyz/download/audio?url=${encodeURIComponent(url)}&apikey=NEX-Shizuka`
     const { data } = await axios.get(api)
 
     if (!data?.status || !data?.result?.status || !data?.result?.url)
-      throw new Error('Error en descarga.')
+      throw new Error('خطأ في التحميل.')
 
     const info = data.result.info || {}
     const title = info.title || search.videos[0]?.title || 'audio'
@@ -67,7 +67,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   }
 }
 
-handler.help = ['play <título>', 'ytmp3 <título>']
+handler.help = ['play <عنوان>', 'ytmp3 <عنوان>']
 handler.tags = ['download']
 handler.command = ['play', 'ytmp3']
 

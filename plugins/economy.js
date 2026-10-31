@@ -68,7 +68,7 @@ const frasesTrabajo = [
     'سُقت فرانكس تحت المطر الحمضي. ده بيوجع يا حبيبي~',
     'نضّفت بقايا كلاكسوصور لوحدك... يا قرف 💗',
     'اتدربت مع سرب بلانتاسيون 13 وكدت متنجحش~',
-    'Repartiste raciones en el bunker y nadie dijo شكراً. Normal.',
+    'وزّعت حصص في المخبأ ومحدش قال شكراً. عادي.',
     'خبّيت الطفيليات الصغيرة واستنزفوا روحك~',
     'بنيت حاجز لوحدك لأن الباقي كانوا نايمين 💕',
     'عملت حراسة الليل كله ومحصلش حاجة. بس يستاهل يا حبيبي.',
@@ -85,7 +85,7 @@ const frasesRobo = [
 
 const frasesDaily = [
     'خد، ماتصرفهوش على فاضي... أصلاً صرفه~ 💗',
-    'Flash Bot MD te lo da a regañadientes, pero con amor ♡',
+    'Flash Bot MD بيديهالك على مضض، بس بحب ♡',
     'القدر حب يكون لطيف النهاردة... غريبة~',
     'أظن إنك تستاهل ده يا حبيبي. يمكن 🌸',
     'ماتشكرنيش. بس ماتموتش النهاردة، تمام؟ 💕'
@@ -94,7 +94,7 @@ const frasesDaily = [
 const frasesTransfer = [
     'يا كريم... ولا انت مديون له~ 💗',
     'Flash Bot MD موافق على المشاركة. بس شوية صغيرين 🌸',
-    'حبيبي transfirió fondos. Muy civilizado para variar~',
+    'حبيبي حوّل فلوس. متحضر للتنويع~',
     'يا عم إحنا مش بنك. أصلاً إحنا بنك. بس 💕'
 ]
 
@@ -118,19 +118,19 @@ let handler = async (m, { conn, command, args, isOwner }) => {
     if (['bal', 'balance', 'فلوس'].includes(cmd)) {
         const total = (user.money || 0) + (user.bank || 0)
         const estado = total === 0
-            ? '💔 En quiebra total. Ni Flash Bot MD puede ayudarte así~'
+            ? '💔 مفلس تماماً. حتى Flash Bot MD مش قادر يساعدك كده~'
             : total < 500
-            ? '🌸 Cuatro Stamps. No te ilusiones, حبيبي~'
+            ? '🌸 أربع Stamps. ماتتخيلش، حبيبي~'
             : total < 5000
             ? '💗 مش وحش. كمّل شغل~'
-            : '✨ Eres rico/a, حبيبي. Flash Bot MD está impresionada~'
+            : '✨ انت غني، حبيبي. Flash Bot MD معجَبة~'
 
         return send(conn, m,
             `╔══「 💗 Balance 」══╗\n\n` +
             `  💵 Efectivo:  *${(user.money || 0).toLocaleString()} ${cur()}*\n` +
             `  🏦 Banco:     *${(user.bank  || 0).toLocaleString()} ${cur()}*\n` +
             `  💰 Total:     *${total.toLocaleString()} ${cur()}*\n` +
-            `  ⭐ Nivel:     *${user.level || 1}*\n\n` +
+            `  ⭐ المستوى:     *${user.level || 1}*\n\n` +
             `  ${estado}\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
@@ -158,7 +158,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
             `  🌸 ${rand(frasesTrabajo)}\n\n` +
             `  💵 Ganaste:  *+${ganado.toLocaleString()} ${cur()}*\n` +
             `  ⭐ EXP:      *+${expGain}*\n` +
-            (subio ? `  🎉 ¡Subiste al مستوى *${user.level}*, حبيبي~! 💗\n` : '') +
+            (subio ? `  🎉 طلعت للمستوى *${user.level}*, حبيبي~! 💗\n` : '') +
             `  ⏳ Vuelve en 30 min~\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
@@ -192,7 +192,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
         const cantidad = args[0] === 'all' ? user.money : parseInt(args[0])
         if (!cantidad || isNaN(cantidad) || cantidad <= 0) return send(conn, m,
             `╔══「 💗 Depositar 」══╗\n\n` +
-            `  ⟡ Uso: *#dep <cantidad>* o *#dep all*\n\n` +
+            `  ⟡ الاستخدام: *#dep <cantidad>* o *#dep all*\n\n` +
             `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         if (cantidad > (user.money || 0)) return send(conn, m,
@@ -204,10 +204,10 @@ let handler = async (m, { conn, command, args, isOwner }) => {
         user.bank   = (user.bank || 0) + cantidad
         await database.save().catch(() => {})
         return send(conn, m,
-            `╔══「 💗 Depósito 」══╗\n\n` +
+            `╔══「 💗 إيداع 」══╗\n\n` +
             `  🏦 Depositaste: *${cantidad.toLocaleString()} ${cur()}*\n` +
             `  💰 Banco:       *${(user.bank).toLocaleString()} ${cur()}*\n\n` +
-            `  🌸 Qué responsable... no te conocía ese lado, حبيبي~\n\n` +
+            `  🌸 يا مسؤول... مكنتش أعرف الجانب ده منك، حبيبي~\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
@@ -217,7 +217,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
         const cantidad = args[0] === 'all' ? user.bank : parseInt(args[0])
         if (!cantidad || isNaN(cantidad) || cantidad <= 0) return send(conn, m,
             `╔══「 💗 Retirar 」══╗\n\n` +
-            `  ⟡ Uso: *#retirar <cantidad>* o *#retirar all*\n\n` +
+            `  ⟡ الاستخدام: *#retirar <cantidad>* o *#retirar all*\n\n` +
             `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         if (cantidad > (user.bank || 0)) return send(conn, m,
@@ -232,7 +232,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
             `╔══「 💗 Retiro 」══╗\n\n` +
             `  💵 Retiraste: *${cantidad.toLocaleString()} ${cur()}*\n` +
             `  💰 Efectivo:  *${(user.money).toLocaleString()} ${cur()}*\n\n` +
-            `  🌸 Ya te lo gastaste todo... ¿verdad? حبيبي~ 💔\n\n` +
+            `  🌸 صرفته كله... صح؟ حبيبي~ 💔\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
@@ -241,7 +241,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
     if (['transferir', 'transfer', 'pagar'].includes(cmd)) {
         const target   = m.mentionedJid?.[0] || m.quoted?.sender
         const cantidad = parseInt(args.find(a => !isNaN(a)))
-        if (!target)                                   return send(conn, m, `╔══「 💗 Transferir 」══╗\n\n  ⟡ Uso: *#transferir @عضو <cantidad>*\n\n╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`)
+        if (!target)                                   return send(conn, m, `╔══「 💗 Transferir 」══╗\n\n  ⟡ الاستخدام: *#transferir @عضو <cantidad>*\n\n╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`)
         if (!cantidad || isNaN(cantidad) || cantidad <= 0) return send(conn, m, `╔══「 💗 خطأ 」══╗\n\n  💔 اكتب مبلغ صحيح~\n\n╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`)
         if (cantidad > (user.money || 0))              return send(conn, m, `╔══「 💗 خطأ 」══╗\n\n  💔 معندكش كاش كفاية، حبيبي~\n\n╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`)
         const targetUser  = getUser(target)
@@ -251,7 +251,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
         return send(conn, m,
             `╔══「 💗 Transferencia 」══╗\n\n` +
             `  💸 Enviaste: *${cantidad.toLocaleString()} ${cur()}*\n` +
-            `  👤 Para:     *@${target.split('@')[0]}*\n` +
+            `  👤 إلى:     *@${target.split('@')[0]}*\n` +
             `  💰 Saldo:    *${(user.money).toLocaleString()} ${cur()}*\n\n` +
             `  🌸 ${rand(frasesTransfer)}\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
@@ -265,7 +265,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
         const diff     = Date.now() - (user.lastrob || 0)
         if (diff < cooldown) return send(conn, m,
             `╔══「 💗 Robar 」══╗\n\n` +
-            `  💔 La policía aún te busca, حبيبي~\n` +
+            `  💔 الشرطة لسه بتدور عليك، حبيبي~\n` +
             `  استنى *${msToTime(cooldown - diff)}* 🌸\n\n` +
             `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
@@ -290,7 +290,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
                 `╔══「 💗 Robo Fallido 」══╗\n\n` +
                 `  💔 ${rand(frasesRobo)}\n\n` +
                 `  💸 Multa:  *-${multa} ${cur()}*\n` +
-                `  🌸 Patético. En serio, حبيبي~ 😭\n\n` +
+                `  🌸 مثير للشفقة. بجد، حبيبي~ 😭\n\n` +
                 `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 [target]
             )
@@ -309,11 +309,11 @@ let handler = async (m, { conn, command, args, isOwner }) => {
 
         return send(conn, m,
             `╔══「 💗 Robo Exitoso 」══╗\n\n` +
-            `  👤 Víctima:  *@${targetNum}*\n` +
+            `  👤 الضحية:  *@${targetNum}*\n` +
             `  💵 Robaste:  *${robado.toLocaleString()} ${cur()}*\n` +
-            (randomVictim ? `  😈 Le robaste todo~ @${targetNum} sin un peso 💀\n` : '') +
+            (randomVictim ? `  😈 سرقت منه كله~ @${targetNum} من غير مليم 💀\n` : '') +
             `  💰 Saldo:    *${(user.money).toLocaleString()} ${cur()}*\n\n` +
-            `  🌸 Flash Bot MD está... impresionada. Solo un poco~ 💗\n\n` +
+            `  🌸 Flash Bot MD ... معجَبة. شوية بس~ 💗\n\n` +
             `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
             [target]
         )
@@ -322,14 +322,14 @@ let handler = async (m, { conn, command, args, isOwner }) => {
     // ── #chiste ───────────────────────────────────────────────────────────────
     if (['chiste', 'joke'].includes(cmd)) {
         const chistes = [
-            '¿Por qué @{} nunca pierde al ajedrez? Porque es un caballo y corre~ 💗',
-            '¿Saben por qué @{} no puede usar internet? El captcha lo detecta como bot 😭',
-            'Me dijeron que @{} lee 50 libros al año... de pasta de dientes 🌸',
-            'Dicen que @{} es tan lento que Google le manda los resultados por carta~ 💕',
-            '¿Cómo sabes que @{} está a dieta? Come rápido para que nadie lo vea 😤',
-            'Le pregunté a @{} cuánto es 2+2 y me dijo: "depende de cómo me sienta"~ 💀',
-            '@{} intentó hacer sticker y convirtió su cara. Quedó peor 💔',
-            'Flash Bot MD dice que @{} tiene menos lógica que un Klaxosaurio bebé~ 🌸'
+            'ليه @{} عمره ما يخسر في الشطرنج؟ لأنه حصان وبيجري~ 💗',
+            'تعرفوا ليه @{} مش قادر يستخدم الإنترنت؟ الكابتشا بيكشفه كبوت 😭',
+            'Me dijeron que @{} بيقرا 50 كتاب في السنة... معجون أسنان 🌸',
+            'بيقولوا إن @{} بطيء أوي لدرجة إن جوجل بيبعتله النتايج بالبريد~ 💕',
+            'إزاي عارف إن @{} عامل دايت؟ بياكل بسرعة عشان محدش يشوفه 😤',
+            'Le pregunté a @{} كام 2+2 وقاللي: "حسب مزاجي"~ 💀',
+            '@{} حاول يعمل ملصق وحوّل وشه. طلع أسوأ 💔',
+            'Flash Bot MD dice que @{} منطقه أقل من كلاكسوصور صغير~ 🌸'
         ]
         const target = m.mentionedJid?.[0] || m.quoted?.sender || await getRandomParticipant([sender])
         if (!target) return send(conn, m,
@@ -337,7 +337,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
         )
         const num = target.split('@')[0]
         return send(conn, m,
-            `╔══「 💗 Flash Bot MD cuenta un chiste 」══╗\n\n` +
+            `╔══「 💗 Flash Bot MD بيقول نكتة 」══╗\n\n` +
             `  😏 ${rand(chistes).replace('@{}', `@${num}`)}\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
             [target]
@@ -351,14 +351,14 @@ let handler = async (m, { conn, command, args, isOwner }) => {
         )
         const target   = m.mentionedJid?.[0] || m.quoted?.sender
         const cantidad = parseInt(args.find(a => !isNaN(a)))
-        if (!target)                                   return send(conn, m, `╔══「 💗 Donar 」══╗\n\n  ⟡ Uso: *#donar @عضو <cantidad>*\n\n╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`)
+        if (!target)                                   return send(conn, m, `╔══「 💗 Donar 」══╗\n\n  ⟡ الاستخدام: *#donar @عضو <cantidad>*\n\n╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`)
         if (!cantidad || isNaN(cantidad) || cantidad <= 0) return send(conn, m, `╔══「 💗 خطأ 」══╗\n\n  💔 اكتب مبلغ صحيح~\n\n╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`)
         const targetUser  = getUser(target)
         targetUser.money  = (targetUser.money || 0) + cantidad
         await database.save().catch(() => {})
         return send(conn, m,
-            `╔══「 💗 Donación 」══╗\n\n` +
-            `  🎁 Para:     *@${target.split('@')[0]}*\n` +
+            `╔══「 💗 تبرّع 」══╗\n\n` +
+            `  🎁 إلى:     *@${target.split('@')[0]}*\n` +
             `  💵 Cantidad: *${cantidad.toLocaleString()} ${cur()}*\n\n` +
             `  🌸 المالك اتبرع و Flash Bot MD موافق~ 💗\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
@@ -382,7 +382,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
         return send(conn, m,
             `╔══「 💗 Top Ricos 」══╗\n\n` +
             `${lista}\n\n` +
-            `  🌸 ¿No estás? A trabajar, حبيبي~ 💔\n\n` +
+            `  🌸 ¿مش شغال؟ يلا اشتغل، حبيبي~ 💔\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }

@@ -4,7 +4,7 @@ let handler = async (m, { conn, text }) => {
     let q = m.quoted ? m.quoted : m
     let mime = (q.msg || q).mimetype || ''
     
-    if (!mime) return m.reply('¿Dónde está el ملف, genio? Responde a una صورة o فيديو.')
+    if (!mime) return m.reply('فين الملف يا عبقري؟ رد على صورة أو فيديو.')
     if (!/image|video/.test(mime)) return m.reply('أنا بقبل صور أو فيديوهات بس.')
 
     await m.react('⏳')

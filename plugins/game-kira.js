@@ -10,7 +10,7 @@ let handler = async (m, { conn, who, prefix }) => {
         return conn.sendMessage(m.chat, {
             text: `╔══「 🩸 𝕵𝖚𝖎𝖈𝖎𝖔 𝖉𝖊 𝕶𝖎𝖗𝖆 」══╗\n\n` +
                   `꒰ 👁️ ꒱ محتاج هدف، حبيبي~\n` +
-                  `⟡ Uso: *${prefix}kira @عضو*\n\n` +
+                  `⟡ الاستخدام: *${prefix}kira @عضو*\n\n` +
                   `╚══「 💕 © 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎 」══╝`
         }, { quoted: m })
     }
@@ -23,23 +23,23 @@ let handler = async (m, { conn, who, prefix }) => {
     const kiraText =
         `🩸 *𝕰𝖑 𝕵𝖚𝖎𝖈𝖎𝖔 𝖍𝖆 𝖈𝖔𝖒𝖊𝖓𝖟𝖆𝖉𝖔* 🩸\n\n` +
         `👁️ Objetivo detectado: @${targetNum}\n` +
-        `📓 El cuaderno está مفتوح...\n\n` +
-        `_¿Qué destino le استنى a *${targetName}*?_\n` +
-        `_Elige sabiamente, pues la decisión es final~_`
+        `📓 النوته مفتوحة...\n\n` +
+        `_إيه القدر اللي مستني *${targetName}*?_\n` +
+        `_اختار بحكمة، القرار نهائي~_`
 
     const buttons = [
         {
             name: 'quick_reply',
             buttonParamsJson: JSON.stringify({
                 display_text: '💔 Ataque Cardiaco',
-                id: `${prefix}dn @${targetNum} Ataque al corazón`
+                id: `${prefix}dn @${targetNum} أزمة قلبية`
             })
         },
         {
             name: 'quick_reply',
             buttonParamsJson: JSON.stringify({
-                display_text: '🚗 Accidente de Tráfico',
-                id: `${prefix}dn @${targetNum} Accidente de tráfico`
+                display_text: '🚗 حادثة مرور',
+                id: `${prefix}dn @${targetNum} حادثة مرور`
             })
         },
         {
@@ -52,8 +52,8 @@ let handler = async (m, { conn, who, prefix }) => {
         {
             name: 'quick_reply',
             buttonParamsJson: JSON.stringify({
-                display_text: '🕊️ Perdonar la vida',
-                id: `${prefix}say 📓 Kira ha مقفول el cuaderno... por ahora~`
+                display_text: '🕊️ العفو عن الحياة',
+                id: `${prefix}say 📓 كيرا قفل النوته... مؤقتاً~`
             })
         }
     ]

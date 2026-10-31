@@ -20,13 +20,13 @@ const handler = async (m, { args, prefix }) => {
         return m.reply(
             `「 ⚙️ *مميزات الجروب* 」\n\n` +
             Object.entries(features).map(([k, v]) => `${status(k)} ${v}`).join('\n') +
-            `\n\n✦ *${prefix}nable <función> on/off*\n` +
+            `\n\n✦ *${prefix}nable <ميزة> on/off*\n` +
             `❝ Funciones: ${Object.keys(features).join(', ')} ❞`
         )
     }
 
     if (action !== 'on' && action !== 'off') {
-        return m.reply(`「 ⚠️ 」 Usa *on* o *off*.\n✦ *${prefix}nable ${feature} on/off*`)
+        return m.reply(`「 ⚠️ 」 استخدم *on* أو *off*.\n✦ *${prefix}nable ${feature} on/off*`)
     }
 
     const state = action === 'on'
@@ -42,7 +42,7 @@ const handler = async (m, { args, prefix }) => {
 }
 
 handler.command = ['nable', 'feature', 'función']
-handler.help = ['nable <función> on/off']
+handler.help = ['nable <ميزة> on/off']
 handler.tags = ['grupo']
 handler.group = true
 handler.admin = true

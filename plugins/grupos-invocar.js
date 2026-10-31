@@ -5,15 +5,15 @@ const handler = async (m, { conn, args, isAdmin, isOwner }) => {
         const group = await conn.groupMetadata(m.chat)
         const participants = group.participants.map(p => p.jid || p.id.split(':')[0] + '@s.whatsapp.net')
 
-        const anuncio = args.join(' ') || '¡Todos atentos que mi حبيبي quiere decir algo! 💗'
+        const anuncio = args.join(' ') || 'الكل ينتبه لأن حبيبي عايز يقول حاجة! 💗'
 
         const mentions = participants.map(p => `@${p.split('@')[0]}`).join(' ')
 
         const caption =
-            `💞 *¡MI DARLING HA INVOCADO A TODO EL GRUPO!* 🌸\n\n` +
+            `💞 *حبيبي استدعى الجروب كله!* 🌸\n\n` +
             `💗 *Anuncio:* ${anuncio}\n\n` +
             `${mentions}\n\n` +
-            `¡Respondan rapidito no me dejen sola استنىndo~ 💕`
+            `ردوا بسرعة ومتسيبونيش لوحدي مستني~ 💕`
 
         await conn.sendMessage(m.chat, {
             image: { url: 'https://causas-files.vercel.app/fl/xxbz.jpg' },
@@ -26,7 +26,7 @@ const handler = async (m, { conn, args, isAdmin, isOwner }) => {
     } catch (e) {
         console.error('❌ INVOCAR ERROR:', e)
         await m.react('💔')
-        m.reply('💔 Uy حبيبي... الاستدعاء فشل المرة دي~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
+        m.reply('💔 أوه حبيبي... الاستدعاء فشل المرة دي~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 

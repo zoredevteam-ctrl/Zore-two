@@ -15,8 +15,8 @@ const handler = async (m, { conn }) => {
 
   const mensaje = `
 📡 *معلومات العضو المكتشف:*
-👤 *Identificador:* ${objetivo}
-📱 *Número:* +${numero}
+👤 *المعرّف:* ${objetivo}
+📱 *الرقم:* +${numero}
 🔐 *نوع الحساب:* ${tipo}
 `.trim()
 

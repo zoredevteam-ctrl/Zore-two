@@ -53,9 +53,9 @@ const handler = async (m, { conn, args, prefix, command }) => {
             text:
                 `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · Flash Bot MD 」══╗\n\n` +
                 `꒰ ⚠️ ꒱ محتاج بوكيمون، حبيبي~!\n` +
-                `⟡ Uso: *${prefix}${command} <اسم o رقم>*\n` +
-                `⟡ Ejemplo: *${prefix}${command} pikachu*\n` +
-                `⟡ Ejemplo: *${prefix}${command} 25*\n\n` +
+                `⟡ الاستخدام: *${prefix}${command} <اسم o رقم>*\n` +
+                `⟡ مثال: *${prefix}${command} pikachu*\n` +
+                `⟡ مثال: *${prefix}${command} 25*\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
             contextInfo: makeCtx(thumb)
         }, { quoted: m })
@@ -73,7 +73,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
                 text:
                     `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · Flash Bot MD 」══╗\n\n` +
                     `꒰ 💔 ꒱ مالقيتش البوكيمون ده، حبيبي~\n` +
-                    `⟡ Verifica el اسم o رقم e intenta de nuevo.\n\n` +
+                    `⟡ راجع الاسم أو الرقم وجرّب تاني.\n\n` +
                     `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: makeCtx(thumb)
             }, { quoted: m })
@@ -96,7 +96,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
 
         const generacion = species.generation.name.replace('generation-', 'Gen ').toUpperCase()
         const habitat    = species.habitat?.name || 'Desconocido'
-        const legendario = species.is_legendary ? '⭐ Legendario' : species.is_mythical ? '✨ Mítico' : '—'
+        const legendario = species.is_legendary ? '⭐ Legendario' : species.is_mythical ? '✨ خرافي' : '—'
 
         // ── Procesar datos ────────────────────────────────────────────────
         const tipos = data.types.map(t =>
@@ -136,9 +136,9 @@ const handler = async (m, { conn, args, prefix, command }) => {
             `❝ ${descripcion} ❞\n\n` +
             `*╭── ⟡ [ ✦ INFO ] ⟡*\n` +
             `*│ ✦ Tipo:* ${tipos}\n` +
-            `*│ ✦ Generación:* ${generacion}\n` +
+            `*│ ✦ الجيل:* ${generacion}\n` +
             `*│ ✦ Habitat:* ${habitat}\n` +
-            `*│ ✦ Categoría:* ${legendario}\n` +
+            `*│ ✦ الفئة:* ${legendario}\n` +
             `*│ ✦ Altura:* ${altura}\n` +
             `*│ ✦ Peso:* ${peso}\n` +
             `*│ ✦ Habilidades:* ${habilidades}\n` +
@@ -186,7 +186,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
         conn.sendMessage(m.chat, {
             text:
                 `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · خطأ 」══╗\n\n` +
-                `꒰ 💔 ꒱ ¡حصلت مشكلة، حبيبي~!\n` +
+                `꒰ 💔 ꒱ حصلت مشكلة يا حبيبي~!\n` +
                 `⟡ ${e.message}\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
             contextInfo: makeCtx(thumb)

@@ -3,7 +3,7 @@ let handler = async (m, { conn, args }) => {
 
     let icons = 'https://causas-files.vercel.app/fl/9vs2.jpg'
 
-    if (!text) return m.reply('💗 حبيبي, ingresa un enlace de جروب, comunidad o canal~')
+    if (!text) return m.reply('💗 يا حبيبي، اكتب لينك جروب أو مجتمع أو قناة~')
 
     const groupUrl = text.match(/(?:https?:\/\/)?(?:chat\.whatsapp\.com\/)([0-9A-Za-z]{22,24})/i)?.[1]
     const channelUrl = text.match(/(?:https?:\/\/)?(?:whatsapp\.com\/channel\/)([0-9A-Za-z@.]+)/i)?.[1]
@@ -15,7 +15,7 @@ let handler = async (m, { conn, args }) => {
     if (channelUrl) {
         try {
             const info = await conn.newsletterMetadata('invite', channelUrl).catch(() => null)
-            if (!info) return m.reply('💔 No encontré info del canal, حبيبي... verifica el enlace~')
+            if (!info) return m.reply('💔 مالقيتش معلومات القناة، حبيبي... اتأكد من اللينك~')
 
             const id = info.id || 'مش موجود'
             const nombre = info.name || 'بدون اسم'
@@ -32,11 +32,11 @@ let handler = async (m, { conn, args }) => {
             sourceUrl = `https://whatsapp.com/channel/${channelUrl}`
 
             caption = `📢 *معلومات القناة*\n\n` +
-                `🪪 *Nombre:* ${nombre}\n` +
+                `🪪 *الاسم:* ${nombre}\n` +
                 `🆔 *ID:* ${id}\n` +
                 `👥 *Suscriptores:* ${suscriptores}\n` +
                 `${verificado}\n` +
-                `📝 *Descripción:* ${descripcion}`
+                `📝 *الوصف:* ${descripcion}`
 
         } catch (e) {
             console.error(e)
@@ -46,7 +46,7 @@ let handler = async (m, { conn, args }) => {
     } else if (groupUrl) {
         try {
             const info = await conn.groupGetInviteInfo(groupUrl).catch(() => null)
-            if (!info) return m.reply('💔 No encontré info del جروب, حبيبي... verifica el enlace~')
+            if (!info) return m.reply('💔 مالقيتش معلومات الجروب يا حبيبي... اتأكد من اللينك~')
 
             const id = info.id || 'مش موجود'
             const nombre = info.subject || 'بدون اسم'
@@ -64,11 +64,11 @@ let handler = async (m, { conn, args }) => {
             sourceUrl = `https://chat.whatsapp.com/${groupUrl}`
 
             caption = `${tipo === '🏘️ Comunidad' ? '🏘️ *INFORMACIÓN DE LA COMUNIDAD*' : '👥 *INFORMACIÓN DEL GRUPO*'}\n\n` +
-                `📛 *Nombre:* ${nombre}\n` +
+                `📛 *الاسم:* ${nombre}\n` +
                 `🆔 *ID:* ${id}\n` +
                 `👥 *Participantes:* ${participantes}\n` +
                 `📅 *Creado:* ${creacion}\n` +
-                `📝 *Descripción:* ${descripcion}`
+                `📝 *الوصف:* ${descripcion}`
 
         } catch (e) {
             console.error(e)
@@ -83,7 +83,7 @@ let handler = async (m, { conn, args }) => {
         text: caption,
         contextInfo: {
             externalAdReply: {
-                title: '🔍 Inspector de WhatsApp',
+                title: '🔍 فاحص واتساب',
                 body: 'Grupos • Comunidades • Canales',
                 thumbnailUrl: thumb,
                 sourceUrl: sourceUrl,
@@ -96,7 +96,7 @@ let handler = async (m, { conn, args }) => {
 }
 
 handler.tags = ['herramientas']
-handler.help = ['inspect <enlace>', 'inspeccionar <enlace>']
+handler.help = ['inspect <لينك>', 'inspeccionar <لينك>']
 handler.command = ['inspect', 'inspeccionar']
 
 export default handler

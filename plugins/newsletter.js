@@ -12,7 +12,7 @@ const plugin = async (m, { conn, args, isOwner, isROwner, prefix }) => {
     if (sub === 'send') {
         if (!isOwner) return m.reply('👑 *المالك بس اللي يبعت للقناة.*')
         const texto = args.slice(1).join(' ')
-        if (!texto) return m.reply(`❌ Uso: *${prefix}newsletter send <رسالة>*`)
+        if (!texto) return m.reply(`❌ الاستخدام: *${prefix}newsletter send <رسالة>*`)
         await global.sendToChannel(conn, texto, database.data)
         return m.reply('✅ الرسالة اتبعتت للقناة.')
     }
@@ -25,7 +25,7 @@ const plugin = async (m, { conn, args, isOwner, isROwner, prefix }) => {
 
         if (qType === 'conversation' || qType === 'extendedTextMessage') {
             await global.sendToChannel(conn, m.quoted.body || '', database.data)
-        } else if (qType === 'imageMessage' || qType === 'فيديوMessage') {
+        } else if (qType === 'imageMessage' || qType === 'videoMessage') {
             const media = await conn.downloadMediaMessage(m.quoted)
             const type  = qType === 'imageMessage' ? 'image' : 'فيديو'
             await global.sendWithCtx(conn, global.newsletterJid, {
@@ -64,11 +64,11 @@ const plugin = async (m, { conn, args, isOwner, isROwner, prefix }) => {
 📡 *Canal:* ${global.rcanal}
 🏷️ *JID:* \`${global.newsletterJid}\`
 
-*Comandos:*
-› *${prefix}newsletter send* _<texto>_ — Enviar al canal
+*الأوامر:*
+› *${prefix}newsletter send* _<texto>_ — إرسال للقناة
 › *${prefix}newsletter forward* — Reenviar رسالة citado
-› *${prefix}newsletter jid* — Obtener JID automático
-› *${prefix}rcanal* — Info del canal
+› *${prefix}newsletter jid* — جلب JID تلقائي
+› *${prefix}rcanal* — معلومات القناة
 
 > ${global.dev}`
     }, database.data, { quoted: m })

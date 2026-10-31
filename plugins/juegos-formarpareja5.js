@@ -12,7 +12,7 @@ let handler = async (m, { conn }) => {
 
         if (participants.length < 10) {
             await m.react('🌸')
-            return m.reply('💗 Necesitamos mínimo 10 personas en el جروب para formar las 5 mejores parejas\~')
+            return m.reply('💗 محتاجين 10 أعضاء على الأقل عشان نعمل أفضل 5 ثنائيات\~')
         }
 
         // Mezclamos y tomamos 10 personas diferentes
@@ -43,7 +43,7 @@ let handler = async (m, { conn }) => {
     } catch (e) {
         console.error('❌ FORMARPAREJA5 ERROR:', e)
         await m.react('💔')
-        m.reply('💔 Uy حبيبي... no pude formar las parejas esta vez\~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
+        m.reply('💔 أوه حبيبي... مش قدرت أعمل الثنائيات المرة دي\~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 

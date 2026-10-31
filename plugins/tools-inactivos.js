@@ -94,17 +94,17 @@ let handler = async (m, { conn, isAdmin, isOwner, db }) => {
 
     // ─── ARMAR MENSAJE ────────────────────────────────────────────────
     let txt = `⚠️ *${inactivos.length} USUARIOS INACTIVOS DETECTADOS*\n`
-    txt += `_(Sin رسايل hace más de ${DIAS_INACTIVO} días)_\n\n`
+    txt += `_(Sin رسايل أكتر من ${DIAS_INACTIVO} días)_\n\n`
 
     for (const u of inactivos) {
-        const diasTxt = u.dias !== null ? `${u.dias} días sin escribir` : 'Nunca ha escrito'
-        txt += `• @${u.id.split('@')[0]} — ${diasTxt} · ${u.mensajesPorDia} msg/día\n`
+        const diasTxt = u.dias !== null ? `${u.dias} يوم من غير كتابة` : 'Nunca ha escrito'
+        txt += `• @${u.id.split('@')[0]} — ${diasTxt} · ${u.mensajesPorDia} رسالة/يوم\n`
     }
 
     txt += `\n📊 *البوت بيقرا كل رسايل الجروب من ساعة ما دخل.*\n`
     txt += `_البيانات دي متجمّعة من ساعة ما البوت دخل الجروب._\n\n`
-    txt += `✦ Responde *si* عشان تطردهم دلوقتي.\n`
-    txt += `✦ Responde *no* عشان تلغي.`
+    txt += `✦ رد *أيوه* عشان تطردهم دلوقتي.\n`
+    txt += `✦ رد *لا* عشان تلغي.`
 
     await conn.sendMessage(m.chat, {
         text: txt,

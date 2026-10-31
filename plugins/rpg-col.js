@@ -8,8 +8,8 @@ const handler = async (m, { conn, db }) => {
     if (!db.waifus?.[sender] || !db.waifus[sender].coleccion?.length) {
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 ¡لسه معندكش أي ويفو، حبيبي~!\n` +
-                  `⟡ Usa *#rw* عشان تستدعي واحدة y *#c* para reclamarla 💕`
+                  `🌸 لسه معندكش أي ويفو يا حبيبي~!\n` +
+                  `⟡ استخدم *#rw* عشان تستدعي واحدة و *#c* عشان تصطادها 💕`
         }, { quoted: m })
     }
 
@@ -34,10 +34,10 @@ const handler = async (m, { conn, db }) => {
         `📦 *Total:* ${coleccion.length} ويفو\n\n` +
         `📊 *حسب النُدرة:*\n` +
         `  💎 Legendaria: *${conteo['💎']}*\n` +
-        `  🌟 Épica: *${conteo['🌟']}*\n` +
+        `  🌟 أسطوري: *${conteo['🌟']}*\n` +
         `  💜 Rara: *${conteo['💜']}*\n` +
         `  💙 قليل الوجود: *${conteo['💙']}*\n` +
-        `  🤍 Común: *${conteo['🤍']}*\n\n` +
+        `  🤍 عادي: *${conteo['🤍']}*\n\n` +
         `✨ *آخر اللي اتصطادوا:*\n${listaTexto}\n\n` +
         `> 💕 *Flash Bot MD* © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
@@ -57,6 +57,6 @@ const handler = async (m, { conn, db }) => {
 
 handler.command = ['col', 'coleccion', 'waifus', 'mисoleccion']
 handler.tags = ['fun', 'anime', 'waifu']
-handler.help = ['col — Ve tu colección de waifus']
+handler.help = ['col — شوف مجموعة الويفو بتاعتك']
 
 export default handler

@@ -31,7 +31,7 @@ let handler = async (m, { conn, isOwner, usedPrefix, command }) => {
                 // Pequeña pausa para evitar sobrecarga
                 await new Promise(resolve => setTimeout(resolve, 500));
             } catch (err) {
-                console.error(`خطأ al eliminar a ${participant.id}:`, err);
+                console.error(`خطأ عند حذف ${participant.id}:`, err);
             }
         }
 

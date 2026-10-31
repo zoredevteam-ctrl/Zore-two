@@ -48,7 +48,7 @@ var handler = async (m, { conn }) => {
     }
 
     if (!hasErrors) {
-      response += '✿ ¡Todo está en orden! مفيش أخطاء في الصياغة.'
+      response += '✿ كله تمام! مفيش أخطاء في الصياغة.'
     }
 
     await conn.reply(m.chat, response, m);

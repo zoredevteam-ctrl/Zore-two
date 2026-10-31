@@ -7,10 +7,10 @@ if (!global.waifuSpawns) global.waifuSpawns = new Map()
 const getRareza = () => {
     const r = Math.random() * 100
     if (r < 2)  return { nombre: '💎 LEGENDARIA', color: '💎', stars: '★★★★★', valor: 500 }
-    if (r < 8)  return { nombre: '🌟 ÉPICA',      color: '🌟', stars: '★★★★☆', valor: 200 }
+    if (r < 8)  return { nombre: '🌟 أسطوري',      color: '🌟', stars: '★★★★☆', valor: 200 }
     if (r < 20) return { nombre: '💜 RARA',        color: '💜', stars: '★★★☆☆', valor: 80  }
-    if (r < 45) return { nombre: '💙 POCO COMÚN',  color: '💙', stars: '★★☆☆☆', valor: 30  }
-    return             { nombre: '🤍 COMÚN',        color: '🤍', stars: '★☆☆☆☆', valor: 10  }
+    if (r < 45) return { nombre: '💙 قليل الوجود',  color: '💙', stars: '★★☆☆☆', valor: 30  }
+    return             { nombre: '🤍 عادي',        color: '🤍', stars: '★☆☆☆☆', valor: 10  }
 }
 
 const fetchWaifu = async () => {
@@ -43,9 +43,9 @@ const handler = async (m, { conn }) => {
         const actual = global.waifuSpawns.get(chat)
         return conn.sendMessage(chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 ¡Ya hay una ويفو استنىndo en el جروب, حبيبي~!\n` +
+                  `🌸 في ويفو مستنية في الجروب يا حبيبي~!\n` +
                   `${actual.rareza.color} *${actual.nombre}* — ${actual.rareza.stars}\n\n` +
-                  `⟡ ¡Cualquiera puede escribir *#c* para reclamarla! 💕`
+                  `⟡ أي حد يقدر يكتب *#c* عشان يصطادها! 💕`
         }, { quoted: m })
     }
 
@@ -71,7 +71,7 @@ const handler = async (m, { conn }) => {
         if (global.waifuSpawns.has(chat)) {
             global.waifuSpawns.delete(chat)
             conn.sendMessage(chat, {
-                text: `💔 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💔\n\n🌸 محدش صطاد *${data.nombre}* في الوقت~\nالمرة الجاية كونوا أسرع، حبيبيs! 💕`
+                text: `💔 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💔\n\n🌸 محدش صطاد *${data.nombre}* في الوقت~\nالمرة الجاية كونوا أسرع، حبايب! 💕`
             }).catch(() => {})
         }
     }, 3 * 60 * 1000)
@@ -81,9 +81,9 @@ const handler = async (m, { conn }) => {
         `✨ *${data.nombre}*\n` +
         `${data.rareza.stars} *${data.rareza.nombre}*\n` +
         `💰 Valor: *${data.rareza.valor} ${global.moneda || 'Stamps'}*\n\n` +
-        `⟡ ¡أول واحد يكتب *#c* يصطادها!\n` +
+        `⟡ أول واحد يكتب *#c* يصطادها!\n` +
         `⏳ Desaparece en *3 minutos*~\n\n` +
-        `💕 *Flash Bot MD* la invocó~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
+        `💕 *Flash Bot MD* استدعاها~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     await conn.sendMessage(chat, {
         image: { url: data.imageUrl },
@@ -95,6 +95,6 @@ const handler = async (m, { conn }) => {
 
 handler.command = ['rw', 'waifu', 'spawn']
 handler.tags = ['fun', 'anime', 'waifu']
-handler.help = ['rw — Invoca una waifu para que alguien del grupo la reclame']
+handler.help = ['rw — استدعي ويفو عشان حد في الجروب يصطادها']
 
 export default handler

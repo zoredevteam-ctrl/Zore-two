@@ -12,7 +12,7 @@ let handler = async (m, { conn }) => {
 
         if (participants.length < 3) {
             await m.react('🌸')
-            return m.reply('💗 Necesitamos al menos 3 personas en el جروب para formar una pareja linda\~')
+            return m.reply('💗 محتاجين 3 أعضاء على الأقل في الجروب عشان نعمل ثنائي حلو\~')
         }
 
         // ←←← MISMA LÓGICA QUE TENÍAS ANTES ←←←
@@ -26,8 +26,8 @@ let handler = async (m, { conn }) => {
 
         // Mensaje mejorado pero fiel al original
         const texto = `*${toM(a)}, لازم تتجوز 💍 ${toM(b)}...*\n` +
-                     `¡بيكونوا ثنائي جميل حبيبي! 💓\n\n` +
-                     `¿Qué dicen? ¿Se animan? Jajaja no me dejen sola con la curiosidad\~ 🌸`
+                     `يبقوا ثنائي جميل يا حبيبي! 💓\n\n` +
+                     `إيه رأيكم؟ متحمسين؟ هههه متسيبونيش لوحدي مع الفضول\~ 🌸`
 
         await conn.sendMessage(m.chat, {
             text: texto,
@@ -39,7 +39,7 @@ let handler = async (m, { conn }) => {
     } catch (e) {
         console.error('❌ FORMARPAREJA ERROR:', e)
         await m.react('💔')
-        m.reply('💔 Uy حبيبي... no pude formar la pareja esta vez\~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
+        m.reply('💔 أوه حبيبي... مش قدرت أعمل الثنائي المرة دي\~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 

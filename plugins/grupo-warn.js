@@ -30,7 +30,7 @@ const handler = async (m, { conn, args, who }) => {
 
     const ownerNums = global.owner.map(o => (Array.isArray(o) ? o[0] : o).replace(/\D/g, ''))
     if (ownerNums.includes(target.split('@')[0])) {
-        return m.reply('ꕦ No puedo advertir a un desarrollador de mi staff~ 𖤐')
+        return m.reply('ꕦ مش قادر أنذر مطوّر من طاقمي~ 𖤐')
     }
 
     const reason = args.slice(1).join(' ') || 'بدون سبب محدد'
@@ -46,8 +46,8 @@ const handler = async (m, { conn, args, who }) => {
         await conn.sendMessage(m.chat, {
             text:
                 `𖤐 *¡انذار #${count}!* 𖤐\n\n` +
-                `ꕦ Usuario: @${target.split('@')[0]}\n` +
-                `ꕦ Razón: ${reason}\n\n` +
+                `ꕦ العضو: @${target.split('@')[0]}\n` +
+                `ꕦ السبب: ${reason}\n\n` +
                 `💔 *عدّى الـ3 انذارات واتطرد...*\n` +
                 `طير بعيد يا حبيبي~ 🌸`,
             mentions: [target]
@@ -65,8 +65,8 @@ const handler = async (m, { conn, args, who }) => {
         await conn.sendMessage(m.chat, {
             text:
                 `𖤐 *¡انذار #${count}!* 𖤐\n\n` +
-                `ꕦ Usuario: @${target.split('@')[0]}\n` +
-                `ꕦ Razón: ${reason}\n\n` +
+                `ꕦ العضو: @${target.split('@')[0]}\n` +
+                `ꕦ السبب: ${reason}\n\n` +
                 `ꙮ Advertencias: *${count}/3*\n` +
                 `💗 المرة الجاية هتطير حبيبي~ 🌸`,
             mentions: [target]
@@ -76,7 +76,7 @@ const handler = async (m, { conn, args, who }) => {
     await m.react('💗')
 }
 
-handler.help = ['advertir @user [razón]']
+handler.help = ['انذار @عضو [سبب]']
 handler.tags = ['grupo']
 handler.command = ['advertir', 'advertencia', 'warn', 'warning']
 handler.group = true

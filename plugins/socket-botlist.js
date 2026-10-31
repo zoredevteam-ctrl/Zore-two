@@ -28,7 +28,7 @@ const handler = async (m, { conn, isOwner }) => {
   const active = (global.conns || []).filter(c => isSocketReady(c))
 
   if (active.length === 0) {
-    return m.reply(`✦ Flash Bot MD\n\n  ◇ No hay SubBots conectados actualmente.`)
+    return m.reply(`✦ Flash Bot MD\n\n  ◇ مفيش بوتات فرعية متوصلة حالياً.`)
   }
 
   const now = Date.now()

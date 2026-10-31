@@ -19,7 +19,7 @@ let handler = async (m, { conn }) => {
         await m.react('⚠️')
         return m.reply(
             `╔══「 💗 Flash Bot MD 」══╗\n\n` +
-            `꒰ 🌸 ꒱ ¡Responde al رسالة que quieres guardar, حبيبي~!\n\n` +
+            `꒰ 🌸 ꒱ رد على الرسالة اللي عايز تحفظها يا حبيبي~!\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
@@ -38,7 +38,7 @@ let handler = async (m, { conn }) => {
             },
             externalAdReply: {
                 title: global.botName,
-                body: '💗 Guardado para ti~',
+                body: '💗 اتحفظلك~',
                 thumbnail: thumb,
                 sourceUrl: global.rcanal,
                 mediaType: 1,
@@ -57,7 +57,7 @@ let handler = async (m, { conn }) => {
             await m.react('🍬')
             return conn.sendMessage(m.chat, {
                 text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
-                      `꒰ ✅ ꒱ ¡بعتّهولك في الخاص، حبيبي~!\n` +
+                      `꒰ ✅ ꒱ بعتّهولك في الخاص يا حبيبي~!\n` +
                       `꒰ 🌸 ꒱ Revisa nuestro chat~ 💕\n\n` +
                       `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: ctx
@@ -70,7 +70,7 @@ let handler = async (m, { conn }) => {
             await m.react('🍬')
             return conn.sendMessage(m.chat, {
                 text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
-                      `꒰ ✅ ꒱ ¡تم, ya está في الخاص بتاعك~!\n\n` +
+                      `꒰ ✅ ꒱ تم، بقى في الخاص بتاعك~!\n\n` +
                       `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: ctx
             }, { quoted: m })
@@ -90,7 +90,7 @@ let handler = async (m, { conn }) => {
             null
 
         // Media
-        const isMedia = ['imageMessage', 'فيديوMessage', 'audioMessage',
+        const isMedia = ['imageMessage', 'videoMessage', 'audioMessage',
                          'stickerMessage', 'documentMessage'].includes(mtype)
 
         if (isMedia) {
@@ -98,7 +98,7 @@ let handler = async (m, { conn }) => {
                 const buffer = await conn.downloadMediaMessage(m.quoted)
                 const mediaType = {
                     imageMessage:    'image',
-                    videoMessage:    'فيديو',
+                    videoMessage:    'video',
                     audioMessage:    'audio',
                     stickerMessage:  'sticker',
                     documentMessage: 'document'
@@ -116,7 +116,7 @@ let handler = async (m, { conn }) => {
                 await m.react('🍬')
                 return conn.sendMessage(m.chat, {
                     text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
-                          `꒰ ✅ ꒱ ¡Media guardada en tu privado, حبيبي~! 💕\n\n` +
+                          `꒰ ✅ ꒱ الوسائط اتحفظت في الخاص بتاعك يا حبيبي~! 💕\n\n` +
                           `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                     contextInfo: ctx
                 }, { quoted: m })
@@ -131,7 +131,7 @@ let handler = async (m, { conn }) => {
             await m.react('🍬')
             return conn.sendMessage(m.chat, {
                 text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
-                      `꒰ ✅ ꒱ ¡النص اتبعت للخاص بتاعك~! 💕\n\n` +
+                      `꒰ ✅ ꒱ النص اتبعت للخاص بتاعك~! 💕\n\n` +
                       `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: ctx
             }, { quoted: m })
@@ -145,7 +145,7 @@ let handler = async (m, { conn }) => {
         return m.reply(
             `╔══「 💗 Flash Bot MD 」══╗\n\n` +
             `꒰ 💔 ꒱ مش قدرت أبعته، حبيبي~\n` +
-            `꒰ 💡 ꒱ Mándame un *"أهلاً"* في الخاص primero para desbloquear el chat~ 🌸\n\n` +
+            `꒰ 💡 ꒱ ابعتلي *"سلام"* في الخاص الأول عشان أفتحلك الشات~ 🌸\n\n` +
             `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }

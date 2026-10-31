@@ -53,7 +53,7 @@ let handler = async (m, { conn, args, text, db }) => {
         return m.reply(
             `╔══「 📓 𝕯𝖊𝖆𝖙𝖍 𝕹𝖔𝖙𝖊 」══╗\n\n` +
             `꒰ 💀 ꒱ محتاج ضحية، حبيبي~\n` +
-            `⟡ Uso: *#dn @عضو <causa>*\n\n` +
+            `⟡ الاستخدام: *#dn @عضو <causa>*\n\n` +
             `╚══「 🩸 © 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎 」══╝`
         )
     }
@@ -64,7 +64,7 @@ let handler = async (m, { conn, args, text, db }) => {
 
     // Causa: todo el texto sin @menciones y sin el número
     const rawText = typeof text === 'string' ? text : args.join(' ')
-    const cause = rawText.replace(/@\d+/g, '').trim() || 'Ataque al corazón'
+    const cause = rawText.replace(/@\d+/g, '').trim() || 'أزمة قلبية'
 
     if (!db.users)          db.users = {}
     if (!db.users[m.sender]) db.users[m.sender] = {}
@@ -82,10 +82,10 @@ let handler = async (m, { conn, args, text, db }) => {
     // ── Mensaje de suspenso ──
     await conn.sendMessage(m.chat, {
         text: `📓 𝕯𝖊𝖆𝖙𝖍 𝕹𝖔𝖙𝖊 📓\n\n` +
-              `_"El humano cuyo اسم quede escrito en este cuaderno morirá..."_\n\n` +
+              `_"الإنسان اللي اسمه يتكتب في النوته دي هيموت..."_\n\n` +
               `✍️ *Escribiendo:* @${targetNum}\n` +
               `🩸 *Causa:* ${cause}\n\n` +
-              `_...el destino se está sellando~_`,
+              `_...القدر بيتختم~_`,
         mentions: [who],
         contextInfo: makeCtx(thumb)
     }, { quoted: m })
@@ -101,8 +101,8 @@ let handler = async (m, { conn, args, text, db }) => {
         } catch {}
 
         return conn.sendMessage(m.chat, {
-            text: `🍎 *¡Ryuk intervino!*\n\n` +
-                  `@${targetNum} distrajo al shinigami con una manzana~ 😤\n` +
+            text: `🍎 *ريوك تدخّل!*\n\n` +
+                  `@${targetNum} لخبط الشينيجامي بتفاحة~ 😤\n` +
                   `_🍎 Manzanas restantes: ${victim.apples}_`,
             mentions: [who],
             contextInfo: makeCtx(thumb)
@@ -121,7 +121,7 @@ let handler = async (m, { conn, args, text, db }) => {
     await conn.sendMessage(m.chat, {
         text: `☠️ *¡𝕰𝕷 𝕿𝕴𝕰𝕸𝕻𝕺 𝕳𝕬 𝕿𝕰𝕽𝕸𝕴𝕹𝕬𝕯𝕺!* ☠️\n\n` +
               `@${targetNum} ha muerto por *${cause}*~ 🩸\n` +
-              `_Se le arrebataron 2 límites por el trauma._\n\n` +
+              `_اتاخد منه حدين بسبب الصدمة._\n\n` +
               `> 📓 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎`,
         mentions: [who],
         contextInfo: makeCtx(thumb)

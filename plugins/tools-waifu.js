@@ -13,8 +13,8 @@ let handler = async (m, { conn, args, command }) => {
         if (!json.url) throw new Error('بدون صورة 💔')
 
         let caption = isNsfw 
-            ? `💞 *ويفو +18 ليك لوحدك، حبيبي\~!* 🔥\n\nحلوة وحارّة! 😏 No mires mucho\~`
-            : `🌸 *ويفو عشوائية لأحلى حبيبي favorito!* 💗\n\n¿إيه المفضلة عندك؟ قولي ومتسيبنيش لوحدي\~`
+            ? `💞 *ويفو +18 ليك لوحدك، حبيبي\~!* 🔥\n\nحلوة وحارّة! 😏 متطولش النظر\~`
+            : `🌸 *ويفو عشوائية لأحلى حبيبي المفضل!* 💗\n\n¿إيه المفضلة عندك؟ قولي ومتسيبنيش لوحدي\~`
 
         await conn.sendMessage(m.chat, {
             image: { url: json.url },
@@ -26,7 +26,7 @@ let handler = async (m, { conn, args, command }) => {
     } catch (e) {
         console.error('❌ WAIFU ERROR:', e)
         await m.react('💔')
-        m.reply(`💔 Uy حبيبي... الويفو اتخبّت\~\nجرّب تاني ومتسيبنيش لوحدي 🌸`)
+        m.reply(`💔 أوه حبيبي... الويفو اتخبّت\~\nجرّب تاني ومتسيبنيش لوحدي 🌸`)
     }
 }
 

@@ -69,8 +69,8 @@ function extractMedia(html = '') {
 let handler = async (m, { conn, args }) => {
   const url = args[0]
 
-  if (!url) return m.reply('⚠️ Ingresa un link de Instagram')
-  if (!isInstagram(url)) return m.reply('❌ Link inválido')
+  if (!url) return m.reply('⚠️ اكتب لينك انستجرام')
+  if (!isInstagram(url)) return m.reply('❌ لينك غير صالح')
 
   try {
     await conn.sendMessage(m.chat, {
@@ -83,7 +83,7 @@ let handler = async (m, { conn, args }) => {
     if (videos.length) {
       await conn.sendMessage(m.chat, {
         video: { url: videos[0] },
-        caption: '✅ Video de Instagram descargado'
+        caption: '✅ فيديو انستجرام اتحمّل'
       }, { quoted: m })
     } else {
       throw new Error('NO_VIDEO_FOUND')
@@ -97,12 +97,12 @@ let handler = async (m, { conn, args }) => {
     let msg = '❌ Error\n\n'
 
     if (e.message.includes('HTTP')) {
-      msg += '🌐 Error de conexión\n' + e.message
+      msg += '🌐 خطأ في الاتصال\n' + e.message
     } else if (e.message === 'NO_VIDEO_FOUND') {
-      msg += '❌ No se encontró video\n'
-      msg += '💡 Puede ser privado o requerir login'
+      msg += '❌ مالقيتش فيديو\n'
+      msg += '💡 يمكن يكون خاص أو محتاج تسجيل دخول'
     } else {
-      msg += '⚠️ Error inesperado\n' + e.message
+      msg += '⚠️ خطأ غير متوقع\n' + e.message
     }
 
     await m.reply(msg)

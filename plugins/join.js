@@ -6,7 +6,7 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
   try {
     if (!text) {
       return m.reply(
-        `♡ حبيبي... هاتلي لينك جروب 💗\n\nEjemplo:\n${usedPrefix}join https://chat.whatsapp.com/ABCDEFGHIJK123456789 7`
+        `♡ حبيبي... هاتلي لينك جروب 💗\n\nمثال:\n${usedPrefix}join https://chat.whatsapp.com/ABCDEFGHIJK123456789 7`
       )
     }
 
@@ -14,7 +14,7 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
     let match = text.match(linkRegex)
     if (!match) {
       return m.reply(
-        '♡ Mmm... ese enlace no parece válido 💔\nاتأكد إنه لينك واتساب'
+        '♡ اممم... اللينك ده مش صالح 💔\nاتأكد إنه لينك واتساب'
       )
     }
 
@@ -102,7 +102,7 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
   } catch (e) {
     console.error('[join]', e)
 
-    let msg = '♡ No pude entrar... 💔\n'
+    let msg = '♡ مش قدرت أدخل... 💔\n'
     let errMsg = e?.message || ''
 
     if (errMsg.includes('already')) msg += 'أنا في الجروب ده بالفعل~'
@@ -114,7 +114,7 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
   }
 }
 
-handler.help = ['join <link> [días]']
+handler.help = ['join <لينك> [أيام]']
 handler.tags = ['owner']
 handler.command = /^(join|entrar)$/i
 handler.owner = false

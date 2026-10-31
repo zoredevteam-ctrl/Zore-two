@@ -5,28 +5,28 @@
 // ── Fallback por código de país ───────────────────────────────
 const COUNTRY_FALLBACK = {
     // Latinoamérica
-    '57':  { op: 'Claro Colombia',     asn: 'AS13489',  subnet: '181.49',  rdns: 'mobile-{ip}.claro.net.co',        tz: 'America/Bogota',                    country: 'Colombia',          flag: '🇨🇴' },
-    '52':  { op: 'Telcel',             asn: 'AS8151',   subnet: '187.141', rdns: '{ip}.mobile.telcel.com',          tz: 'America/Mexico_City',               country: 'México',            flag: '🇲🇽' },
+    '57':  { op: 'Claro Colombia',     asn: 'AS13489',  subnet: '181.49',  rdns: 'mobile-{ip}.claro.net.co',        tz: 'America/Bogota',                    country: 'كولومبيا',          flag: '🇨🇴' },
+    '52':  { op: 'Telcel',             asn: 'AS8151',   subnet: '187.141', rdns: '{ip}.mobile.telcel.com',          tz: 'America/Mexico_City',               country: 'المكسيك',            flag: '🇲🇽' },
     '58':  { op: 'Movistar Venezuela', asn: 'AS6306',   subnet: '190.202', rdns: '{ip}.movistar.net.ve',            tz: 'America/Caracas',                   country: 'Venezuela',         flag: '🇻🇪' },
-    '51':  { op: 'Claro Perú',         asn: 'AS27843',  subnet: '181.65',  rdns: 'mobile-{ip}.claro.net.pe',        tz: 'America/Lima',                      country: 'Perú',              flag: '🇵🇪' },
+    '51':  { op: 'Claro Perú',         asn: 'AS27843',  subnet: '181.65',  rdns: 'mobile-{ip}.claro.net.pe',        tz: 'America/Lima',                      country: 'بيرو',              flag: '🇵🇪' },
     '54':  { op: 'Personal',           asn: 'AS22927',  subnet: '181.10',  rdns: '{ip}.gprs.personal.com.ar',       tz: 'America/Argentina/Buenos_Aires',    country: 'Argentina',         flag: '🇦🇷' },
     '56':  { op: 'Entel Chile',        asn: 'AS22047',  subnet: '190.98',  rdns: '{ip}.dynamic.entel.cl',           tz: 'America/Santiago',                  country: 'Chile',             flag: '🇨🇱' },
     '55':  { op: 'Vivo',               asn: 'AS26615',  subnet: '177.8',   rdns: '{ip}.dynamic.vivo.com.br',        tz: 'America/Sao_Paulo',                 country: 'Brasil',            flag: '🇧🇷' },
     '593': { op: 'Claro Ecuador',      asn: 'AS27947',  subnet: '190.11',  rdns: 'mobile-{ip}.claro.net.ec',        tz: 'America/Guayaquil',                 country: 'Ecuador',           flag: '🇪🇨' },
     '591': { op: 'Tigo Bolivia',       asn: 'AS27882',  subnet: '190.129', rdns: '{ip}.tigo.bo',                    tz: 'America/La_Paz',                    country: 'Bolivia',           flag: '🇧🇴' },
     '595': { op: 'Tigo Paraguay',      asn: 'AS27882',  subnet: '200.85',  rdns: '{ip}.tigo.com.py',                tz: 'America/Asuncion',                  country: 'Paraguay',          flag: '🇵🇾' },
-    '598': { op: 'Antel',              asn: 'AS6057',   subnet: '167.56',  rdns: '{ip}.antel.net.uy',               tz: 'America/Monteفيديو',                country: 'Uruguay',           flag: '🇺🇾' },
-    '507': { op: 'Claro Panamá',       asn: 'AS27843',  subnet: '181.211', rdns: 'mobile-{ip}.claro.com.pa',        tz: 'America/Panama',                    country: 'Panamá',            flag: '🇵🇦' },
+    '598': { op: 'Antel',              asn: 'AS6057',   subnet: '167.56',  rdns: '{ip}.antel.net.uy',               tz: 'America/Montevideo',                country: 'Uruguay',           flag: '🇺🇾' },
+    '507': { op: 'Claro Panamá',       asn: 'AS27843',  subnet: '181.211', rdns: 'mobile-{ip}.claro.com.pa',        tz: 'America/Panama',                    country: 'بنما',            flag: '🇵🇦' },
     '506': { op: 'Kolbi',              asn: 'AS11297',  subnet: '201.192', rdns: '{ip}.ice.cr',                     tz: 'America/Costa_Rica',                country: 'Costa Rica',        flag: '🇨🇷' },
     '502': { op: 'Tigo Guatemala',     asn: 'AS27882',  subnet: '190.111', rdns: '{ip}.tigo.com.gt',                tz: 'America/Guatemala',                 country: 'Guatemala',         flag: '🇬🇹' },
     '504': { op: 'Tigo Honduras',      asn: 'AS27882',  subnet: '190.7',   rdns: '{ip}.tigo.hn',                    tz: 'America/Tegucigalpa',               country: 'Honduras',          flag: '🇭🇳' },
-    '503': { op: 'Tigo El Salvador',   asn: 'AS27882',  subnet: '190.88',  rdns: '{ip}.tigo.net.sv',                tz: 'America/El_Salvador',               country: 'El Salvador',       flag: '🇸🇻' },
+    '503': { op: 'Tigo El Salvador',   asn: 'AS27882',  subnet: '190.88',  rdns: '{ip}.tigo.net.sv',                tz: 'America/El_Salvador',               country: 'السلفادور',       flag: '🇸🇻' },
     '505': { op: 'Claro Nicaragua',    asn: 'AS27843',  subnet: '186.130', rdns: 'mobile-{ip}.claro.net.ni',        tz: 'America/Managua',                   country: 'Nicaragua',         flag: '🇳🇮' },
     '53':  { op: 'ETECSA',             asn: 'AS27725',  subnet: '152.206', rdns: '{ip}.etecsa.cu',                  tz: 'America/Havana',                    country: 'Cuba',              flag: '🇨🇺' },
     // Norteamérica
     '1':   { op: 'AT&T',               asn: 'AS7018',   subnet: '72.229',  rdns: '{ip}.sbcglobal.net',              tz: 'America/New_York',                  country: 'Estados Unidos',    flag: '🇺🇸' },
     // Europa
-    '34':  { op: 'Movistar España',    asn: 'AS3352',   subnet: '81.33',   rdns: '{ip}.mobile.movistar.net',        tz: 'Europe/Madrid',                     country: 'España',            flag: '🇪🇸' },
+    '34':  { op: 'Movistar España',    asn: 'AS3352',   subnet: '81.33',   rdns: '{ip}.mobile.movistar.net',        tz: 'Europe/Madrid',                     country: 'إسبانيا',            flag: '🇪🇸' },
     '44':  { op: 'EE',                 asn: 'AS12576',  subnet: '86.3',    rdns: '{ip}.mobile.ee.co.uk',            tz: 'Europe/London',                     country: 'Reino Unido',       flag: '🇬🇧' },
     '49':  { op: 'Telekom DE',         asn: 'AS3320',   subnet: '80.187',  rdns: '{ip}.t-dialin.net',               tz: 'Europe/Berlin',                     country: 'Alemania',          flag: '🇩🇪' },
     '33':  { op: 'Orange FR',          asn: 'AS5410',   subnet: '90.50',   rdns: '{ip}.orange.fr',                  tz: 'Europe/Paris',                      country: 'Francia',           flag: '🇫🇷' },
@@ -290,9 +290,9 @@ let handler = async (m, { conn }) => {
     const { key } = await conn.sendMessage(m.chat, { text: '⏳ Iniciando proceso...' }, { quoted: m })
 
     const steps = [
-        `💻 Iniciando intrusión contra ${shortName}...`,
+        `💻 بدء الاختراق ضد ${shortName}...`,
         `📡 الرقم المكتشف: +${phone}`,
-        `${net.flag} País: ${net.country}`,
+        `${net.flag} الدولة: ${net.country}`,
         `📶 Operador: ${net.op}`,
         `🔌 ASN: ${net.asn}`,
         `🌐 Resolviendo IP en subred ${net.subnet}.0/16...`,
@@ -319,9 +319,9 @@ let handler = async (m, { conn }) => {
         `☠️ *HACK COMPLETADO — REPORTE FINAL*\n` +
         `━━━━━━━━━━━━━━━━━━\n` +
         `👤 *Objetivo:* ${shortName}\n` +
-        `📱 *Número:* +${phone}\n\n` +
+        `📱 *الرقم:* +${phone}\n\n` +
         `🌍 *UBICACIÓN*\n` +
-        `• País: ${net.country} ${net.flag}\n` +
+        `• الدولة: ${net.country} ${net.flag}\n` +
         `• Zona horaria: ${net.tz}\n\n` +
         `🌐 *RED*\n` +
         `• Operador: ${net.op}\n` +
@@ -335,7 +335,7 @@ let handler = async (m, { conn }) => {
         `💬 *MENSAJES INTERCEPTADOS*\n` +
         msgs.map((msg, i) => `• [${i + 1}] "${msg}"`).join('\n') + '\n\n' +
         `━━━━━━━━━━━━━━━━━━\n` +
-        `_Datos extraídos y almacenados correctamente._`
+        `_البيانات اتستخرجت واتخزنت بنجاح._`
 
     await conn.sendMessage(m.chat, { text: final, edit: key })
     await m.react('💀')

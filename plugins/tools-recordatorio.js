@@ -4,7 +4,7 @@ let handler = async (m, { conn, args, prefix }) => {
 
     // 1. Validamos que haya puesto el tiempo
     if (!args[0]) {
-        return m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n⚠️ نسيت الوقت والرسالة، حبيبي.\n\nEjemplo:\n*${commandName} 10m اطفي البوتاجاز*`)
+        return m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n⚠️ نسيت الوقت والرسالة، حبيبي.\n\nمثال:\n*${commandName} 10m اطفي البوتاجاز*`)
     }
 
     // 2. Expresión regular para separar el número de la letra (s, m, h, d)
@@ -12,7 +12,7 @@ let handler = async (m, { conn, args, prefix }) => {
     const match = args[0].match(timeRegex)
 
     if (!match) {
-        return m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n⚠️ صيغة الوقت غير صحيحة.\nUsa *s* (segundos), *m* (minutos), *h* (horas) o *d* (días).\n\nEjemplo: *15m*`)
+        return m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n⚠️ صيغة الوقت غير صحيحة.\nاستخدم *s* (ثواني)، *m* (دقايق)، *h* (ساعات) أو *d* (أيام).\n\nمثال: *15m*`)
     }
 
     // 3. Calculamos los milisegundos
@@ -29,7 +29,7 @@ let handler = async (m, { conn, args, prefix }) => {
     const recordatorio = args.slice(1).join(' ').trim()
 
     if (!recordatorio) {
-        return m.reply('⚠️ حبيبي, وأفكرك بإيه بالظبط؟ اكتب رسالة.\n\nEjemplo: *10m راجع الكود*')
+        return m.reply('⚠️ حبيبي, وأفكرك بإيه بالظبط؟ اكتب رسالة.\n\nمثال: *10m راجع الكود*')
     }
 
     // 5. Confirmamos que el recordatorio fue guardado
@@ -51,7 +51,7 @@ let handler = async (m, { conn, args, prefix }) => {
     }, ms)
 }
 
-handler.help = ['recordar <tiempo> <mensaje>']
+handler.help = ['recordar <وقت> <رسالة>']
 handler.tags = ['tools']
 handler.command = ['recordar', 'remind', 'aviso']
 

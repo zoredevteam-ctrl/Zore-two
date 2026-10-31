@@ -26,9 +26,9 @@ let handler = async (m, { conn }) => {
                 const errorLine = errorLineMatch ? errorLineMatch[1] : 'Desconocido'
 
                 response += `💔 *خطأ encontrado*\n\n`
-                response += `📁 *Archivo:* ${file}\n`
-                response += `📝 *Mensaje:* ${error.message}\n`
-                response += `📍 *Línea:* ${errorLine}\n`
+                response += `📁 *الملف:* ${file}\n`
+                response += `📝 *الرسالة:* ${error.message}\n`
+                response += `📍 *السطر:* ${errorLine}\n`
                 response += `━━━━━━━━━━━━━━━━━━━\n\n`
             }
         }
@@ -36,7 +36,7 @@ let handler = async (m, { conn }) => {
         if (!hasErrors) {
             response += `🌸 *كله تمام، حبيبي!*\n\n`
             response += `✨ مفيش أخطاء في الصياغة\n`
-            response += `💗 Todos los ${files.length} ملفات شغالة صح~`
+            response += `💗 كل الـ ${files.length} ملفات شغالة صح~`
         } else {
             response += `💢 *ملخص الأخطاء:*\n\n`
             response += `❌ إجمالي الأخطاء: ${errorCount}\n`

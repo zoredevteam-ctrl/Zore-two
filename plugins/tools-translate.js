@@ -4,7 +4,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
     // 1. Verificar si hay texto o si está respondiendo a un mensaje con texto
     let text = args.length ? args.join(' ') : (m.quoted ? m.quoted.text : null)
 
-    if (!text) throw `🌸 *¡Necesito un texto para traducir, حبيبي!* 🌸\n\nUso: *${usedPrefix + command} [texto]*\nEjemplo: *${usedPrefix + command} hello world*`
+    if (!text) throw `🌸 *محتاج نص عشان أترجمه يا حبيبي!* 🌸\n\nالاستخدام: *${usedPrefix + command} [texto]*\nمثال: *${usedPrefix + command} hello world*`
 
     // Reacción de espera
     await m.react('🌎')
@@ -14,10 +14,10 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
         // El sistema detecta el idioma de origen automáticamente
         const result = await translate(text, { to: 'es', autoCorrect: true })
 
-        const response = `✨ *¡Traducción Completada, حبيبي!* 🌸\n\n` +
+        const response = `✨ *الترجمة خلصت يا حبيبي!* 🌸\n\n` +
                          `📝 *Texto original:* \n${text}\n\n` +
-                         `✅ *Traducción:* \n${result.text}\n\n` +
-                         `💕 _Traducido de: [${result.from.language.iso.toUpperCase()}]_`
+                         `✅ *الترجمة:* \n${result.text}\n\n` +
+                         `💕 _مترجم من: [${result.from.language.iso.toUpperCase()}]_`
 
         await m.reply(response)
         await m.react('✅')
@@ -25,7 +25,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
     } catch (e) {
         console.error(e)
         await m.react('❌')
-        m.reply('💔 *آسف حبيبي, hubo un خطأ con el traductor.* Inténtalo de nuevo más tarde.')
+        m.reply('💔 *آسف حبيبي, حصل خطأ مع المترجم.* جرّب تاني بعدين.')
     }
 }
 

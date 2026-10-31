@@ -22,7 +22,7 @@ export const run = async (conn, update) => {
             await conn.sendMessage(id, {
                 image: { url: ppuser },
                 caption:
-                    `「 👋 *ADIÓS* 」\n\n` +
+                    `「 👋 *وداعاً* 」\n\n` +
                     `✦ @${user} لسه خارج من الجروب.\n\n` +
                     `❝ بالتوفيق في طريقك، حبيبي~ 🌷 ❞`,
                 mentions: [participant]

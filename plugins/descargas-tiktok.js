@@ -68,9 +68,9 @@ let handler = async (m, { conn, args, prefix, command }) => {
     if (!query) {
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 *¡Oye, حبيبي!* Necesito que me digas qué buscar~\n` +
-                  `¿Crees que puedo leer tu mente? _(bueno, casi... pero no)_ 💕\n\n` +
-                  `⟡ الاستخدام الصحيح: *${prefix + command} <lo que buscas>*`
+                  `🌸 *يا حبيبي!* محتاج تقولي أدور على إيه~\n` +
+                  `تفتكر أقدر أقرا أفكارك؟ _(أصلاً، تقريباً... بس لأ)_ 💕\n\n` +
+                  `⟡ الاستخدام الصحيح: *${prefix + command} <اللي بتدور عليه>*`
         }, { quoted: m })
     }
 
@@ -83,8 +83,8 @@ let handler = async (m, { conn, args, prefix, command }) => {
             await m.react('💔')
             return conn.sendMessage(m.chat, {
                 text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                      `🌸 *Hmph...* Lo busqué por todas partes, حبيبي,\n` +
-                      `pero no encontré nada para: *${query}* 💔\n\n` +
+                      `🌸 **همف...* دوّرت في كل مكان، حبيبي,\n` +
+                      `بس مالقيتش حاجة لـ: *${query}* 💔\n\n` +
                       `جرّب بكلمات تانية~ ماتخلّنيش أستسلم بسهولة!`
             }, { quoted: m })
         }
@@ -104,7 +104,7 @@ let handler = async (m, { conn, args, prefix, command }) => {
 
         const caption = `> ⟪💗⟫ *لقيتهولك يا حبيبي~!*\n\n` +
                         `🌸 *[ بيانات الفيديو ]*\n` +
-                        `  ⟡ Título: *${result.titulo}*\n` +
+                        `  ⟡ العنوان: *${result.titulo}*\n` +
                         `  ⟡ Autor: *@${result.autor}*\n` +
                         `  ⟡ Likes: *${formatNum(result.likes)}* 💗\n` +
                         `  ⟡ Vistas: *${formatNum(result.plays)}* 👁️\n\n` +
@@ -134,7 +134,7 @@ let handler = async (m, { conn, args, prefix, command }) => {
         await m.react('💔')
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 *¡Ugh, حبيبي!* Algo salió mal en mi sistema~ 😤\n` +
+                  `🌸 *أوه يا حبيبي!* حصلت مشكلة في نظامي~ 😤\n` +
                   `⟡ خطأ: _${e.message}_\n\n` +
                   `جرّب تاني، تمام؟ 💕`
         }, { quoted: m })

@@ -28,7 +28,7 @@ const TOXIC_WORDS = [
     'corrida','eyacular','masturbar','masturbacion',
     'porno','pornografia','porn','hentai','orgasmo',
     'dildo','vibrador','prostituta','prostitutas',
-    'nudes','nude','onlyfans','xxx','xnxx','xفيديوهات','pornhub','xhamster',
+    'nudes','nude','onlyfans','xxx','xnxx','xvideos','pornhub','xhamster',
 ]
 
 const escapeRegex = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -36,7 +36,7 @@ const TOXIC_REGEX = new RegExp(`\\b(${TOXIC_WORDS.map(escapeRegex).join('|')})\\
 
 const WARN1 = (name) => [
     `Oye ${name} 😕 اللي قلته ده مش صح. بهديك انذار، اللي بعده بتمشي 💔`,
-    `${name} para... 😞 ده ميتقالش هنا. *Advertencia 1* — ماتضيّعش الفرصة دي 🌸`,
+    `${name} para... 😞 ده ميتقالش هنا. *انذار 1* — ماتضيّعش الفرصة دي 🌸`,
     `Ay ${name} 🥺 ماتوقعتش ده منك. خلي بالك من كلامك، تمام؟ ده انذارك الوحيد 💗`,
     `${name} 😤 ده كان غلط وانت عارف. *أول وآخر انذار* مني 🌸`,
     `Oye ${name} 😔 بقولها باحترام — ده مش مكانه هنا. عندك انذار، ماتغلطش 💗`,
@@ -46,7 +46,7 @@ const WARN2 = (name) => [
     `${name} قلتلك قبل كده 😔 ومسمعتش كلامي. بيوجعني بس... *سلام* 💔`,
     `${name} كانت عندك فرصة وضيّعتها 😞 *خلاص كده كفاية* 🌸`,
     `بجد ${name} اللي بيثقل عليّا 🥺 بس مش قادر أعمل حاجة. *خروج من الجروب* 💗`,
-    `${name} بدون دراما وبدون زعل 😤 pero القوانين هي القوانين. *سلام* 🌸`,
+    `${name} بدون دراما وبدون زعل 😤 بس القوانين هي القوانين. *سلام* 🌸`,
     `Suspiro... ${name} كنت عارف اللي هيحصل 😮‍💨 *سلام* 💔`,
 ][Math.floor(Math.random() * 5)]
 
@@ -79,7 +79,7 @@ export const run = async (conn, { messages, type }) => {
             mtype === 'conversation'          ? msg.conversation
             : mtype === 'extendedTextMessage' ? msg.extendedTextMessage?.text
             : mtype === 'imageMessage'        ? msg.imageMessage?.caption
-            : mtype === 'فيديوMessage'        ? msg.videoMessage?.caption
+            : mtype === 'videoMessage'        ? msg.videoMessage?.caption
             : ''
 
         if (!text) return

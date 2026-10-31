@@ -9,7 +9,7 @@ let handler = async (m, { conn }) => {
         const participants = groupMetadata.participants
         
         // 2. Filtramos solo a los que son administradores
-        const admins = participants.filter(p => p.admin === 'أدمن' || p.admin === 'superأدمن')
+        const admins = participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin')
         const adminJids = admins.map(a => a.id)
 
         // 3. Intentamos obtener la foto del grupo

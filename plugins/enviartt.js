@@ -8,7 +8,7 @@ let handler = async (m, { conn, args }) => {
     let url = args[0] || (m.quoted && m.quoted.text ? m.quoted.text.trim() : '')
     
     if (!url || !url.includes('tiktok.com')) {
-        return m.reply('💗 *حبيبي, محتاج لينك تيك توك.*\n\nEjemplo: `#enviartt https://vt.tiktok.com/...` أو رد على لينك بالأمر.')
+        return m.reply('💗 *حبيبي, محتاج لينك تيك توك.*\n\nمثال: `#enviartt https://vt.tiktok.com/...` أو رد على لينك بالأمر.')
     }
 
     await m.react('⏳')
@@ -46,7 +46,7 @@ let handler = async (m, { conn, args }) => {
         })
 
         await m.react('✅')
-        await m.reply(`✨ ¡Video enviado con éxito al canal:\n*${metadata.name}*!`)
+        await m.reply(`✨ ¡الفيديو اتبعت للقناة بنجاح:\n*${metadata.name}*!`)
 
     } catch (e) {
         console.error(e)

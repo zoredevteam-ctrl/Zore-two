@@ -21,7 +21,7 @@ const handler = async (msg, { conn, args, usedPrefix }) => {
 
   try {
     const search = await yts(query)
-    if (!search.videos?.length) throw new Error('No se encontró el video.')
+    if (!search.videos?.length) throw new Error('مالقيتش الفيديو.')
 
     const video = search.videos[0]
     const url = video.url
@@ -30,7 +30,7 @@ const handler = async (msg, { conn, args, usedPrefix }) => {
     const { data } = await axios.get(api)
 
     if (!data?.status || !data?.result?.download_url)
-      throw new Error('Error en descarga.')
+      throw new Error('خطأ في التحميل.')
 
     const info = formatBox(video)
 
@@ -62,7 +62,7 @@ const handler = async (msg, { conn, args, usedPrefix }) => {
   }
 }
 
-handler.help = ['play2 <título>']
+handler.help = ['play2 <عنوان>']
 handler.tags = ['download']
 handler.command = ['play2']
 

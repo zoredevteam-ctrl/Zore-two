@@ -4,7 +4,7 @@ const handler = async (m, { conn, args, prefix }) => {
     const reason = args.join(' ');
 
     if (!reason) {
-        return m.reply(`「 🛠️ 」 *${prefix}report* ❝ ingresa lo que quieras reportar ❞`);
+        return m.reply(`「 🛠️ 」 *${prefix}report* ❝ اكتب اللي عايز تبلّغ عنه ❞`);
     }
 
     const sender = m.sender.split('@')[0];
@@ -14,8 +14,8 @@ const handler = async (m, { conn, args, prefix }) => {
 
     const reportMsg =
         `「 🚨 *خطأ مُبلّغ عنه* 🚨 」\n\n` +
-        `✦ 👤 *Usuario:* ${pushName}\n` +
-        `✦ 📱 *Número:* @${sender}\n` +
+        `✦ 👤 *العضو:* ${pushName}\n` +
+        `✦ 📱 *الرقم:* @${sender}\n` +
         `✦ 🏠 *Desde:* ${chat}\n` +
         `✦ 🕐 *Fecha:* ${time}\n\n` +
         `「 💬 *خطأ:* 」\n` +
@@ -34,13 +34,13 @@ const handler = async (m, { conn, args, prefix }) => {
         );
 
     } catch (err) {
-        console.error('[ERROR REPORT]', err);
-        await m.reply('「 ❌ 」 No se pudo enviar el reporte, intenta más tarde.');
+        console.error('[REPORT ERROR]', err);
+        await m.reply('「 ❌ 」 مش قدرت أبعت التقرير، جرّب بعدين.');
     }
 };
 
 handler.command = ['report', 'reportar'];
-handler.help = ['report <descripción del error>'];
+handler.help = ['report <وصف الخطأ>'];
 handler.tags = ['general'];
 
 export default handler;

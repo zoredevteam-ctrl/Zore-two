@@ -24,7 +24,7 @@ const downloadTikTok = async (url) => {
             const j = await r.json()
             if (j?.code !== 0) throw new Error('Tikwm Offline')
             autor  = j.data?.author?.unique_id || 'Desconocido'
-            titulo = j.data?.title  || 'TikTok Video'
+            titulo = j.data?.title  || 'فيديو تيك توك'
             likes  = j.data?.digg_count  || 0
             plays  = j.data?.play_count  || 0
             return j.data?.play || j.data?.wmplay
@@ -35,7 +35,7 @@ const downloadTikTok = async (url) => {
             const d = j.data || j.result
             if (!d) throw new Error('AlyaBot Offline')
             autor  = d.author || d.username || 'Desconocido'
-            titulo = d.title  || d.desc || 'TikTok Video'
+            titulo = d.title  || d.desc || 'فيديو تيك توك'
             return d.download || d.url
         }
     ]
@@ -47,7 +47,7 @@ const downloadTikTok = async (url) => {
                 videoUrl = link
                 break
             }
-        } catch (e) { console.log('💗 [ FLASH BOT MD LOG ] Nodo de descarga falló:', e.message) }
+        } catch (e) { console.log('💗 [ FLASH BOT MD LOG ] عقدة التحميل فشلت:', e.message) }
     }
 
     if (!videoUrl) throw new Error('مش قدرت أمسك الفيديو يا حبيبي 💔')
@@ -62,9 +62,9 @@ let handler = async (m, { conn, args, prefix, command }) => {
     if (!url || !url.includes('tiktok.com')) {
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 *¡حبيبي!* ده مش شكله لينك تيك توك~ 😤\n` +
+                  `🌸 *يا حبيبي!* ده مش شكله لينك تيك توك~ 😤\n` +
                   `هات لينك صالح، تمام؟ أنا مش عرّافة... _أو تقريباً_ 💕\n\n` +
-                  `⟡ الاستخدام الصحيح: *${prefix + command} <link de tiktok>*`
+                  `⟡ الاستخدام الصحيح: *${prefix + command} <لينك تيك توك>*`
         }, { quoted: m })
     }
 
@@ -77,11 +77,11 @@ let handler = async (m, { conn, args, prefix, command }) => {
 
         const caption = `> ⟪💗⟫ *اتفضل الفيديو بتاعك يا حبيبي~!*\n\n` +
                         `🌸 *[ بيانات الفيديو ]*\n` +
-                        `  ⟡ Título: *${titulo}*\n` +
+                        `  ⟡ العنوان: *${titulo}*\n` +
                         `  ⟡ Autor: *@${autor}*\n` +
                         `  ⟡ Likes: *${formatNum(likes)}* 💗\n` +
                         `  ⟡ Vistas: *${formatNum(plays)}* 👁️\n\n` +
-                        `💕 *Flash Bot MD* al rescate~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
+                        `💕 *Flash Bot MD* لإنقاذ الموقف~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
         await m.react('📤')
 
@@ -107,7 +107,7 @@ let handler = async (m, { conn, args, prefix, command }) => {
         await m.react('💔')
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 *¡Ugh!* أنظمتي فشلت، حبيبي~ 😤💔\n` +
+                  `🌸 *أوه!* أنظمتي فشلت يا حبيبي~ 😤💔\n` +
                   `⟡ خطأ: _${e.message}_\n\n` +
                   `ماتستسلمش، جرّب تاني~ 💕`
         }, { quoted: m })

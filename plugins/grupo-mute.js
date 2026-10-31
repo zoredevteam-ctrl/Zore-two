@@ -8,7 +8,7 @@ let handler = async (m, { conn, prefix, isAdmin, isBotAdmin }) => {
         who = m.quoted.sender
     }
 
-    if (!who) return m.reply(`منشن أو رد على عضو.\nEjemplo: *${prefix}mute @عضو*`)
+    if (!who) return m.reply(`منشن أو رد على عضو.\nمثال: *${prefix}mute @عضو*`)
     if (!isAdmin) return m.reply('👮 الأدمنز بس اللي يقدروا يستخدموا الأمر ده.')
     if (!isBotAdmin) return m.reply('🤖 لازم أكون أدمن عشان أعمل ده.')
 

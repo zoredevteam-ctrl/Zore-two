@@ -43,7 +43,7 @@ const sendStyled = async (conn, m, text, mentions = []) => {
 }
 
 const msToStr = ms => {
-    if (!ms || ms < 1000) return 'recién ahora~'
+    if (!ms || ms < 1000) return 'دلوقتي بس~'
     const parts = []
     const d = Math.floor(ms / 86400000); if (d) parts.push(`${d}d`)
     const h = Math.floor(ms / 3600000) % 24; if (h) parts.push(`${h}h`)
@@ -65,7 +65,7 @@ const handler = async (m, { conn, command, isOwner }) => {
             return sendStyled(conn, m,
                 `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bots 」══╗\n\n` +
                 `꒰ 💤 ꒱ مفيش بوتات فرعية شغالة دلوقتي~\n` +
-                `꒰ 🌸 ꒱ Usa *#code +رقم* para crear uno, حبيبي~\n\n` +
+                `꒰ 🌸 ꒱ استخدم *#code +رقم* عشان تعمل واحد، حبيبي~\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
@@ -96,8 +96,8 @@ const handler = async (m, { conn, command, isOwner }) => {
         if (!existsSync(dir)) {
             return sendStyled(conn, m,
                 `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bot 」══╗\n\n` +
-                `꒰ 🚫 ꒱ No encontré sesión para *+${num}*, حبيبي~\n` +
-                `꒰ 🌸 ꒱ Usa *#code +رقم* para crear una.\n\n` +
+                `꒰ 🚫 ꒱ مالقيتش جلسة لـ *+${num}*, حبيبي~\n` +
+                `꒰ 🌸 ꒱ استخدم *#code +رقم* عشان تعمل واحدة.\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
@@ -119,7 +119,7 @@ const handler = async (m, { conn, command, isOwner }) => {
         return sendStyled(conn, m,
             `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bot 」══╗\n\n` +
             `꒰ ✅ ꒱ جلسة *+${num}* eliminada, حبيبي~\n` +
-            `꒰ 🌸 ꒱ ¡كله تمام! 💗\n\n` +
+            `꒰ 🌸 ꒱ كله تمام! 💗\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
@@ -129,14 +129,14 @@ const handler = async (m, { conn, command, isOwner }) => {
         if (conn.user?.jid === global.conn?.user?.jid) {
             return sendStyled(conn, m,
                 `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · خطأ 」══╗\n\n` +
-                `꒰ 🚫 ꒱ ¡No puedo pausar al bot principal, حبيبي~! 😤\n\n` +
+                `꒰ 🚫 ꒱ مش قادر أوقف البوت الرئيسي يا حبيبي~! 😤\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
 
         await sendStyled(conn, m,
             `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bot 」══╗\n\n` +
-            `꒰ 🔕 ꒱ Sub-bot pausado~ سلام, حبيبي 💔\n\n` +
+            `꒰ 🔕 ꒱ بوت فرعي pausado~ سلام, حبيبي 💔\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         try { conn.ws.close() } catch {}

@@ -4,20 +4,25 @@ let handler = async (m, { args }) => {
     let ciudad = args.join(' ').trim()
     if (!ciudad) {
         await m.react('🌸')
-        return m.reply('💗 اكتب اسم المدينة بعد الأمر حبيبي\~\nEjemplo: *#clima Medellín*')
+        return m.reply('💗 اكتب اسم المدينة بعد الأمر حبيبي\~\nمثال: *#clima القاهرة*')
     }
 
     await m.react('🍬')
 
     try {
         // Usamos wttr.in (rápido, gratis y sin API key)
-        const url = `https://wttr.in/${encodeURIComponent(ciudad)}?format=%C+%t\nViento:+%w\nHumedad:+%h\nPresión:+%P`
+        const url = `https://wttr.in/${encodeURIComponent(ciudad)}?format=j1`
         const res = await fetch(url)
-        const data = await res.text()
+        const j = await res.json()
+        const c = j.current_condition[0]
+        const data = `${c.weatherDesc[0].value} ${c.temp_C}°C\n` +
+                     `الرياح: ${c.windspeedKmph} كم/س\n` +
+                     `الرطوبة: ${c.humidity}%\n` +
+                     `الضغط: ${c.pressure} hPa`
 
-        const texto = `💗 *Clima en ${ciudad.toUpperCase()}* 🌸\n\n` +
+        const texto = `💗 *الطقس في ${ciudad.toUpperCase()}* 🌸\n\n` +
                       `${data}\n\n` +
-                      `¡Flash Bot MD te desea un lindo día حبيبي\~! 💕`
+                      `Flash Bot MD بتتمنالك يوم جميل يا حبيبي\~! 💕`
 
         await m.reply(texto)
         await m.react('💗')
@@ -25,7 +30,7 @@ let handler = async (m, { args }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('💔 Uy حبيبي... no pude obtener el clima de esa ciudad\~\nجرّب اسم تاني')
+        m.reply('💔 أوه حبيبي... مش قدرت أجيب طقس المدينة دي\~\nجرّب اسم تاني')
     }
 }
 

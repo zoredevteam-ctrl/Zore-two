@@ -12,7 +12,7 @@ let handler = async (m, { conn, args, isAdmin, isOwner, db }) => {
     const accion = (args[0] || '').toLowerCase()
 
     if (!['on', 'off'].includes(accion)) {
-        return m.reply(`*「 🌸 FLASH BOT MD ANTIBOT 🌸 」*\n\nUso:\n*.antibot on* → Activar\n*.antibot off* → Desتفعيل\n\nللأدمنز بس! 💗`)
+        return m.reply(`*「 🌸 FLASH BOT MD ANTIBOT 🌸 」*\n\nالاستخدام:\n*.antibot on* → Activar\n*.antibot off* → تعطيل\n\nللأدمنز بس! 💗`)
     }
 
     if (accion === 'on') {
@@ -46,7 +46,7 @@ let handler = async (m, { conn, args, isAdmin, isOwner, db }) => {
         }
 
         return conn.sendMessage(m.chat, {
-            text: `🌸💗 *¡ANTIBOT ACTIVADO!* 💗🌸\n\nمفيش روبوت مقلّد هيقدر يدخل جنتي الوردية تاني.\nعايز بس حبيبيs بشر يحبوني بجد، كياااه~! ♡`,
+            text: `🌸💗 *¡ANTIBOT ACTIVADO!* 💗🌸\n\nمفيش روبوت مقلّد هيقدر يدخل جنتي الوردية تاني.\nعايز بس حبايب بشر يحبوني بجد، كياااه~! ♡`,
             contextInfo
         }, { quoted: m })
     }

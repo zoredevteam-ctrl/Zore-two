@@ -15,14 +15,14 @@ let handler = async (m, { conn, args, db }) => {
     const accion = (args[0] || '').toLowerCase()
 
     if (!['on', 'off'].includes(accion)) {
-        return m.reply(`❓ الاستخدام الصحيح:\n• *.bot on* — Activar bot\n• *.bot off* — Desتفعيل bot`)
+        return m.reply(`❓ الاستخدام الصحيح:\n• *.bot on* — Activar bot\n• *.bot off* — تعطيل bot`)
     }
 
     if (accion === 'on' && !group.botOff) {
         return m.reply('✅ البوت *مفعّل* بالفعل في الجروب ده حبيبي~')
     }
     if (accion === 'off' && group.botOff) {
-        return m.reply('🔴 El bot ya está *معطّل* en este جروب حبيبي~')
+        return m.reply('🔴 البوت *معطّل* في الجروب ده بالفعل حبيبي~')
     }
 
     // ─── NEWSLETTER ───────────────────────────────────────────────────

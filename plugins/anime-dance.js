@@ -26,11 +26,11 @@ const handler = async (m, { conn, db }) => {
 
         let str
         if (m.mentionedJid?.length > 0) {
-            str = `\`${name2}\` *baila junto con* \`${name}\`.`
+            str = `\`${name2}\` *رقص مع* \`${name}\`.`
         } else if (m.quoted) {
-            str = `\`${name2}\` *está bailando con* \`${name}\`.`
+            str = `\`${name2}\` *بيرقص مع* \`${name}\`.`
         } else {
-            str = `\`${name2}\` *suelta los pasos prohibidos.*`
+            str = `\`${name2}\` *رقص رقصة ممنوعة.*`
         }
 
         const videos = [

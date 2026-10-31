@@ -11,7 +11,7 @@ const handler = async (m, { conn, db }) => {
         return conn.sendMessage(chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
                   `🌸 مفيش أي ويفو مستنية، حبيبي~\n` +
-                  `⟡ Usa *#rw* عشان تستدعي واحدة 💕`
+                  `⟡ استخدم *#rw* عشان تستدعي واحدة 💕`
         }, { quoted: m })
     }
 
@@ -55,18 +55,18 @@ const handler = async (m, { conn, db }) => {
     const tiempoStr = mins > 0 ? `${mins}m ${segs}s` : `${segs}s`
 
     const duplicadoTexto = esDuplicado
-        ? `\n♻️ _Ya tenías esta ويفو — ¡duplicado guardado!_`
+        ? `\n♻️ _كانت معاك الويفو دي — اتحفظ نسخة مكررة!_`
         : ''
 
     const caption =
         `${spawn.rareza.color} *تم صيد ويفو!* ${spawn.rareza.color}\n\n` +
-        `💗 *${nombre}* fue el más rápido~\n\n` +
+        `💗 *${nombre}* كان الأسرع~\n\n` +
         `✨ *${spawn.nombre}*\n` +
         `${spawn.rareza.stars} *${spawn.rareza.nombre}*\n` +
         `⏱️ Reclamada en: *${tiempoStr}*\n` +
         `📦 إجمالي المجموعة: *${coleccion.length} ويفو*` +
         `${duplicadoTexto}\n\n` +
-        `⟡ Usa *#col* عشان تشوف مجموعتك 💕\n` +
+        `⟡ استخدم *#col* عشان تشوف مجموعتك 💕\n` +
         `💗 *Flash Bot MD* © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     await m.react('💗')
@@ -80,6 +80,6 @@ const handler = async (m, { conn, db }) => {
 
 handler.command = ['c', 'claim', 'reclamar']
 handler.tags = ['fun', 'anime', 'waifu']
-handler.help = ['c — Reclama la waifu activa del grupo']
+handler.help = ['c — اصطاد الويفو النشطة في الجروب']
 
 export default handler

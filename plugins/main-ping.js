@@ -10,7 +10,7 @@ let handler = async (m, { conn }) => {
         let child = stdout.toString('utf-8')
         let ssd = child.replace(/Memory:/, 'Ram:')
 
-        let result = `🍬 *¡PONG, حبيبي~!* 🏓🌸\n💢 Velocidad ⴵ ${latency.toFixed(4).split('.')[0]}ms\n${ssd}`
+        let result = `🍬 *بونج، حبيبي~!* 🏓🌸\n💢 Velocidad ⴵ ${latency.toFixed(4).split('.')[0]}ms\n${ssd}`
         conn.sendMessage(m.chat, { text: result, edit: sentMsg.key }, { quoted: m })
     })
 }

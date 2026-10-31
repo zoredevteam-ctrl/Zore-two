@@ -9,9 +9,9 @@ const handler = async (m, { conn, args, db }) => {
     if (!mention || mention === sender) {
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 Menciona a quien quieres darle la ويفو, حبيبي~\n` +
-                  `⟡ Uso: *#dar @عضو <رقم de la ويفو>*\n` +
-                  `⟡ Usa *#col* عشان تشوف أرقام مجموعتك 💕`
+                  `🌸 منشن اللي عايز تهديه الويفو، حبيبي~\n` +
+                  `⟡ الاستخدام: *#dar @عضو <رقم الويفو>*\n` +
+                  `⟡ استخدم *#col* عشان تشوف أرقام مجموعتك 💕`
         }, { quoted: m })
     }
 
@@ -20,7 +20,7 @@ const handler = async (m, { conn, args, db }) => {
 
     if (!db.waifus?.[sender]?.coleccion?.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو para dar, حبيبي~ 💔`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو عشان تهدي يا حبيبي~ 💔`
         }, { quoted: m })
     }
 
@@ -29,7 +29,7 @@ const handler = async (m, { conn, args, db }) => {
 
     if (idx < 0 || idx >= col.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 الرقم ده مش موجود في مجموعتك~ usa *#col* عشان تشوفها 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 الرقم ده مش موجود في مجموعتك~ استخدم *#col* عشان تشوفها 💕`
         }, { quoted: m })
     }
 
@@ -54,10 +54,10 @@ const handler = async (m, { conn, args, db }) => {
 
     const caption =
         `${waifu.rareza.color} *تم تحويل ويفو!* ${waifu.rareza.color}\n\n` +
-        `💗 *${nombreDe}* le regaló a *${nombrePara}*~\n\n` +
+        `💗 *${nombreDe}* اهدى لـ *${nombrePara}*~\n\n` +
         `✨ *${waifu.nombre}*\n` +
         `${waifu.rareza.stars} *${waifu.rareza.nombre}*\n\n` +
-        `💕 ¡Qué gesto tan bonito, حبيبي~! © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
+        `💕 يا جمال الحركة دي يا حبيبي~! © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     await conn.sendMessage(m.chat, {
         image: { url: waifu.imageUrl },
@@ -70,6 +70,6 @@ const handler = async (m, { conn, args, db }) => {
 
 handler.command = ['dar', 'gift', 'transferir']
 handler.tags = ['fun', 'anime', 'waifu']
-handler.help = ['dar @usuario <n°> — Regala una waifu de tu colección']
+handler.help = ['dar @عضو <رقم> — اهدِ ويفو من مجموعتك']
 
 export default handler

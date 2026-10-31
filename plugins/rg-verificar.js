@@ -15,7 +15,7 @@ let handler = async (m, { conn, args, prefix }) => {
     )
 
     if (!Reg.test(text)) return m.reply(
-        `𖤐 *التسجيل - Flash Bot MD* 🌸\n\n*الصيغة الصحيحة:*\n${prefix}reg اسم.edad\n\n*Ejemplo:*\n${prefix}reg ${name2}.18\n\n💗 ¡Regístrate para usar todas mis funciones, حبيبي~!`
+        `𖤐 *التسجيل - Flash Bot MD* 🌸\n\n*الصيغة الصحيحة:*\n${prefix}reg اسم.edad\n\n*مثال:*\n${prefix}reg ${name2}.18\n\n💗 سجّل عشان تستخدم كل مميزاتي يا حبيبي~!`
     )
 
     let [_, name, age] = text.match(Reg)
@@ -33,7 +33,7 @@ let handler = async (m, { conn, args, prefix }) => {
 
     const sn = createHash('md5').update(m.sender).digest('hex').slice(0, 20)
 
-    const regbot = `𖤐 *تم التسجيل بنجاح!* 🌸\n\n👤 *Nombre:* ${name}\n🎂 *Edad:* ${age} años\n🆔 *ID:* ${sn}\n\n💗 *¡Bienvenido/a, حبيبي~!*\n\nHmph... más te vale usar el bot bien o no te lo perdonaré~ 💢`
+    const regbot = `𖤐 *تم التسجيل بنجاح!* 🌸\n\n👤 *الاسم:* ${name}\n🎂 *السن:* ${age} años\n🆔 *ID:* ${sn}\n\n💗 *أهلاً بيك, حبيبي~!*\n\nهمف... الأفضل تستخدم البوت صح ولا مش هسامحك~ 💢`
 
     await m.react('🌸')
 

@@ -84,11 +84,11 @@ let handler = async (m, { conn, usedPrefix, command }) => {
   let mime = (q.msg || q).mimetype || ''
 
   if (!mime) {
-    return m.reply(`🖼️ *Mejorar calidad de صورة (HD)*\n\nResponde a una صورة con *${usedPrefix + command}*\n\nFunción: Escala la صورة x4 usando IA`)
+    return m.reply(`🖼️ *تحسين جودة الصورة (HD)*\n\nرد على صورة بـ *${usedPrefix + command}*\n\nميزة: تكبّر الصورة x4 بالذكاء الاصطناعي`)
   }
 
   if (!/image\/(jpe?g|png|webp)/.test(mime)) {
-    return m.reply('❌ El formato debe ser una صورة (JPG, PNG, WEBP)')
+    return m.reply('❌ الصيغة لازم تكون صورة (JPG, PNG, WEBP)')
   }
 
   m.react('⏳')
@@ -106,7 +106,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
 
     await conn.sendMessage(m.chat, {
       image: resultBuffer,
-      caption: `✅ *Imagen mejorada (x4)*\n\n> ✨ Calidad aumentada con IA`
+      caption: `✅ *الصورة اتحسّنت (x4)*\n\n> ✨ الجودة اتحسّنت بالذكاء الاصطناعي`
     }, { quoted: m })
 
     m.react('✅')

@@ -54,7 +54,7 @@ async function sendAlbumMessage(conn, jid, medias, options = {}) {
 
 let handler = async (m, { conn, args, prefix }) => {
     const text = args.join(' ')
-    if (!text) return m.reply(`💗 حبيبي, قولي أدور على إيه~\n> Ejemplo: ${prefix}pinterest Flash Bot MD`)
+    if (!text) return m.reply(`💗 حبيبي, قولي أدور على إيه~\n> مثال: ${prefix}pinterest Flash Bot MD`)
 
     await m.react('⏳')
     await m.reply('🌸 بدور على صور في بنترست، استنى لحظة~')

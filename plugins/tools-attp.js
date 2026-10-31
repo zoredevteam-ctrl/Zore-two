@@ -3,7 +3,7 @@ const handler = async (m, { conn, args }) => {
 
     if (!text) {
         await m.react('🌸')
-        return m.reply(`💗 *¿Qué texto quieres en el sticker animado, حبيبي?* 🌸\n\nEjemplo: *.attp Te amo Flash Bot MD 💕*`)
+        return m.reply(`💗 *عايز إيه نص على الملصق المتحرك يا حبيبي؟* 🌸\n\nمثال: *.attp بحبك Flash Bot MD 💕*`)
     }
 
     if (text.length > 35) {
@@ -17,7 +17,7 @@ const handler = async (m, { conn, args }) => {
         const url = `https://api.vreden.web.id/api/sticker/attp?text=${encodeURIComponent(text)}`
         const res = await fetch(url)
 
-        if (!res.ok) throw new Error(`API devolvió ${res.status}`)
+        if (!res.ok) throw new Error(`الـ API ردّ بـ ${res.status}`)
 
         const buffer = Buffer.from(await res.arrayBuffer())
 

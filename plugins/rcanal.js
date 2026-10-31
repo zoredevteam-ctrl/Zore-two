@@ -14,11 +14,11 @@ const plugin = async (m, { conn }) => {
 
 📡 تابعنا على قناتنا الرسمية:
 › 🌸 تحديثات البوت
-› 💎 Noticias y novedades
-› 🎁 Sorteos y eventos especiales
-› 🔧 Mantenimientos y cambios
+› 💎 أخبار وجديد
+› 🎁 سحوبات وفعاليات خاصة
+› 🔧 صيانة وتغييرات
 
-🔗 *Únete aquí:*
+🔗 *انضم هنا:*
 ${global.rcanal}
 
 > ${global.dev}`

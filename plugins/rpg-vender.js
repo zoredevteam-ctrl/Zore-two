@@ -7,7 +7,7 @@ const handler = async (m, { conn, args, db }) => {
 
     if (!db.waifus?.[sender]?.coleccion?.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو تبيعها، حبيبي~ 💔\n⟡ Usa *#rw* عشان تجيب واحدة 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو تبيعها، حبيبي~ 💔\n⟡ استخدم *#rw* عشان تجيب واحدة 💕`
         }, { quoted: m })
     }
 
@@ -17,7 +17,7 @@ const handler = async (m, { conn, args, db }) => {
 
     if (idx < 0 || idx >= col.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 الرقم ده مش موجود~ usa *#col* عشان تشوف مجموعتك 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 الرقم ده مش موجود~ استخدم *#col* عشان تشوف مجموعتك 💕`
         }, { quoted: m })
     }
 
@@ -45,8 +45,8 @@ const handler = async (m, { conn, args, db }) => {
     try { const n = await conn.getName(sender); if (n) nombre = n } catch {}
 
     const nota = waifu.duplicado
-        ? `♻️ _Era duplicada — vendida al precio completo_`
-        : `💡 _Precio reducido al 60% por ser única. ¡Guarda las especiales, حبيبي~!_`
+        ? `♻️ _كانت مكررة — اتباعت بالسعر الكامل_`
+        : `💡 _السعر اتخصم 60% لأنها فريدة. احتفظ بالخاصة، حبيبي~!_`
 
     const caption =
         `${waifu.rareza.color} *تم بيع ويفو!* ${waifu.rareza.color}\n\n` +
@@ -68,6 +68,6 @@ const handler = async (m, { conn, args, db }) => {
 
 handler.command = ['vender', 'sell', 'vw']
 handler.tags = ['fun', 'anime', 'waifu']
-handler.help = ['vender <n°> — Vende una waifu de tu colección por Stamps']
+handler.help = ['vender <n°> — بيع ويفو من مجموعتك مقابل Stamps']
 
 export default handler

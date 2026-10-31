@@ -1,5 +1,5 @@
 const handler = async (m, { conn, who }) => {
-    if (!who) return m.reply('⚠️ *MENCIONA O RESPONDE A UN USUARIO*')
+    if (!who) return m.reply('⚠️ *منشن أو رد على عضو*')
 
     try {
         await conn.groupParticipantsUpdate(m.chat, [who], 'demote')

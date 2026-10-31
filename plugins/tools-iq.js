@@ -13,7 +13,7 @@ let handler = async (m, { conn, db }) => {
         : iq >= 100 ? '🙂 *Normal* — Promedio mundial 🌍'
         : iq >= 80  ? '😅 *أقل من المتوسط* — Tranquilo حبيبي 💗'
         : iq >= 50  ? '🥴 *منخفض جداً* — بس بحبك بردو 🌸'
-        : '🪨 *IQ de roca* — No te preocupes, las rocas son fuertes 💀'
+        : '🪨 *ذكاء صخرة* — متقلقش، الصخور قوية 💀'
 
     // ─── NEWSLETTER / CANAL ───────────────────────────────────────────
     let thumbnail = null
@@ -41,7 +41,7 @@ let handler = async (m, { conn, db }) => {
     }
 
     // ─── MENSAJE ──────────────────────────────────────────────────────
-    const msg = `🧠 *بحسب الـ IQ...*\n\n👤 Usuario: @${m.sender.split('@')[0]}\n📊 الـ IQ بتاعك: *${iq}*\n\n${nivel}`
+    const msg = `🧠 *بحسب الـ IQ...*\n\n👤 العضو: @${m.sender.split('@')[0]}\n📊 الـ IQ بتاعك: *${iq}*\n\n${nivel}`
 
     await conn.sendMessage(m.chat, {
         text: msg,

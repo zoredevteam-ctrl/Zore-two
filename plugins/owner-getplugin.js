@@ -34,7 +34,7 @@ const handler = async (m, { conn, args, prefix, plugins }) => {
     }
 }
 
-handler.help = ['getplugin <nombre>']
+handler.help = ['getplugin <اسم>']
 handler.tags = ['owner']
 handler.command = ['getplugin', 'plugin']
 handler.owner = true

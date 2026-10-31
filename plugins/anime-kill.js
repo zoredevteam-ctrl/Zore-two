@@ -30,11 +30,11 @@ let handler = async (m, { conn, db }) => {
 
         let str
         if (m.mentionedJid?.length > 0) {
-            str = `\`${name2}\` *mató a* \`${name}\` 💫`
+            str = `\`${name2}\` *قتل* \`${name}\` 💫`
         } else if (m.quoted) {
-            str = `\`${name2}\` *mató a* \`${name}\` ⚰️`
+            str = `\`${name2}\` *قتل* \`${name}\` ⚰️`
         } else {
-            str = `\`${name2}\` *se mató a sí mismo* 😵`
+            str = `\`${name2}\` *قتل نفسه* 😵`
         }
 
         const videos = [
@@ -57,7 +57,7 @@ let handler = async (m, { conn, db }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('⚠️ Algo falló al ejecutar el asesinato~')
+        m.reply('⚠️ حصلت مشكلة في تنفيذ القتل~')
     }
 }
 

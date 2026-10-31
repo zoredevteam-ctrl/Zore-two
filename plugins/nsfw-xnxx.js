@@ -8,7 +8,7 @@ let handler = async (m, { args, usedPrefix }) => {
 
     const query = args.join(" ").trim()
     if (!query) {
-        return m.reply('اكتب عنوان أو رابط فيديو XNXX.\nEjemplo: *#xnxx mia khalifa*')
+        return m.reply('اكتب عنوان أو رابط فيديو XNXX.\nمثال: *#xnxx mia khalifa*')
     }
 
     try {
@@ -19,8 +19,8 @@ let handler = async (m, { args, usedPrefix }) => {
             const videoBuffer = await fetch(dll).then(r => r.buffer())
 
             let caption = `*XNXX - DESCARGA*\n\n` +
-                          `Título: ${res.result.title}\n` +
-                          `Duración: ${res.result.info.dur || 'Desconocida'}\n` +
+                          `العنوان: ${res.result.title}\n` +
+                          `المدة: ${res.result.info.dur || 'Desconocida'}\n` +
                           `Calidad: ${res.result.info.qual || 'Desconocida'}`
 
             await conn.sendMessage(m.chat, {
@@ -80,7 +80,7 @@ async function search(query) {
     return { result: results }
 }
 
-handler.help = ['xnxx <título o url>']
+handler.help = ['xnxx <عنوان أو رابط>']
 handler.tags = ['nsfw']
 handler.command = ['xnxx']
 handler.nsfw = true

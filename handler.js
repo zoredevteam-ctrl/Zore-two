@@ -84,7 +84,7 @@ const AR_ALIASES = {
     'جلب': 'fetch', 'هات': 'fetch',
     'ذكاء_صناعي': 'ia', 'بوت_ذكي': 'ia', 'ai': 'ia',
     'بوكيمون': 'pokedex', 'بوكيدكس': 'pokedex',
-    'مضاد_بوت': 'antibot', 'antiبوت': 'antibot',
+    'مضاد_بوت': 'antibot',
     'مضاد_لينك': 'antilink', 'مضاد_روابط': 'antilink',
     'استدعاء': 'invocar', 'نادي': 'invocar',
     'هيئه': 'staff', 'المشرفين': 'staff', 'ادمنز': 'staff',
@@ -410,9 +410,9 @@ export const handler = async (m, conn, plugins) => {
             const debug =
                 `❌ *خطأ في الأمر*\n\n` +
                 `📌 الأمر: ${prefix + displayName}\n\n` +
-                `🧾 Mensaje:\n${message.slice(0, 500)}\n\n` +
-                `📍 Archivo: ${file || 'desconocido'}\n` +
-                `📍 Línea: ${line || '?'}`
+                `🧾 الرسالة:\n${message.slice(0, 500)}\n\n` +
+                `📍 الملف: ${file || 'desconocido'}\n` +
+                `📍 السطر: ${line || '?'}`
 
             console.log(chalk.red(debug))
             if (m?.reply) m.reply(debug)

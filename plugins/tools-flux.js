@@ -12,7 +12,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
 
     return conn.sendMessage(
       msg.chat,
-      { text: `✳️ Usa:\n.flux <descripción>` },
+      { text: `✳️ استخدم:\n.flux <وصف>` },
       { quoted: msg }
     )
   }
@@ -45,7 +45,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   }
 }
 
-handler.help = ['flux <descripción>']
+handler.help = ['flux <وصف>']
 handler.tags = ['tools']
 handler.command = ['flux']
 

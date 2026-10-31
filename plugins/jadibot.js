@@ -162,7 +162,7 @@ const handler = async (m, { conn, plugins, prefix }) => {
             `꒰ 📱 ꒱ Abre WhatsApp → *Dispositivos vinculados*\n` +
             `꒰ 🔗 ꒱ Toca *الربط بالرقم*\n` +
             `꒰ ⌨️ ꒱ اكتب الكود اللي هبعتهولك~\n` +
-            `꒰ ⏳ ꒱ استنى un momento, حبيبي~\n\n` +
+            `꒰ ⏳ ꒱ استنى لحظة يا حبيبي~\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     } else if (useQR) {
@@ -171,7 +171,7 @@ const handler = async (m, { conn, plugins, prefix }) => {
             `꒰ 📱 ꒱ Abre WhatsApp → *Dispositivos vinculados*\n` +
             `꒰ 🔗 ꒱ Toca *Vincular dispositivo*\n` +
             `꒰ 📷 ꒱ امسح الـ QR اللي هبعتهولك~\n` +
-            `꒰ ⏳ ꒱ استنى un momento, حبيبي~\n\n` +
+            `꒰ ⏳ ꒱ استنى لحظة يا حبيبي~\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
@@ -282,7 +282,7 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                             notify(
                                 `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
                                 `꒰ ⏰ ꒱ Tiempo agotado, حبيبي~\n` +
-                                `꒰ 💔 ꒱ Usa *#code* o *#qr* para intentarlo de nuevo.\n\n` +
+                                `꒰ 💔 ꒱ استخدم *#code* أو *#qr* عشان تحاول تاني.\n\n` +
                                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                             )
                             m.react('💔')
@@ -310,9 +310,9 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                     await m.react('✅')
                     notify(
                         `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
-                        `꒰ ✅ ꒱ ¡Sub-bot *+${number}* conectado~! 💗\n` +
+                        `꒰ ✅ ꒱ ¡بوت فرعي *+${number}* اتوصل~! 💗\n` +
                         `꒰ 📊 ꒱ Activos: *${global.conns.length}/${MAX_SUBBOTS}*\n\n` +
-                        `꒰ 🌸 ꒱ ¡Bienvenido لعيلة Flash Bot MD~! 💕\n\n` +
+                        `꒰ 🌸 ꒱ أهلاً بيك في عيلة Flash Bot MD~! 💕\n\n` +
                         `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                     )
                     return
@@ -324,8 +324,8 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                         await cleanUp(true)
                         notify(
                             `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
-                            `꒰ 💔 ꒱ Sub-bot *+${number}* مقفول~\n` +
-                            `꒰ 🌸 ꒱ Usa *#code* o *#qr* عشان تعيد الربط.\n\n` +
+                            `꒰ 💔 ꒱ بوت فرعي *+${number}* مقفول~\n` +
+                            `꒰ 🌸 ꒱ استخدم *#code* أو *#qr* عشان تعيد الربط.\n\n` +
                             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                         )
                         return
@@ -338,7 +338,7 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                         notify(
                             `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
                             `꒰ 💔 ꒱ مش قدرت أعيد الربط *+${number}*~\n` +
-                            `꒰ 🌸 ꒱ Usa *#code* o *#qr* de nuevo.\n\n` +
+                            `꒰ 🌸 ꒱ استخدم *#code* أو *#qr* تاني.\n\n` +
                             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                         )
                         return

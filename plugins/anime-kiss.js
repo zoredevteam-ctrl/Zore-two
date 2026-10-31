@@ -26,11 +26,11 @@ const handler = async (m, { conn, db }) => {
 
         let str
         if (m.mentionedJid?.length > 0) {
-            str = `\`${name2}\` *le dio besos a* \`${name}\` *( ˘ ³˘)♥*`
+            str = `\`${name2}\` *باس* \`${name}\` *( ˘ ³˘)♥*`
         } else if (m.quoted) {
-            str = `\`${name2}\` *besó a* \`${name}\` 💋`
+            str = `\`${name2}\` *باس* \`${name}\` 💋`
         } else {
-            str = `\`${name2}\` *se besó a sí mismo ( ˘ ³˘)♥*`
+            str = `\`${name2}\` *باس نفسه ( ˘ ³˘)♥*`
         }
 
         const videos = [
@@ -68,7 +68,7 @@ const handler = async (m, { conn, db }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('💔 حبيبي, حصلت مشكلة enviando el beso~')
+        m.reply('💔 يا حبيبي، حصلت مشكلة وأنا ببعت البوسة~')
     }
 }
 

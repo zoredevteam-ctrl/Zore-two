@@ -29,7 +29,7 @@ const handler = async (m, { conn, who }) => {
     }
 
     if (!warns[target] || warns[target].count === 0) {
-        return m.reply('🌸 Este عضو no tiene advertencias حبيبي~')
+        return m.reply('🌸 العضو ده معندهوش انذارات يا حبيبي~')
     }
 
     warns[target].count--
@@ -42,7 +42,7 @@ const handler = async (m, { conn, who }) => {
     await conn.sendMessage(m.chat, {
         text:
             `💗 *Advertencia quitada* 𖤐\n\n` +
-            `ꕦ Usuario: @${target.split('@')[0]}\n` +
+            `ꕦ العضو: @${target.split('@')[0]}\n` +
             `ꙮ Advertencias: *${warns[target]?.count || 0}/3*`,
         mentions: [target]
     }, { quoted: m })

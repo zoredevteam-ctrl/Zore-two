@@ -10,15 +10,15 @@ let handler = async (m, { conn }) => {
     const seconds = Math.floor(runtime % 60)
 
     const infoText = `💗 *معلومات البوت - ${botname}* 🌸\n\n` +
-                     `✨ *Nombre:* ${botname}\n` +
+                     `✨ *الاسم:* ${botname}\n` +
                      `✨ *Prefijo:* ${prefix}\n` +
-                     `✨ *Versión:* ${version}\n` +
+                     `✨ *الإصدار:* ${version}\n` +
                      `✨ *Tiempo activo:* ${hours}h ${minutes}m ${seconds}s\n` +
                      `✨ *اتعمل بواسطة:* 𝖍𝖆𝖎𝖙𝖍𝖆𝖒\n` +
                      `✨ *Repo GitHub:* https://github.com/dwhhhg8-code/Zore-two\n` +
                      `✨ *Canal oficial:* https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y\n\n` +
-                     `¡Soy tu ويفو favorita lista para ayudarte حبيبي\~! 💕\n` +
-                     `¿Qué quieres hacer hoy? 🌸`
+                     `¡أنا الويفو المفضلة بتاعتك جاهزة أساعدك حبيبي\~! 💕\n` +
+                     `عايز تعمل إيه النهاردة؟ 🌸`
 
     await m.reply(infoText)
     await m.react('💗')

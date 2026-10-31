@@ -1,0 +1,14 @@
+{
+  "users": {},
+  "groups": {},
+  "settings": {
+    "mode": "public",
+    "welcome": true,
+    "antilink": false,
+    "antispam": false
+  },
+  "stats": {
+    "totalCommands": 0,
+    "startTime": 1793447152020
+  }
+}

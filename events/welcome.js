@@ -20,10 +20,10 @@ export const run = async (conn, update) => {
             const user = participant.split('@')[0]
 
             const texto =
-                `🌸💗 *¡KYAAAAAH~!!* 💗🌸\n\n` +
+                `🌸💗 *كياااه~!!* 💗🌸\n\n` +
                 `بص كده! *حبيبي* لسه داخل جنتي الوردية~ 😼\n\n` +
-                `¡Bienvenido/a @${user}!! ♡\n\n` +
-                `¡Estoy tan feliz de tenerte aquí conmigo, mi حبيبي más especial! Kyaaah~ Ven aquí, no te escapes 🌷💗`
+                `أهلاً بيك @${user}!! ♡\n\n` +
+                `أنا سعيدة أوي إني معاياك هنا يا حبيبي المميز! كياااه~ تعال هنا، ماتجريش بعيد 🌷💗`
 
             await conn.sendMessage(id, {
                 image: { url: ppuser },

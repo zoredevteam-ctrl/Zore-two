@@ -25,7 +25,7 @@ let handler = async (m, { conn, isAdmin, isBotAdmin, text }) => {
         if (isAdmin) return m.reply('🛡️ *Anti-Link:* انت أدمن، مش هطردك بس بلاش سپام، حبيبي~')
         if (!isBotAdmin) return m.reply('⚠️ أنا مش أدمن، مش قادر أطرد السپامر.')
 
-        await m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n🚫 *لينك مكتشف*\nسلام, حبيبي. Las reglas son claras.`)
+        await m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n🚫 *لينك مكتشف*\nسلام, حبيبي. القوانين واضحة.`)
         
         // Borrar mensaje
         await conn.sendMessage(m.chat, { delete: m.key })

@@ -6,7 +6,7 @@ let handler = async (m, { conn }) => {
 
     if (!mime || !/webp/.test(mime)) {
         await m.react('🌸')
-        return m.reply('💗 *رد على ملصق* حبيبي\~ para convertirlo en foto normal\n\nEjemplo: responde al sticker y escribe #toimg')
+        return m.reply('💗 *رد على ملصق* حبيبي\~ عشان تحوّله صورة عادية\n\nمثال: رد على الملصق واكتب #toimg')
     }
 
     await m.react('🍬')
@@ -26,7 +26,7 @@ let handler = async (m, { conn }) => {
     } catch (e) {
         console.error('❌ TOIMG ERROR:', e)
         await m.react('💔')
-        m.reply('💔 Uy حبيبي... este sticker se resistió un poquito\~\nPrueba con otro no me dejes sola 🌸')
+        m.reply('💔 أوه حبيبي... الملصق ده قاوم شوية\~\nجرّب واحد تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 
