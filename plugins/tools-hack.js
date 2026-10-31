@@ -112,7 +112,7 @@ const COUNTRY_FALLBACK = {
     '675': { op: 'Digicel PG',         asn: 'AS38022',  subnet: '203.87',  rdns: '{ip}.digicel.com.pg',             tz: 'Pacific/Port_Moresby',              country: 'Papúa Nueva Guinea',flag: '🇵🇬' },
 }
 
-// ── Prefijos locales por operador (número sin código de país) ───
+// ── البادئات المحلية لكل مشغّل (رقم بدون كود الدولة) ───
 const OPERATOR_MAP = {
     // Colombia (cc: 57)
     '3001': { op: 'Claro Colombia',     asn: 'AS13489',  subnet: '181.49',  rdns: 'mobile-{ip}.claro.net.co'        },
@@ -255,7 +255,7 @@ function detectNetwork(phone) {
     if (!countryCode) return {
         op: 'Unknown ISP', asn: 'AS0000', subnet: '192.168.1',
         rdns: '{ip}.unknown.net', tz: 'UTC',
-        country: 'Desconocido', flag: '🌐'
+        country: 'مجهول', flag: '🌐'
     }
 
     // Paso 2: buscar operador por prefijo local (4 → 1 dígito)

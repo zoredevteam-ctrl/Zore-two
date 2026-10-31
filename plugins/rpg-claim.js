@@ -10,7 +10,7 @@ const handler = async (m, { conn, db }) => {
     if (!global.waifuSpawns?.has(chat)) {
         return conn.sendMessage(chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 مفيش أي ويفو مستنية، حبيبي~\n` +
+                  `🌸 مفيش أي ويفو مستني، يا غالي~\n` +
                   `⟡ استخدم *#rw* عشان تستدعي واحدة 💕`
         }, { quoted: m })
     }

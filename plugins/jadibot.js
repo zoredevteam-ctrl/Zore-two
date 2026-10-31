@@ -79,7 +79,7 @@ const preCheck = async (m, conn, number) => {
     if (active.length >= MAX_SUBBOTS) {
         await sendStyled(conn, m,
             `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
-            `꒰ 💔 ꒱ وصلت الحد، حبيبي~\n` +
+            `꒰ 💔 ꒱ وصلت الحد، يا غالي~\n` +
             `꒰ 📊 ꒱ Activos: *${active.length}/${MAX_SUBBOTS}*\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
@@ -90,7 +90,7 @@ const preCheck = async (m, conn, number) => {
         await sendStyled(conn, m,
             `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
             `꒰ ⏳ ꒱ بجهّز جلستك~\n` +
-            `꒰ 🌸 ꒱ Ten paciencia, حبيبي~ 💕\n\n` +
+            `꒰ 🌸 ꒱ استنى شوية, يا غالي~ 💕\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         return false
@@ -99,7 +99,7 @@ const preCheck = async (m, conn, number) => {
     if (active.find(c => c._number === number)) {
         await sendStyled(conn, m,
             `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
-            `꒰ ✅ ꒱ عندك بوت فرعي شغال بالفعل، حبيبي~\n\n` +
+            `꒰ ✅ ꒱ عندك بوت فرعي شغال بالفعل، يا غالي~\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         return false
@@ -119,7 +119,7 @@ const handler = async (m, { conn, plugins, prefix }) => {
     if (active.length >= MAX_SUBBOTS) {
         return sendStyled(conn, m,
             `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
-            `꒰ 💔 ꒱ وصلت الحد، حبيبي~\n` +
+            `꒰ 💔 ꒱ وصلت الحد، يا غالي~\n` +
             `꒰ 📊 ꒱ Activos: *${active.length}/${MAX_SUBBOTS}*\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
@@ -136,7 +136,7 @@ const handler = async (m, { conn, plugins, prefix }) => {
             return sendStyled(conn, m,
                 `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
                 `꒰ ⏳ ꒱ بجهّز جلستك~\n` +
-                `꒰ 🌸 ꒱ Ten paciencia, حبيبي~ 💕\n\n` +
+                `꒰ 🌸 ꒱ استنى شوية, يا غالي~ 💕\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
@@ -145,7 +145,7 @@ const handler = async (m, { conn, plugins, prefix }) => {
     if (active.find(c => c._number === number)) {
         return sendStyled(conn, m,
             `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
-            `꒰ ✅ ꒱ عندك بوت فرعي شغال بالفعل، حبيبي~\n\n` +
+            `꒰ ✅ ꒱ عندك بوت فرعي شغال بالفعل، يا غالي~\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
@@ -162,7 +162,7 @@ const handler = async (m, { conn, plugins, prefix }) => {
             `꒰ 📱 ꒱ Abre WhatsApp → *Dispositivos vinculados*\n` +
             `꒰ 🔗 ꒱ Toca *الربط بالرقم*\n` +
             `꒰ ⌨️ ꒱ اكتب الكود اللي هبعتهولك~\n` +
-            `꒰ ⏳ ꒱ استنى لحظة يا حبيبي~\n\n` +
+            `꒰ ⏳ ꒱ استنى لحظة يا غالي~\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     } else if (useQR) {
@@ -171,7 +171,7 @@ const handler = async (m, { conn, plugins, prefix }) => {
             `꒰ 📱 ꒱ Abre WhatsApp → *Dispositivos vinculados*\n` +
             `꒰ 🔗 ꒱ Toca *Vincular dispositivo*\n` +
             `꒰ 📷 ꒱ امسح الـ QR اللي هبعتهولك~\n` +
-            `꒰ ⏳ ꒱ استنى لحظة يا حبيبي~\n\n` +
+            `꒰ ⏳ ꒱ استنى لحظة يا غالي~\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
@@ -256,7 +256,7 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                                     `╔══「 📷 امسح الـ QR 」══╗\n\n` +
                                     `꒰ 📱 ꒱ WhatsApp → *Dispositivos vinculados*\n` +
                                     `꒰ 🔗 ꒱ Toca *Vincular dispositivo* y escanea~\n` +
-                                    `꒰ ⏳ ꒱ Expira en *45 segundos*, حبيبي~\n\n` +
+                                    `꒰ ⏳ ꒱ هينتهي في *45 ثانية*, يا غالي~\n\n` +
                                     `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                             }, { quoted: m })
                             await m.react('📷')
@@ -281,7 +281,7 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                             await cleanUp(false)
                             notify(
                                 `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
-                                `꒰ ⏰ ꒱ Tiempo agotado, حبيبي~\n` +
+                                `꒰ ⏰ ꒱ Tiempo agotado, يا غالي~\n` +
                                 `꒰ 💔 ꒱ استخدم *#code* أو *#qr* عشان تحاول تاني.\n\n` +
                                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
                             )

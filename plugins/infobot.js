@@ -1,27 +1,27 @@
 let handler = async (m, { conn }) => {
-    await m.react('🍬')
+    await m.react('⚡')
 
-    const botname = global.botname || 'Zore Two'
-    const prefix = global.prefix || '#'
-    const version = 'v2.0'  // cámbiala cuando actualices
+    const botname = global.botname || 'Flash Bot MD'
+    const prefix  = global.prefix  || '.'
+    const version = global.botVersion || '1.0.0'
     const runtime = process.uptime()
-    const hours = Math.floor(runtime / 3600)
+    const hours   = Math.floor(runtime / 3600)
     const minutes = Math.floor((runtime % 3600) / 60)
     const seconds = Math.floor(runtime % 60)
 
-    const infoText = `💗 *معلومات البوت - ${botname}* 🌸\n\n` +
+    const infoText = `⚡ *معلومات البوت - ${botname}* ⚡\n\n` +
                      `✨ *الاسم:* ${botname}\n` +
-                     `✨ *Prefijo:* ${prefix}\n` +
+                     `✨ *البادئة:* ${prefix}\n` +
                      `✨ *الإصدار:* ${version}\n` +
-                     `✨ *Tiempo activo:* ${hours}h ${minutes}m ${seconds}s\n` +
-                     `✨ *اتعمل بواسطة:* 𝖍𝖆𝖎𝖙𝖍𝖆𝖒\n` +
-                     `✨ *Repo GitHub:* https://github.com/dwhhhg8-code/Zore-two\n` +
-                     `✨ *Canal oficial:* https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y\n\n` +
-                     `أنا الويفو المفضلة بتاعتك جاهزة أساعدك حبيبي\~! 💕\n` +
-                     `عايز تعمل إيه النهاردة؟ 🌸`
+                     `✨ *مدة التشغيل:* ${hours}س ${minutes}د ${seconds}ث\n` +
+                     `✨ *المطوّر:* 𝖍𝖆𝖎𝖙𝖍𝖆𝖒\n` +
+                     `✨ *المكتبة:* ${global.libreria || 'bails'} ${global.baileys || ''}\n` +
+                     `✨ *الريبو:* ${global.gitHubRepo || ''}\n` +
+                     `✨ *القناة:* ${global.rcanal || ''}\n\n` +
+                     `أنا Flash Bot MD جاهز أساعدك يا غالي! ⚡`
 
     await m.reply(infoText)
-    await m.react('💗')
+    await m.react('⚡')
 }
 
 handler.help = ['infobot', 'botinfo']

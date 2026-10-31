@@ -15,17 +15,17 @@ let handler = async (m, { conn, isAdmin, isBotAdmin, text }) => {
     // Comando para activar/desactivar: #antilink on/off
     if (isAdmin && (text === 'on' || text === 'off')) {
         database.data.groups[m.chat].antilink = (text === 'on')
-        return m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n🛡️ *Anti-Link ${text === 'on' ? 'Activado' : 'Desactivado'}*\n${text === 'on' ? 'Expulsaré a cualquiera que envíe enlaces de grupos.' : 'Ya pueden enviar enlaces con libertad.'}`)
+        return m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n🛡️ *مضاد اللينك ${text === 'on' ? 'مفعّل' : 'متعطّل'}*\n${text === 'on' ? 'هطرد أي حد يبعت لينك جروب.' : 'ممكن يبعتوا لينكات بحرية.'}`)
     }
 
     // Lógica de detección
     const isGroupLink = linkRegex.test(m.body)
     
     if (isGroupLink && database.data.groups[m.chat].antilink) {
-        if (isAdmin) return m.reply('🛡️ *Anti-Link:* انت أدمن، مش هطردك بس بلاش سپام، حبيبي~')
+        if (isAdmin) return m.reply('🛡️ *Anti-Link:* انت أدمن، مش هطردك بس بلاش سپام، يا غالي~')
         if (!isBotAdmin) return m.reply('⚠️ أنا مش أدمن، مش قادر أطرد السپامر.')
 
-        await m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n🚫 *لينك مكتشف*\nسلام, حبيبي. القوانين واضحة.`)
+        await m.reply(`✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n🚫 *لينك مكتشف*\nسلام, يا غالي. القوانين واضحة.`)
         
         // Borrar mensaje
         await conn.sendMessage(m.chat, { delete: m.key })

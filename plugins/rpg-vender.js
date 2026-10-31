@@ -7,7 +7,7 @@ const handler = async (m, { conn, args, db }) => {
 
     if (!db.waifus?.[sender]?.coleccion?.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو تبيعها، حبيبي~ 💔\n⟡ استخدم *#rw* عشان تجيب واحدة 💕`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو تبيعها، يا غالي~ 💔\n⟡ استخدم *#rw* عشان تجيب واحدة 💕`
         }, { quoted: m })
     }
 
@@ -46,7 +46,7 @@ const handler = async (m, { conn, args, db }) => {
 
     const nota = waifu.duplicado
         ? `♻️ _كانت مكررة — اتباعت بالسعر الكامل_`
-        : `💡 _السعر اتخصم 60% لأنها فريدة. احتفظ بالخاصة، حبيبي~!_`
+        : `💡 _السعر اتخصم 60% لأنها فريدة. احتفظ بالخاصة، يا غالي~!_`
 
     const caption =
         `${waifu.rareza.color} *تم بيع ويفو!* ${waifu.rareza.color}\n\n` +

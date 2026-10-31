@@ -9,7 +9,7 @@ let handler = async (m, { conn, who, prefix }) => {
     if (!who) {
         return conn.sendMessage(m.chat, {
             text: `╔══「 🩸 𝕵𝖚𝖎𝖈𝖎𝖔 𝖉𝖊 𝕶𝖎𝖗𝖆 」══╗\n\n` +
-                  `꒰ 👁️ ꒱ محتاج هدف، حبيبي~\n` +
+                  `꒰ 👁️ ꒱ محتاج هدف، يا غالي~\n` +
                   `⟡ الاستخدام: *${prefix}kira @عضو*\n\n` +
                   `╚══「 💕 © 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎 」══╝`
         }, { quoted: m })

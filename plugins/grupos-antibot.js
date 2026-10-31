@@ -16,7 +16,7 @@ let handler = async (m, { conn, args, isAdmin, isOwner, db }) => {
     }
 
     if (accion === 'on') {
-        if (chat.antibot) return m.reply('🌸💗 *مضاد البوت كان مفعّل بالفعل يا حبيبي!*')
+        if (chat.antibot) return m.reply('🌸💗 *مضاد البوت كان مفعّل بالفعل يا غالي!*')
         chat.antibot = true
         await database.save()
 
@@ -55,7 +55,7 @@ let handler = async (m, { conn, args, isAdmin, isOwner, db }) => {
         if (!chat.antibot) return m.reply('🌸 *مضاد البوت كان معطّل بالفعل.*')
         chat.antibot = false
         await database.save()
-        return m.reply('🌸 *AntiBot معطّل...* اتمنى ميدخلوش روبوتات مزعجة، حبيبي~ 💔')
+        return m.reply('🌸 *AntiBot معطّل...* اتمنى ميدخلوش روبوتات مزعجة، يا غالي~ 💔')
     }
 }
 

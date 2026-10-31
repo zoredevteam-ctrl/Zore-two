@@ -8,7 +8,7 @@ let handler = async (m, { conn, args }) => {
     let url = args[0] || (m.quoted && m.quoted.text ? m.quoted.text.trim() : '')
     
     if (!url || !url.includes('tiktok.com')) {
-        return m.reply('💗 *حبيبي, محتاج لينك تيك توك.*\n\nمثال: `#enviartt https://vt.tiktok.com/...` أو رد على لينك بالأمر.')
+        return m.reply('💗 *يا غالي, محتاج لينك تيك توك.*\n\nمثال: `#enviartt https://vt.tiktok.com/...` أو رد على لينك بالأمر.')
     }
 
     await m.react('⏳')

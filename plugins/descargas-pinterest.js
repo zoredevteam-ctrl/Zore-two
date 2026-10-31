@@ -54,7 +54,7 @@ async function sendAlbumMessage(conn, jid, medias, options = {}) {
 
 let handler = async (m, { conn, args, prefix }) => {
     const text = args.join(' ')
-    if (!text) return m.reply(`💗 حبيبي, قولي أدور على إيه~\n> مثال: ${prefix}pinterest Flash Bot MD`)
+    if (!text) return m.reply(`💗 يا غالي, قولي أدور على إيه~\n> مثال: ${prefix}pinterest Flash Bot MD`)
 
     await m.react('⏳')
     await m.reply('🌸 بدور على صور في بنترست، استنى لحظة~')
@@ -67,7 +67,7 @@ let handler = async (m, { conn, args, prefix }) => {
         const data = await res.json()
 
         if (!data.status || !Array.isArray(data.result) || data.result.length < 2) {
-            return m.reply('💔 مالقيتش صور كفاية، حبيبي... جرّب بحث تاني~')
+            return m.reply('💔 مالقيتش صور كفاية، يا غالي... جرّب بحث تاني~')
         }
 
         const images = data.result.slice(0, 10).map(img => ({
@@ -81,7 +81,7 @@ let handler = async (m, { conn, args, prefix }) => {
     } catch (error) {
         console.error('خطأ في pinterest:', error)
         await m.react('💔')
-        await m.reply(`💔 حبيبي, حصلت مشكلة... [خطأ: ${error.message}]`)
+        await m.reply(`💔 يا غالي, حصلت مشكلة... [خطأ: ${error.message}]`)
     }
 }
 

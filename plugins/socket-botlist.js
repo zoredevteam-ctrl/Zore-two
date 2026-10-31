@@ -35,9 +35,9 @@ const handler = async (m, { conn, isOwner }) => {
   let lista = `✦ Flash Bot MD\n\n  ◆ SubBots conectados › ${active.length}\n\n`
 
   active.forEach((sock, i) => {
-    const nombre = sock.user?.name || sock.user?.verifiedName || 'Desconocido'
+    const nombre = sock.user?.name || sock.user?.verifiedName || 'مجهول'
     const phone = getPhone(sock.user?.jid)
-    const uptime = sock.startTime ? msToUptime(now - sock.startTime) : 'Desconocido'
+    const uptime = sock.startTime ? msToUptime(now - sock.startTime) : 'مجهول'
     const link = phone ? `https://wa.me/${phone}` : 'N/A'
 
     lista += `  ${i + 1}. ${nombre}\n`

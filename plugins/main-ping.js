@@ -3,14 +3,14 @@ import { exec } from 'child_process'
 
 let handler = async (m, { conn }) => {
     let timestamp = speed()
-    let sentMsg = await m.reply('🌸 *همف... بحسب قوتي, حبيبي~*')
+    let sentMsg = await m.reply('🌸 *... بحسب قوتي, يا غالي~*')
     let latency = speed() - timestamp
 
     exec('neofetch --stdout', (error, stdout, stderr) => {
         let child = stdout.toString('utf-8')
         let ssd = child.replace(/Memory:/, 'Ram:')
 
-        let result = `🍬 *بونج، حبيبي~!* 🏓🌸\n💢 Velocidad ⴵ ${latency.toFixed(4).split('.')[0]}ms\n${ssd}`
+        let result = `🍬 *بونج، يا غالي~!* 🏓🌸\n💢 Velocidad ⴵ ${latency.toFixed(4).split('.')[0]}ms\n${ssd}`
         conn.sendMessage(m.chat, { text: result, edit: sentMsg.key }, { quoted: m })
     })
 }

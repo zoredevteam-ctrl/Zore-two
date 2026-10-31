@@ -9,7 +9,7 @@ const handler = async (m, { conn, args, db }) => {
     if (!mention || mention === sender) {
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 منشن اللي عايز تهديه الويفو، حبيبي~\n` +
+                  `🌸 منشن اللي عايز تهديه الويفو، يا غالي~\n` +
                   `⟡ الاستخدام: *#dar @عضو <رقم الويفو>*\n` +
                   `⟡ استخدم *#col* عشان تشوف أرقام مجموعتك 💕`
         }, { quoted: m })
@@ -20,7 +20,7 @@ const handler = async (m, { conn, args, db }) => {
 
     if (!db.waifus?.[sender]?.coleccion?.length) {
         return conn.sendMessage(m.chat, {
-            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو عشان تهدي يا حبيبي~ 💔`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 معندكش ويفو عشان تهدي يا غالي~ 💔`
         }, { quoted: m })
     }
 
@@ -57,7 +57,7 @@ const handler = async (m, { conn, args, db }) => {
         `💗 *${nombreDe}* اهدى لـ *${nombrePara}*~\n\n` +
         `✨ *${waifu.nombre}*\n` +
         `${waifu.rareza.stars} *${waifu.rareza.nombre}*\n\n` +
-        `💕 يا جمال الحركة دي يا حبيبي~! © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
+        `💕 يا جمال الحركة دي يا غالي~! © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
     await conn.sendMessage(m.chat, {
         image: { url: waifu.imageUrl },

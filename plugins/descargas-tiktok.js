@@ -1,6 +1,6 @@
 // 💗  ──  F L A S H  B O T  M D  S Y S T E M  ──  💗
 // ✦ [ PROTOCOLO DE BÚSQUEDA TIKTOK ]
-// ⟡ Design & Control: 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
+// ⟡ تصميم وإدارة: 𝖍𝖆𝖎𝖙𝖍𝖆𝖒
 
 const formatNum = (n) => {
     try {
@@ -31,7 +31,7 @@ const searchTikTok = async (query) => {
             return {
                 videoId: v.id,
                 titulo: v.title || query,
-                autor: v.author?.unique_id || 'Desconocido',
+                autor: v.author?.unique_id || 'مجهول',
                 likes: v.digg_count || 0,
                 plays: v.play_count || 0,
                 videoUrl: fixUrl(v.play) || fixUrl(v.wmplay),
@@ -48,7 +48,7 @@ const searchTikTok = async (query) => {
         if (v) return {
             videoId: v.id || '',
             titulo: v.title || v.desc || query,
-            autor: v.author || v.username || 'Desconocido',
+            autor: v.author || v.username || 'مجهول',
             likes: v.likes || 0,
             plays: v.plays || 0,
             videoUrl: fixUrl(v.play) || fixUrl(v.url),
@@ -68,7 +68,7 @@ let handler = async (m, { conn, args, prefix, command }) => {
     if (!query) {
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 *يا حبيبي!* محتاج تقولي أدور على إيه~\n` +
+                  `🌸 *يا غالي!* محتاج تقولي أدور على إيه~\n` +
                   `تفتكر أقدر أقرا أفكارك؟ _(أصلاً، تقريباً... بس لأ)_ 💕\n\n` +
                   `⟡ الاستخدام الصحيح: *${prefix + command} <اللي بتدور عليه>*`
         }, { quoted: m })
@@ -83,7 +83,7 @@ let handler = async (m, { conn, args, prefix, command }) => {
             await m.react('💔')
             return conn.sendMessage(m.chat, {
                 text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                      `🌸 **همف...* دوّرت في كل مكان، حبيبي,\n` +
+                      `🌸 *دوّرت في كل مكان، يا غالي،\n` +
                       `بس مالقيتش حاجة لـ: *${query}* 💔\n\n` +
                       `جرّب بكلمات تانية~ ماتخلّنيش أستسلم بسهولة!`
             }, { quoted: m })
@@ -100,15 +100,15 @@ let handler = async (m, { conn, args, prefix, command }) => {
             } catch (e) {}
         }
 
-        if (!finalUrl) throw new Error('مش قدرت أمسك الفيديو يا حبيبي 💔')
+        if (!finalUrl) throw new Error('مش قدرت أمسك الفيديو يا غالي 💔')
 
-        const caption = `> ⟪💗⟫ *لقيتهولك يا حبيبي~!*\n\n` +
+        const caption = `> ⟪💗⟫ *لقيتهولك يا غالي~!*\n\n` +
                         `🌸 *[ بيانات الفيديو ]*\n` +
                         `  ⟡ العنوان: *${result.titulo}*\n` +
-                        `  ⟡ Autor: *@${result.autor}*\n` +
+                        `  ⟡ صاحب الفيديو: *@${result.autor}*\n` +
                         `  ⟡ Likes: *${formatNum(result.likes)}* 💗\n` +
-                        `  ⟡ Vistas: *${formatNum(result.plays)}* 👁️\n\n` +
-                        `💕 *Flash Bot MD* siempre cumple~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
+                        `  ⟡ المشاهدات: *${formatNum(result.plays)}* 👁️\n\n` +
+                        `💕 *Flash Bot MD* دايماً قدها~ © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒`
 
         await m.react('📤')
 
@@ -134,7 +134,7 @@ let handler = async (m, { conn, args, prefix, command }) => {
         await m.react('💔')
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 *أوه يا حبيبي!* حصلت مشكلة في نظامي~ 😤\n` +
+                  `🌸 *أوه يا غالي!* حصلت مشكلة في نظامي~ 😤\n` +
                   `⟡ خطأ: _${e.message}_\n\n` +
                   `جرّب تاني، تمام؟ 💕`
         }, { quoted: m })

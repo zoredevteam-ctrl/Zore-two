@@ -24,7 +24,7 @@ export const run = async (conn, update) => {
                 caption:
                     `「 👋 *وداعاً* 」\n\n` +
                     `✦ @${user} لسه خارج من الجروب.\n\n` +
-                    `❝ بالتوفيق في طريقك، حبيبي~ 🌷 ❞`,
+                    `❝ بالتوفيق في طريقك، يا غالي~ 🌷 ❞`,
                 mentions: [participant]
             })
         }

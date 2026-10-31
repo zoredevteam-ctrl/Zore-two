@@ -9,7 +9,7 @@ let handler = async (m, { conn }) => {
         const files = fs.readdirSync(pluginsDir).filter(file => file.endsWith('.js'))
 
         let response = `✨ *كشف الأخطاء - Flash Bot MD* ✨\n\n`
-        response += `🌸 Revisando ${files.length} ملفات, حبيبي...\n`
+        response += `🌸 Revisando ${files.length} ملفات, يا غالي...\n`
         response += `━━━━━━━━━━━━━━━━━━━\n\n`
 
         let hasErrors = false
@@ -23,7 +23,7 @@ let handler = async (m, { conn }) => {
                 errorCount++
                 const stackLines = error.stack.split('\n')
                 const errorLineMatch = stackLines[0].match(/:(\d+):\d+/)
-                const errorLine = errorLineMatch ? errorLineMatch[1] : 'Desconocido'
+                const errorLine = errorLineMatch ? errorLineMatch[1] : 'مجهول'
 
                 response += `💔 *خطأ encontrado*\n\n`
                 response += `📁 *الملف:* ${file}\n`
@@ -34,21 +34,21 @@ let handler = async (m, { conn }) => {
         }
 
         if (!hasErrors) {
-            response += `🌸 *كله تمام، حبيبي!*\n\n`
+            response += `🌸 *كله تمام، يا غالي!*\n\n`
             response += `✨ مفيش أخطاء في الصياغة\n`
             response += `💗 كل الـ ${files.length} ملفات شغالة صح~`
         } else {
             response += `💢 *ملخص الأخطاء:*\n\n`
             response += `❌ إجمالي الأخطاء: ${errorCount}\n`
             response += `📂 Archivos revisados: ${files.length}\n`
-            response += `💗 راجع الملفات المذكورة، حبيبي~`
+            response += `💗 راجع الملفات المذكورة، يا غالي~`
         }
 
         await m.reply(response)
         await m.react(hasErrors ? '💔' : '💗')
     } catch (err) {
         await m.react('💔')
-        await m.reply(`💔 حبيبي, حصلت مشكلة...\n\n📝 *خطأ:* ${err.message}`)
+        await m.reply(`💔 يا غالي, حصلت مشكلة...\n\n📝 *خطأ:* ${err.message}`)
     }
 }
 

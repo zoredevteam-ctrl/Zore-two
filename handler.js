@@ -80,7 +80,7 @@ setInterval(() => {
 // ── Anti-duplicate: ignorar mensajes ya procesados ───────────────────────────
 
 const processedMsgs = new Set()
-const MSG_TTL = 30_000 // 30 segundos
+const MSG_TTL = 30_000 // 30 ثانية
 
 function isDuplicate(msgId) {
     if (!msgId) return false

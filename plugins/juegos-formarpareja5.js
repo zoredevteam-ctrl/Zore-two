@@ -1,7 +1,7 @@
 let handler = async (m, { conn }) => {
     if (!m.isGroup) {
         await m.react('💔')
-        return m.reply('💔 الأمر ده بيشتغل في الجروبات بس حبيبي\~')
+        return m.reply('💔 الأمر ده بيشتغل في الجروبات بس يا غالي\~')
     }
 
     await m.react('🍬')
@@ -43,7 +43,7 @@ let handler = async (m, { conn }) => {
     } catch (e) {
         console.error('❌ FORMARPAREJA5 ERROR:', e)
         await m.react('💔')
-        m.reply('💔 أوه حبيبي... مش قدرت أعمل الثنائيات المرة دي\~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
+        m.reply('💔 أوه يا غالي... مش قدرت أعمل الثنائيات المرة دي\~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 

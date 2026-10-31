@@ -68,7 +68,7 @@ const handler = async (m, { conn, db }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('💔 يا حبيبي، حصلت مشكلة وأنا ببعت البوسة~')
+        m.reply('💔 يا غالي، حصلت مشكلة وأنا ببعت البوسة~')
     }
 }
 

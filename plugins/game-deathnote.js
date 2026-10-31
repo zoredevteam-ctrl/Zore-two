@@ -4,7 +4,7 @@
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
-// Obtiene thumbnail como Buffer para que Baileys lo muestre correctamente
+// يجهّز الـ thumbnail كـ Buffer عشان Baileys يعرضه صح
 const getThumbBuffer = async () => {
     try {
         const src = global.icon || global.avatar || global.banner
@@ -52,7 +52,7 @@ let handler = async (m, { conn, args, text, db }) => {
     if (!who) {
         return m.reply(
             `╔══「 📓 𝕯𝖊𝖆𝖙𝖍 𝕹𝖔𝖙𝖊 」══╗\n\n` +
-            `꒰ 💀 ꒱ محتاج ضحية، حبيبي~\n` +
+            `꒰ 💀 ꒱ محتاج ضحية، يا غالي~\n` +
             `⟡ الاستخدام: *#dn @عضو <causa>*\n\n` +
             `╚══「 🩸 © 𝒁𝒐𝒓𝒆𝑫𝒆𝒗𝑻𝒆𝒂𝒎 」══╝`
         )

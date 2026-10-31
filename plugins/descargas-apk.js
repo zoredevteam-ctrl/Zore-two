@@ -4,7 +4,7 @@ let handler = async (m, { conn, args, prefix }) => {
 
     if (!text) {
         const menu = `🌸💗 *كياااه~!!* 💗🌸\n\n` +
-            `حبيبي عايز APK خاص؟ 🥰\n` +
+            `يا غالي عايز APK خاص؟ 🥰\n` +
             `قولي اسم التطبيق وأنا هجيبلك أحسن مواقع تحميله فوراً ♡\n\n` +
             `*Ejemplos:*\n` +
             `• ${prefix}apk whatsapp plus\n` +
@@ -19,15 +19,15 @@ let handler = async (m, { conn, args, prefix }) => {
 
     const q = encodeURIComponent(text)
 
-    const texto = `🌸💗 *بحث الـ APK جاهز يا حبيبي!* 💗🌸\n\n` +
-        `Buscando *"${text}"* ليك لوحدك، يا حبيبي الأغلى عندي~ 🥰\n\n` +
+    const texto = `🌸💗 *بحث الـ APK جاهز يا غالي!* 💗🌸\n\n` +
+        `ببحث عن *"${text}"* ليك لوحدك، يا غالي الأغلى عندي~ 🥰\n\n` +
         `🌷 *اختار موقعك المفضل:*\n\n` +
         `🔸 *Uptodown* (الأأمن والأسرع)\nhttps://uptodown.com/android/search?q=${q}\n\n` +
         `🔸 *APKPure* (muchas versiones)\nhttps://apkpure.com/search?q=${q}\n\n` +
         `🔸 *APKCombo* (كل الإصدارات)\nhttps://apkcombo.com/search?q=${q}\n\n` +
         `🔸 *Aptoide* (سهل التثبيت)\nhttps://aptoide.com/search?query=${q}\n\n` +
         `حمّل من المواقع الموثوقة دي بس! لو عايزني أرشحلك أحسن نسخة أو أساعدك في حاجة تانية، قولي وأنا أطير ليك ♡\n\n` +
-        `بخبّيك دايماً يا حبيبي... ماتعديش تاني، تمام؟ 🌷💗`
+        `بخبّيك دايماً يا غالي... ماتعديش تاني، تمام؟ 🌷💗`
 
     await m.reply(texto)
 }

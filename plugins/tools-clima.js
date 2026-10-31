@@ -4,7 +4,7 @@ let handler = async (m, { args }) => {
     let ciudad = args.join(' ').trim()
     if (!ciudad) {
         await m.react('🌸')
-        return m.reply('💗 اكتب اسم المدينة بعد الأمر حبيبي\~\nمثال: *#clima القاهرة*')
+        return m.reply('💗 اكتب اسم المدينة بعد الأمر يا غالي\~\nمثال: *#clima القاهرة*')
     }
 
     await m.react('🍬')
@@ -22,7 +22,7 @@ let handler = async (m, { args }) => {
 
         const texto = `💗 *الطقس في ${ciudad.toUpperCase()}* 🌸\n\n` +
                       `${data}\n\n` +
-                      `Flash Bot MD بتتمنالك يوم جميل يا حبيبي\~! 💕`
+                      `Flash Bot MD بتتمنالك يوم جميل يا غالي\~! 💕`
 
         await m.reply(texto)
         await m.react('💗')
@@ -30,7 +30,7 @@ let handler = async (m, { args }) => {
     } catch (e) {
         console.error(e)
         await m.react('💔')
-        m.reply('💔 أوه حبيبي... مش قدرت أجيب طقس المدينة دي\~\nجرّب اسم تاني')
+        m.reply('💔 أوه يا غالي... مش قدرت أجيب طقس المدينة دي\~\nجرّب اسم تاني')
     }
 }
 

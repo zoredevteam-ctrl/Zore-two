@@ -6,9 +6,9 @@ let handler = async (m, { conn, args, command }) => {
 
     if (!opciones.includes(usuario)) {
         await m.react('🌸')
-        return m.reply(`💗 *خلينا نلعب حجر ورقة مقص يا حبيبي!* 🌸\n\n` +
+        return m.reply(`💗 *خلينا نلعب حجر ورقة مقص يا غالي!* 🌸\n\n` +
                        `استخدم: *#ppt حجر* | *#ppt ورقة* | *#ppt مقص*\n\n` +
-                       `Flash Bot MD مستنياك تلعب\~ 💕`)
+                       `Flash Bot MD مستنيك تلعب\~ 💕`)
     }
 
     const bot = opciones[Math.floor(Math.random() * opciones.length)]
@@ -18,20 +18,20 @@ let handler = async (m, { conn, args, command }) => {
 
     if (usuario === bot) {
         resultado = 'تعادل! 💗'
-        frase = 'إحنا شبه بعض أوي يا حبيبي\~ 😘'
+        frase = 'إحنا شبه بعض أوي يا غالي\~ 😘'
     } else if (
         (usuario === 'piedra' && bot === 'tijera') ||
         (usuario === 'papel' && bot === 'piedra') ||
         (usuario === 'tijera' && bot === 'papel')
     ) {
         resultado = 'كسبت! 🎉'
-        frase = 'آه لأ كسبتني يا حبيبي! انت قوي أوي\~ 💞'
+        frase = 'آه لأ كسبتني يا غالي! انت قوي أوي\~ 💞'
     } else {
         resultado = 'خسرت! 💔'
-        frase = 'هههه كسبتك يا حبيبي! المرة الجاية هسيبك تكسب\~ 🍬'
+        frase = 'هههه كسبتك يا غالي! المرة الجاية هسيبك تكسب\~ 🍬'
     }
 
-    const caption = `✨ *Flash Bot MD ضد ${m.pushName || 'Darling'}!* ✨\n\n` +
+    const caption = `✨ *Flash Bot MD ضد ${m.pushName || 'يا غالي'}!* ✨\n\n` +
                    `انت اخترت: *${usuario.toUpperCase()}*\n` +
                    `Flash Bot MD اختار: *${bot.toUpperCase()}*\n\n` +
                    `*${resultado}*\n` +

@@ -163,17 +163,6 @@ const SECCIONES = [
             "newsletter",
             "قناه"
         ]
-    },
-    {
-        "name": "NSFW",
-        "emoji": "🔞",
-        "cmds": [
-            "ليزبيان",
-            "باك",
-            "بوسي",
-            "تيتاس",
-            "اكس"
-        ]
     }
 ]
 
@@ -197,7 +186,7 @@ const handler = async (m, { conn, usedPrefix, prefix, args }) => {
         // ── عرض قسم واحد (عند الضغط على زر) ─────────────
         if (cat) {
             const sec = SECCIONES.find(s => s.name === cat || s.name.includes(cat))
-            if (!sec) return m.reply(`❌ مفيش قسم بالاسم ده يا حبيبي~\nاكتب *${p}القائمة* وشوف الأقسام.`)
+            if (!sec) return m.reply(`❌ مفيش قسم بالاسم ده يا غالي~\nاكتب *${p}القائمة* وشوف الأقسام.`)
             const body = sec.cmds.map(c => `  ꕦ ${p}${c}`).join('\n')
             return conn.sendMessage(m.chat, {
                 text: `${sec.emoji} *${sec.name}*\n\n${body}\n\n⚡ *~Flash Bot MD*`,
@@ -266,7 +255,6 @@ ${seccionesTexto}
             { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '🏠 الرئيسي', id: `${p}القائمة الرئيسي` }) },
             { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '👑 المطور', id: `${p}القائمة المطور` }) },
             { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '✨ متنوعة', id: `${p}القائمة متنوعة` }) },
-            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: '🔞 NSFW', id: `${p}القائمة NSFW` }) },
         ]
 
         const content = buffer

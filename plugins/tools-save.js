@@ -19,7 +19,7 @@ let handler = async (m, { conn }) => {
         await m.react('⚠️')
         return m.reply(
             `╔══「 💗 Flash Bot MD 」══╗\n\n` +
-            `꒰ 🌸 ꒱ رد على الرسالة اللي عايز تحفظها يا حبيبي~!\n\n` +
+            `꒰ 🌸 ꒱ رد على الرسالة اللي عايز تحفظها يا غالي~!\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }
@@ -57,7 +57,7 @@ let handler = async (m, { conn }) => {
             await m.react('🍬')
             return conn.sendMessage(m.chat, {
                 text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
-                      `꒰ ✅ ꒱ بعتّهولك في الخاص يا حبيبي~!\n` +
+                      `꒰ ✅ ꒱ بعتّهولك في الخاص يا غالي~!\n` +
                       `꒰ 🌸 ꒱ Revisa nuestro chat~ 💕\n\n` +
                       `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: ctx
@@ -116,7 +116,7 @@ let handler = async (m, { conn }) => {
                 await m.react('🍬')
                 return conn.sendMessage(m.chat, {
                     text: `╔══「 💗 Flash Bot MD 」══╗\n\n` +
-                          `꒰ ✅ ꒱ الوسائط اتحفظت في الخاص بتاعك يا حبيبي~! 💕\n\n` +
+                          `꒰ ✅ ꒱ الوسائط اتحفظت في الخاص بتاعك يا غالي~! 💕\n\n` +
                           `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                     contextInfo: ctx
                 }, { quoted: m })
@@ -144,7 +144,7 @@ let handler = async (m, { conn }) => {
         await m.react('💔')
         return m.reply(
             `╔══「 💗 Flash Bot MD 」══╗\n\n` +
-            `꒰ 💔 ꒱ مش قدرت أبعته، حبيبي~\n` +
+            `꒰ 💔 ꒱ مش قدرت أبعته، يا غالي~\n` +
             `꒰ 💡 ꒱ ابعتلي *"سلام"* في الخاص الأول عشان أفتحلك الشات~ 🌸\n\n` +
             `╚══「 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )

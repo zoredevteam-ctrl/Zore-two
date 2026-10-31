@@ -4,7 +4,7 @@ import { format } from 'util'
 let handler = async (m, { conn, args }) => {
     const text = args.join(' ')
     if (m.fromMe) return
-    if (!/^https?:\/\//.test(text)) return m.reply(`💗 Darling, ingresa una URL válida~`)
+    if (!/^https?:\/\//.test(text)) return m.reply(`💗 يا غالي, ingresa una URL válida~`)
     await m.react('⏳')
     try {
         let res = await fetch(text)
@@ -61,7 +61,7 @@ let handler = async (m, { conn, args }) => {
         await m.react('✅')
     } catch (e) {
         await m.react('💔')
-        await m.reply(`💔 حبيبي, حصلت مشكلة... [خطأ: ${e}]`)
+        await m.reply(`💔 يا غالي, حصلت مشكلة... [خطأ: ${e}]`)
     }
 }
 

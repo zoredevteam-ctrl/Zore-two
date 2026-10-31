@@ -8,7 +8,7 @@ const handler = async (m, { conn, db }) => {
     if (!db.waifus?.[sender] || !db.waifus[sender].coleccion?.length) {
         return conn.sendMessage(m.chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 لسه معندكش أي ويفو يا حبيبي~!\n` +
+                  `🌸 لسه معندكش أي ويفو يا غالي~!\n` +
                   `⟡ استخدم *#rw* عشان تستدعي واحدة و *#c* عشان تصطادها 💕`
         }, { quoted: m })
     }

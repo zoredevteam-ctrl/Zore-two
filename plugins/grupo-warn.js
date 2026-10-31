@@ -11,7 +11,7 @@ const handler = async (m, { conn, args, who }) => {
         target = m.quoted.sender
     }
 
-    if (!target) return m.reply('💗 Menciona o responde a alguien حبيبي~')
+    if (!target) return m.reply('💗 اعمل منشن أو رد على حد يا غالي~')
 
     // Resolver LID a JID
     if (target.endsWith('@lid') || isNaN(target.split('@')[0])) {
@@ -49,7 +49,7 @@ const handler = async (m, { conn, args, who }) => {
                 `ꕦ العضو: @${target.split('@')[0]}\n` +
                 `ꕦ السبب: ${reason}\n\n` +
                 `💔 *عدّى الـ3 انذارات واتطرد...*\n` +
-                `طير بعيد يا حبيبي~ 🌸`,
+                `طير بعيد يا غالي~ 🌸`,
             mentions: [target]
         }, { quoted: m })
 
@@ -67,8 +67,8 @@ const handler = async (m, { conn, args, who }) => {
                 `𖤐 *انذار #${count}!* 𖤐\n\n` +
                 `ꕦ العضو: @${target.split('@')[0]}\n` +
                 `ꕦ السبب: ${reason}\n\n` +
-                `ꙮ Advertencias: *${count}/3*\n` +
-                `💗 المرة الجاية هتطير حبيبي~ 🌸`,
+                `ꙮ الانذارات: *${count}/3*\n` +
+                `💗 المرة الجاية هتطير يا غالي~ 🌸`,
             mentions: [target]
         }, { quoted: m })
     }

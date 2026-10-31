@@ -7,7 +7,7 @@ import { database } from '../lib/database.js'
 const pendingKick = new Map()
 
 let handler = async (m, { conn, isAdmin, isOwner, db }) => {
-    if (!m.isGroup) return m.reply('💔 بيشتغل في الجروبات بس حبيبي~')
+    if (!m.isGroup) return m.reply('💔 بيشتغل في الجروبات بس يا غالي~')
     if (!isAdmin && !isOwner) return m.reply('💔 الأدمنز والمالك بس اللي يستخدموا الأمر ده')
 
     await m.react('⌛')

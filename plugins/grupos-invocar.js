@@ -5,12 +5,12 @@ const handler = async (m, { conn, args, isAdmin, isOwner }) => {
         const group = await conn.groupMetadata(m.chat)
         const participants = group.participants.map(p => p.jid || p.id.split(':')[0] + '@s.whatsapp.net')
 
-        const anuncio = args.join(' ') || 'الكل ينتبه لأن حبيبي عايز يقول حاجة! 💗'
+        const anuncio = args.join(' ') || 'الكل ينتبه لأن يا غالي عايز يقول حاجة! 💗'
 
         const mentions = participants.map(p => `@${p.split('@')[0]}`).join(' ')
 
         const caption =
-            `💞 *حبيبي استدعى الجروب كله!* 🌸\n\n` +
+            `💞 *يا غالي استدعى الجروب كله!* 🌸\n\n` +
             `💗 *Anuncio:* ${anuncio}\n\n` +
             `${mentions}\n\n` +
             `ردوا بسرعة ومتسيبونيش لوحدي مستني~ 💕`
@@ -26,7 +26,7 @@ const handler = async (m, { conn, args, isAdmin, isOwner }) => {
     } catch (e) {
         console.error('❌ INVOCAR ERROR:', e)
         await m.react('💔')
-        m.reply('💔 أوه حبيبي... الاستدعاء فشل المرة دي~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
+        m.reply('💔 أوه يا غالي... الاستدعاء فشل المرة دي~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 

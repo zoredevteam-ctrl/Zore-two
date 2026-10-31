@@ -19,10 +19,10 @@ let handler = async (m, { conn, args, db }) => {
     }
 
     if (accion === 'on' && !group.botOff) {
-        return m.reply('✅ البوت *مفعّل* بالفعل في الجروب ده حبيبي~')
+        return m.reply('✅ البوت *مفعّل* بالفعل في الجروب ده يا غالي~')
     }
     if (accion === 'off' && group.botOff) {
-        return m.reply('🔴 البوت *معطّل* في الجروب ده بالفعل حبيبي~')
+        return m.reply('🔴 البوت *معطّل* في الجروب ده بالفعل يا غالي~')
     }
 
     // ─── NEWSLETTER ───────────────────────────────────────────────────
@@ -56,7 +56,7 @@ let handler = async (m, { conn, args, db }) => {
         await database.save()
         await m.react('🟢')
         return conn.sendMessage(m.chat, {
-            text: `🟢 *البوت اتفعّل في الجروب ده*\n\n_أنا جاهزة أساعد حبيبي! 💗🌸_`,
+            text: `🟢 *البوت اتفعّل في الجروب ده*\n\n_أنا جاهز أساعد يا غالي! 💗🌸_`,
             contextInfo
         }, { quoted: m })
     }
@@ -67,7 +67,7 @@ let handler = async (m, { conn, args, db }) => {
         await database.save()
         await m.react('🔴')
         return conn.sendMessage(m.chat, {
-            text: `🔴 *البوت متعطّل في الجروب ده*\n\n_مش هرد على أوامر هنا تاني حبيبي~ 💔_\n_المالكين والأدمنز بس اللي يقدروا يشغلوني تاني._`,
+            text: `🔴 *البوت متعطّل في الجروب ده*\n\n_مش هرد على أوامر هنا تاني يا غالي~ 💔_\n_المالكين والأدمنز بس اللي يقدروا يشغلوني تاني._`,
             contextInfo
         }, { quoted: m })
     }

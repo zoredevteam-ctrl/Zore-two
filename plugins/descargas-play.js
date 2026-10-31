@@ -1,69 +1,38 @@
 import yts from 'yt-search'
-import axios from 'axios'
+import { getYtAudio } from '../lib/ytdl.js'
 
-const handler = async (msg, { conn, args, usedPrefix, command }) => {
+const handler = async (msg, { conn, args, usedPrefix }) => {
   const query = args.join(' ').trim()
 
   if (!query) {
-    await conn.sendMessage(
-      msg.chat,
-      { text: `❌ *خطأ:*\n> لازم تكتب اسم الفيديو.` },
-      { quoted: msg }
-    )
-
-    return conn.sendMessage(
-      msg.chat,
-      { text: `✳️ استخدم:\n${usedPrefix} play <اسم الصوت>` },
-      { quoted: msg }
-    )
+    return conn.sendMessage(msg.chat, {
+      text: `❌ *خطأ:*\n> لازم تكتب اسم الأغنية.\n\n✳️ استخدم:\n${usedPrefix}play <اسم الأغنية>`
+    }, { quoted: msg })
   }
 
-  const { key } = await conn.sendMessage(
-    msg.chat,
-    { text: '*🎧 Descargando...*' },
-    { quoted: msg }
-  )
+  const { key } = await conn.sendMessage(msg.chat, { text: '*🎧 بجاري التحميل...*' }, { quoted: msg })
 
   try {
     const search = await yts(query)
-    if (!search.videos?.length)
-      throw new Error('مالقيتش الصوت.')
+    if (!search.videos?.length) throw new Error('مالقيتش الأغنية.')
 
-    const url = search.videos[0].url
-    const api = `https://nexevo.boxmine.xyz/download/audio?url=${encodeURIComponent(url)}&apikey=NEX-Shizuka`
-    const { data } = await axios.get(api)
+    const video = search.videos[0]
+    const { url: audioUrl, title } = await getYtAudio(video.url)
+    const finalTitle = title || video.title
 
-    if (!data?.status || !data?.result?.status || !data?.result?.url)
-      throw new Error('خطأ في التحميل.')
+    await conn.sendMessage(msg.chat, {
+      text: `> 🎶 ${finalTitle}\n🔗 ${video.url}`,
+      edit: key
+    }, { quoted: msg })
 
-    const info = data.result.info || {}
-    const title = info.title || search.videos[0]?.title || 'audio'
-
-    await conn.sendMessage(
-      msg.chat,
-      {
-        text: `> 🎶 ${title}\n🔗 ${url}`,
-        edit: key
-      },
-      { quoted: msg }
-    )
-
-    await conn.sendMessage(
-      msg.chat,
-      {
-        audio: { url: data.result.url },
-        mimetype: 'audio/mpeg',
-        fileName: `${sanitizeFilename(title)}.mp3`
-      },
-      { quoted: msg }
-    )
+    await conn.sendMessage(msg.chat, {
+      audio: { url: audioUrl },
+      mimetype: 'audio/mpeg',
+      fileName: `${sanitizeFilename(finalTitle)}.mp3`
+    }, { quoted: msg })
 
   } catch (e) {
-    await conn.sendMessage(
-      msg.chat,
-      { text: `❌ خطأ:\n${e.message}`, edit: key },
-      { quoted: msg }
-    )
+    await conn.sendMessage(msg.chat, { text: `❌ خطأ:\n${e.message}`, edit: key }, { quoted: msg })
   }
 }
 

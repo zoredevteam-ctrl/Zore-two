@@ -12,7 +12,6 @@ const handler = async (m, { args, prefix }) => {
         goodbye:  '👋 *Goodbye*',
         antilink: '🔗 *Antilink*',
         antispam: '🚫 *Antispam*',
-        nsfw:     '🔞 *NSFW*',
     }
 
     if (!feature || !features[feature]) {
@@ -21,7 +20,7 @@ const handler = async (m, { args, prefix }) => {
             `「 ⚙️ *مميزات الجروب* 」\n\n` +
             Object.entries(features).map(([k, v]) => `${status(k)} ${v}`).join('\n') +
             `\n\n✦ *${prefix}nable <ميزة> on/off*\n` +
-            `❝ Funciones: ${Object.keys(features).join(', ')} ❞`
+            `❝ المميزات: ${Object.keys(features).join(', ')} ❞`
         )
     }
 
@@ -32,13 +31,13 @@ const handler = async (m, { args, prefix }) => {
     const state = action === 'on'
 
     if (chat[feature] === state) {
-        return m.reply(`「 ⚠️ 」 ${features[feature]} كان بالفعل ${state ? 'activado' : 'desactivado'}.`)
+        return m.reply(`「 ⚠️ 」 ${features[feature]} كان ${state ? 'مفعّل' : 'متعطّل'} من قبل.`)
     }
 
     chat[feature] = state
     await database.save()
 
-    m.reply(`「 ${state ? '✅' : '❌'} 」 ${features[feature]} ${state ? 'activado' : 'desactivado'}.`)
+    m.reply(`「 ${state ? '✅' : '❌'} 」 ${features[feature]} ${state ? 'اتفعّل ✅' : 'اتعطّل ❌'}`)
 }
 
 handler.command = ['nable', 'feature', 'función', 'ميزة']

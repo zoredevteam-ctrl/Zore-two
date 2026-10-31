@@ -52,7 +52,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
         return conn.sendMessage(m.chat, {
             text:
                 `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · Flash Bot MD 」══╗\n\n` +
-                `꒰ ⚠️ ꒱ محتاج بوكيمون، حبيبي~!\n` +
+                `꒰ ⚠️ ꒱ محتاج بوكيمون، يا غالي~!\n` +
                 `⟡ الاستخدام: *${prefix}${command} <اسم o رقم>*\n` +
                 `⟡ مثال: *${prefix}${command} pikachu*\n` +
                 `⟡ مثال: *${prefix}${command} 25*\n\n` +
@@ -72,7 +72,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
             return conn.sendMessage(m.chat, {
                 text:
                     `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · Flash Bot MD 」══╗\n\n` +
-                    `꒰ 💔 ꒱ مالقيتش البوكيمون ده، حبيبي~\n` +
+                    `꒰ 💔 ꒱ مالقيتش البوكيمون ده، يا غالي~\n` +
                     `⟡ راجع الاسم أو الرقم وجرّب تاني.\n\n` +
                     `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
                 contextInfo: makeCtx(thumb)
@@ -95,7 +95,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
         )?.flavor_text?.replace(/\f|\n/g, ' ') || 'لا يوجد وصف.'
 
         const generacion = species.generation.name.replace('generation-', 'Gen ').toUpperCase()
-        const habitat    = species.habitat?.name || 'Desconocido'
+        const habitat    = species.habitat?.name || 'مجهول'
         const legendario = species.is_legendary ? '⭐ Legendario' : species.is_mythical ? '✨ خرافي' : '—'
 
         // ── Procesar datos ────────────────────────────────────────────────
@@ -186,7 +186,7 @@ const handler = async (m, { conn, args, prefix, command }) => {
         conn.sendMessage(m.chat, {
             text:
                 `╔══「 🔴 𝐏𝐨𝐤é𝐝𝐞𝐱 · خطأ 」══╗\n\n` +
-                `꒰ 💔 ꒱ حصلت مشكلة يا حبيبي~!\n` +
+                `꒰ 💔 ꒱ حصلت مشكلة يا غالي~!\n` +
                 `⟡ ${e.message}\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`,
             contextInfo: makeCtx(thumb)

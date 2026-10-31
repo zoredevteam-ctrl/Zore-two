@@ -1,7 +1,7 @@
 const handler = async (m, { conn, args }) => {
     const text = args.join(' ')
 
-    if (!m.quoted && !text) return m.reply('💗 يا حبيبي، اكتب رسالة عشان تنبّه الكل~')
+    if (!m.quoted && !text) return m.reply('💗 يا غالي، اكتب رسالة عشان تنبّه الكل~')
 
     try {
         const groupMeta = await conn.groupMetadata(m.chat)
@@ -14,7 +14,7 @@ const handler = async (m, { conn, args }) => {
 
     } catch (e) {
         console.error(e)
-        await m.reply('💔 حبيبي, مش قدرت أبعت الإعلان... جرّب تاني~')
+        await m.reply('💔 يا غالي, مش قدرت أبعت الإعلان... جرّب تاني~')
     }
 }
 

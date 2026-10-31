@@ -1,7 +1,7 @@
 let handler = async (m, { conn }) => {
     if (!m.isGroup) {
         await m.react('💔')
-        return m.reply('💔 الأمر ده بيشتغل في الجروبات بس حبيبي\~')
+        return m.reply('💔 الأمر ده بيشتغل في الجروبات بس يا غالي\~')
     }
 
     await m.react('🍬')
@@ -26,7 +26,7 @@ let handler = async (m, { conn }) => {
 
         // Mensaje mejorado pero fiel al original
         const texto = `*${toM(a)}, لازم تتجوز 💍 ${toM(b)}...*\n` +
-                     `يبقوا ثنائي جميل يا حبيبي! 💓\n\n` +
+                     `يبقوا ثنائي جميل يا غالي! 💓\n\n` +
                      `إيه رأيكم؟ متحمسين؟ هههه متسيبونيش لوحدي مع الفضول\~ 🌸`
 
         await conn.sendMessage(m.chat, {
@@ -39,7 +39,7 @@ let handler = async (m, { conn }) => {
     } catch (e) {
         console.error('❌ FORMARPAREJA ERROR:', e)
         await m.react('💔')
-        m.reply('💔 أوه حبيبي... مش قدرت أعمل الثنائي المرة دي\~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
+        m.reply('💔 أوه يا غالي... مش قدرت أعمل الثنائي المرة دي\~\nجرّب تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 

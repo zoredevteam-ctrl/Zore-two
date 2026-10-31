@@ -6,7 +6,7 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
   try {
     if (!text) {
       return m.reply(
-        `♡ حبيبي... هاتلي لينك جروب 💗\n\nمثال:\n${usedPrefix}join https://chat.whatsapp.com/ABCDEFGHIJK123456789 7`
+        `♡ يا غالي... هاتلي لينك جروب 💗\n\nمثال:\n${usedPrefix}join https://chat.whatsapp.com/ABCDEFGHIJK123456789 7`
       )
     }
 
@@ -40,7 +40,7 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
       let msg = err?.message || ''
 
       if (msg.includes('already')) {
-        return m.reply('♡ أنا في الجروب ده بالفعل، حبيبي 💗')
+        return m.reply('♡ أنا في الجروب ده بالفعل، يا غالي 💗')
       }
       if (msg.includes('expired') || msg.includes('invalid')) {
         return m.reply('♡ اللينك منتهي أو غير صالح 💔')
@@ -80,14 +80,14 @@ let handler = async (m, { conn, text, isOwner, usedPrefix }) => {
       `♡ دخلت *${groupName}* 💗\n` +
       (days
         ? `هفضل ${days} يوم معاك~`
-        : 'هفضل معاك للأبد يا حبيبي ♡')
+        : 'هفضل معاك للأبد يا غالي ♡')
     )
 
-    // 🎬 Bienvenida
+    // 🎬 رسالة الترحيب
     let media = 'https://files.catbox.moe/sjak3i.jpg'
 
     let welcomeText = `╭━━━〔 ♡ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 ♡ 〕━━━⬣
-┃ ❥ وصلت، حبيبي... 💗
+┃ ❥ وصلت، يا غالي... 💗
 ┃ ❥ دلوقتي الجروب ده أمتع~
 ┃ ❥ ناديني لو محتاجني ♡
 ╰━━━━━━━━━━━━━━━━⬣`

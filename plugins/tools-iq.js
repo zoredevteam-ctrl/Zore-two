@@ -11,7 +11,7 @@ let handler = async (m, { conn, db }) => {
         : iq >= 140 ? '🎓 *Superdotado* — Mente brillante ✨'
         : iq >= 120 ? '📚 *ذكي جداً* — أعلى من المتوسط 🌟'
         : iq >= 100 ? '🙂 *Normal* — Promedio mundial 🌍'
-        : iq >= 80  ? '😅 *أقل من المتوسط* — Tranquilo حبيبي 💗'
+        : iq >= 80  ? '😅 *أقل من المتوسط* — Tranquilo يا غالي 💗'
         : iq >= 50  ? '🥴 *منخفض جداً* — بس بحبك بردو 🌸'
         : '🪨 *ذكاء صخرة* — متقلقش، الصخور قوية 💀'
 

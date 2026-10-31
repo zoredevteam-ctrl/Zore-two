@@ -3,7 +3,7 @@ let handler = async (m, { conn, args }) => {
 
     let icons = 'https://causas-files.vercel.app/fl/9vs2.jpg'
 
-    if (!text) return m.reply('💗 يا حبيبي، اكتب لينك جروب أو مجتمع أو قناة~')
+    if (!text) return m.reply('💗 يا غالي، اكتب لينك جروب أو مجتمع أو قناة~')
 
     const groupUrl = text.match(/(?:https?:\/\/)?(?:chat\.whatsapp\.com\/)([0-9A-Za-z]{22,24})/i)?.[1]
     const channelUrl = text.match(/(?:https?:\/\/)?(?:whatsapp\.com\/channel\/)([0-9A-Za-z@.]+)/i)?.[1]
@@ -15,7 +15,7 @@ let handler = async (m, { conn, args }) => {
     if (channelUrl) {
         try {
             const info = await conn.newsletterMetadata('invite', channelUrl).catch(() => null)
-            if (!info) return m.reply('💔 مالقيتش معلومات القناة، حبيبي... اتأكد من اللينك~')
+            if (!info) return m.reply('💔 مالقيتش معلومات القناة، يا غالي... اتأكد من اللينك~')
 
             const id = info.id || 'مش موجود'
             const nombre = info.name || 'بدون اسم'
@@ -40,13 +40,13 @@ let handler = async (m, { conn, args }) => {
 
         } catch (e) {
             console.error(e)
-            return m.reply('💔 خطأ في جلب معلومات القناة، حبيبي~')
+            return m.reply('💔 خطأ في جلب معلومات القناة، يا غالي~')
         }
 
     } else if (groupUrl) {
         try {
             const info = await conn.groupGetInviteInfo(groupUrl).catch(() => null)
-            if (!info) return m.reply('💔 مالقيتش معلومات الجروب يا حبيبي... اتأكد من اللينك~')
+            if (!info) return m.reply('💔 مالقيتش معلومات الجروب يا غالي... اتأكد من اللينك~')
 
             const id = info.id || 'مش موجود'
             const nombre = info.subject || 'بدون اسم'
@@ -72,11 +72,11 @@ let handler = async (m, { conn, args }) => {
 
         } catch (e) {
             console.error(e)
-            return m.reply('💔 خطأ في جلب معلومات الجروب، حبيبي~')
+            return m.reply('💔 خطأ في جلب معلومات الجروب، يا غالي~')
         }
 
     } else {
-        return m.reply('💔 مش لقيت رابط صالح لجروب أو مجتمع أو قناة، حبيبي~')
+        return m.reply('💔 مش لقيت رابط صالح لجروب أو مجتمع أو قناة، يا غالي~')
     }
 
     await conn.sendMessage(m.chat, {

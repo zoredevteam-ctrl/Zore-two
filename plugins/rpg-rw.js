@@ -15,9 +15,9 @@ const getRareza = () => {
 
 const fetchWaifu = async () => {
     try {
-        const res = await fetch('https://api.ويفو.pics/sfw/ويفو')
+        const res = await fetch('https://api.waifu.pics/sfw/waifu')
         const j = await res.json()
-        if (j?.url) return { imageUrl: j.url, nombre: 'ويفو غامضة', fuente: 'ويفو.pics', rareza: getRareza() }
+        if (j?.url) return { imageUrl: j.url, nombre: 'ويفو غامضة', fuente: 'waifu.pics', rareza: getRareza() }
     } catch {}
 
     try {
@@ -43,7 +43,7 @@ const handler = async (m, { conn }) => {
         const actual = global.waifuSpawns.get(chat)
         return conn.sendMessage(chat, {
             text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n` +
-                  `🌸 في ويفو مستنية في الجروب يا حبيبي~!\n` +
+                  `🌸 في ويفو مستني في الجروب يا غالي~!\n` +
                   `${actual.rareza.color} *${actual.nombre}* — ${actual.rareza.stars}\n\n` +
                   `⟡ أي حد يقدر يكتب *#c* عشان يصطادها! 💕`
         }, { quoted: m })
@@ -56,7 +56,7 @@ const handler = async (m, { conn }) => {
     if (!data) {
         await m.react('💔')
         return conn.sendMessage(chat, {
-            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 أنظمتي فشلت، حبيبي~ 💔\nمش قدرت أستدعي أي ويفو المرة دي.`
+            text: `💗 *𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻* 💗\n\n🌸 أنظمتي فشلت، يا غالي~ 💔\nمش قدرت أستدعي أي ويفو المرة دي.`
         }, { quoted: m })
     }
 

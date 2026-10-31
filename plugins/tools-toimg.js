@@ -6,7 +6,7 @@ let handler = async (m, { conn }) => {
 
     if (!mime || !/webp/.test(mime)) {
         await m.react('🌸')
-        return m.reply('💗 *رد على ملصق* حبيبي\~ عشان تحوّله صورة عادية\n\nمثال: رد على الملصق واكتب #toimg')
+        return m.reply('💗 *رد على ملصق* يا غالي\~ عشان تحوّله صورة عادية\n\nمثال: رد على الملصق واكتب #toimg')
     }
 
     await m.react('🍬')
@@ -18,7 +18,7 @@ let handler = async (m, { conn }) => {
 
         await conn.sendMessage(m.chat, {
             image: media,
-            caption: '💗 اتفضل صورتك يا حبيبي!\nاتحوّلت بكل حبي من Flash Bot MD 🌸'
+            caption: '💗 اتفضل صورتك يا غالي!\nاتحوّلت بكل حبي من Flash Bot MD 🌸'
         }, { quoted: m })
 
         await m.react('💗')
@@ -26,7 +26,7 @@ let handler = async (m, { conn }) => {
     } catch (e) {
         console.error('❌ TOIMG ERROR:', e)
         await m.react('💔')
-        m.reply('💔 أوه حبيبي... الملصق ده قاوم شوية\~\nجرّب واحد تاني ومتسيبنيش لوحدي 🌸')
+        m.reply('💔 أوه يا غالي... الملصق ده قاوم شوية\~\nجرّب واحد تاني ومتسيبنيش لوحدي 🌸')
     }
 }
 

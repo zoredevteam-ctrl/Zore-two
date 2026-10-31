@@ -13,7 +13,7 @@ try {
 } catch (e) {}
 
 let handler = async (m) => {
-    if (!m.isGroup) return m.reply('💔 الأمر ده بيشتغل في الجروبات بس حبيبي\~')
+    if (!m.isGroup) return m.reply('💔 الأمر ده بيشتغل في الجروبات بس يا غالي\~')
 
     await m.react('🍬')
 
@@ -21,7 +21,7 @@ let handler = async (m) => {
         .sort(([,a], [,b]) => b.balance - a.balance)
         .slice(0, 10)
 
-    if (top.length === 0) return m.reply('💔 مفيش حد عنده عملات لسه حبيبي\~')
+    if (top.length === 0) return m.reply('💔 مفيش حد عنده عملات لسه يا غالي\~')
 
     let txt = `✨ *LEADERBOARD TOP 10* ✨\n\n`
     top.forEach(([id, data], i) => {

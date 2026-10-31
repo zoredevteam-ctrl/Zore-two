@@ -65,7 +65,7 @@ const handler = async (m, { conn, command, isOwner }) => {
             return sendStyled(conn, m,
                 `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bots 」══╗\n\n` +
                 `꒰ 💤 ꒱ مفيش بوتات فرعية شغالة دلوقتي~\n` +
-                `꒰ 🌸 ꒱ استخدم *#code +رقم* عشان تعمل واحد، حبيبي~\n\n` +
+                `꒰ 🌸 ꒱ استخدم *#code +رقم* عشان تعمل واحد، يا غالي~\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
@@ -96,7 +96,7 @@ const handler = async (m, { conn, command, isOwner }) => {
         if (!existsSync(dir)) {
             return sendStyled(conn, m,
                 `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bot 」══╗\n\n` +
-                `꒰ 🚫 ꒱ مالقيتش جلسة لـ *+${num}*, حبيبي~\n` +
+                `꒰ 🚫 ꒱ مالقيتش جلسة لـ *+${num}*, يا غالي~\n` +
                 `꒰ 🌸 ꒱ استخدم *#code +رقم* عشان تعمل واحدة.\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
@@ -118,7 +118,7 @@ const handler = async (m, { conn, command, isOwner }) => {
 
         return sendStyled(conn, m,
             `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bot 」══╗\n\n` +
-            `꒰ ✅ ꒱ جلسة *+${num}* eliminada, حبيبي~\n` +
+            `꒰ ✅ ꒱ جلسة *+${num}* eliminada, يا غالي~\n` +
             `꒰ 🌸 ꒱ كله تمام! 💗\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
@@ -129,14 +129,14 @@ const handler = async (m, { conn, command, isOwner }) => {
         if (conn.user?.jid === global.conn?.user?.jid) {
             return sendStyled(conn, m,
                 `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · خطأ 」══╗\n\n` +
-                `꒰ 🚫 ꒱ مش قادر أوقف البوت الرئيسي يا حبيبي~! 😤\n\n` +
+                `꒰ 🚫 ꒱ مش قادر أوقف البوت الرئيسي يا غالي~! 😤\n\n` +
                 `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
             )
         }
 
         await sendStyled(conn, m,
             `╔══「 💗 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻 · Sub-Bot 」══╗\n\n` +
-            `꒰ 🔕 ꒱ بوت فرعي pausado~ سلام, حبيبي 💔\n\n` +
+            `꒰ 🔕 ꒱ بوت فرعي pausado~ سلام, يا غالي 💔\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
         try { conn.ws.close() } catch {}

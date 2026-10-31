@@ -12,18 +12,7 @@ const scriptPath = fileURLToPath(import.meta.url)
 
 // ─── OWNERS ─────────────────────────────────────────────────────────────────
 global.owner = [
-    ['573229506110', 'Dev1', true],
-    ['51933000214',  'dev2', false],
-    ['51941658192',  'dev3', false],
-    ['5215911153853','dev4', false],
-    ['59175850453',  'Dev5', false],
-    ['584242773183', 'Dev6', false],
-    ['5493863447787','Dev7', false],
-    ['573107400303', 'Dev8', false],
-    ['573133374132', 'Dev9', false],
-    ['5214444854390','Dev10',false],
-    ['595987301197',   'Hola', false],
-    ['573135180876', 'duarte soporte', false]
+    ['201000000000', '𝖍𝖆𝖎𝖙𝖍𝖆𝖒', true]
 ]
 global.mods       = []
 global.suittag    = []
@@ -35,6 +24,7 @@ global.libreria   = 'bails'
 global.baileys    = 'V 1.0.0'
 global.vs         = '1.0.0'
 global.botVersion = '1.0.0'
+global.serial      = 'FLASH-MD-0000-0000'
 global.nameqr     = '⚡ Flash Bot MD ✰'
 global.namebot    = 'F L A S H  B O T  M D'
 global.botName    = 'Flash Bot MD'

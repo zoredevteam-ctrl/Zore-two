@@ -25,7 +25,7 @@ let handler = async (m, { conn }) => {
         let texto = `✦ 𝕗𝕝𝕒𝕤𝕙 𝔹𝕠𝕥-𝕄𝔻\n\n`
         texto += `👑 *طاقم الجروب*\n`
         texto += `💠 *${groupName}*\n\n`
-        texto += `> *Administradores:*\n`
+        texto += `> *أدمنes:*\n`
 
         // Listamos a los admins mencionándolos
         admins.forEach((admin, i) => {

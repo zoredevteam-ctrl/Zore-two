@@ -11,7 +11,7 @@ const handler = async (m, { conn, who }) => {
         target = m.quoted.sender
     }
 
-    if (!target) return m.reply('💗 Menciona o responde a alguien حبيبي~')
+    if (!target) return m.reply('💗 اعمل منشن أو رد على حد يا غالي~')
 
     // Resolver LID a JID
     if (target.endsWith('@lid') || isNaN(target.split('@')[0])) {
@@ -25,11 +25,11 @@ const handler = async (m, { conn, who }) => {
     const warns = database.data.groups?.[groupId]?.warnings
 
     if (!warns || Object.keys(warns).length === 0) {
-        return m.reply('🌸 محدش عنده انذارات في الجروب ده حبيبي~')
+        return m.reply('🌸 محدش عنده انذارات في الجروب ده يا غالي~')
     }
 
     if (!warns[target] || warns[target].count === 0) {
-        return m.reply('🌸 العضو ده معندهوش انذارات يا حبيبي~')
+        return m.reply('🌸 العضو ده معندهوش انذارات يا غالي~')
     }
 
     warns[target].count--
@@ -41,7 +41,7 @@ const handler = async (m, { conn, who }) => {
 
     await conn.sendMessage(m.chat, {
         text:
-            `💗 *Advertencia quitada* 𖤐\n\n` +
+            `⚡ *تم حذف الانذار* 𖤐\n\n` +
             `ꕦ العضو: @${target.split('@')[0]}\n` +
             `ꙮ Advertencias: *${warns[target]?.count || 0}/3*`,
         mentions: [target]
