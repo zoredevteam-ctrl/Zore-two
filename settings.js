@@ -12,7 +12,7 @@ const scriptPath = fileURLToPath(import.meta.url)
 
 // ─── OWNERS ─────────────────────────────────────────────────────────────────
 global.owner = [
-    ['201000000000', '𝖍𝖆𝖎𝖙𝖍𝖆𝖒', true]
+    ['201125166486', '𝖍𝖆𝖎𝖙𝖍𝖆𝖒', true]
 ]
 global.mods       = []
 global.suittag    = []
@@ -24,7 +24,7 @@ global.libreria   = 'bails'
 global.baileys    = 'V 1.0.0'
 global.vs         = '1.0.0'
 global.botVersion = '1.0.0'
-global.serial      = 'FLASH-MD-0000-0000'
+global.serial      = '120363410090342500'
 global.nameqr     = '⚡ Flash Bot MD ✰'
 global.namebot    = 'F L A S H  B O T  M D'
 global.botName    = 'Flash Bot MD'
@@ -55,13 +55,13 @@ global.welcom2 = '👋 إلى اللقاء!\n⚡ شكراً إنك كنت معا
 
 // ─── BANNER ─────────────────────────────────────────────────────────────────
 // ✏️ حط رابط صورة البانر بتاعتك هنا
-global.banner    = 'https://files.evogb.win/nQR7jG.png'
+global.banner    = 'https://i.pinimg.com/originals/9d/6c/4e/9d6c4eeb7898079652b7f2c2e5c65632.jpg'
 global.bannerUrl = global.banner
 global.avatar    = global.banner
 global.iconUrl   = global.banner
 global.icon      = global.banner
-global.catalogo  = null
-global.catalogImage = null
+global.catalogo  = fs.readFileSync('./lib/catalogo.jpg')
+global.catalogImage = global.catalogo
 
 // ─── PREFIJO ────────────────────────────────────────────────────────────────
 global.prefix    = '.'
@@ -71,12 +71,12 @@ global.emoji2    = '✨'
 global.emoji3    = '🔥'
 
 // ─── LINKS ──────────────────────────────────────────────────────────────────
-global.groupLink     = 'https://chat.whatsapp.com/tu-link-grupo'
+global.groupLink     = 'https://chat.whatsapp.com/JyzcMffpXp2DrvOB4Z2jz9?mode=gi_t'
 global.communityLink = 'https://whatsapp.com/channel/0029Vb8QIpSJ3juu0VHRyU0v'
 global.channelLink   = 'https://whatsapp.com/channel/0029Vb8QIpSJ3juu0VHRyU0v'
-global.gitHubRepo    = 'https://github.com/dwhhhg8-code/Zore-two.git'
-global.emailContact  = 'haitham@flashbot.md'
-global.correo        = 'haitham@flashbot.md'
+global.gitHubRepo    = 'https://github.com/dwhhhg8-code'
+global.emailContact  = 'dwhhhg8@gmail.com'
+global.correo        = 'dwhhhg8@gmail.com'
 
 global.gp1       = global.groupLink
 global.comunidad1 = global.communityLink
@@ -89,7 +89,7 @@ global.rcanal         = 'https://whatsapp.com/channel/0029Vb8QIpSJ3juu0VHRyU0v'
 
 // JID del canal — formato: 120363XXXXXXXXX@newsletter
 // Cómo obtenerlo: WhatsApp Web → F12 → Network → busca "newsletter"
-global.newsletterJid  = '120363404822730259@newsletter'
+global.newsletterJid  = '120363410090342500@newsletter'
 global.newsletterName = '⚡ 𝐅𝐋𝐀𝐒𝐇 𝐁𝐎𝐓 𝐌𝐃 ⚡'
 
 // Compatibilidad con settings anterior
