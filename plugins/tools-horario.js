@@ -4,9 +4,9 @@ let handler = async (m) => {
     const now = new Date()
 
     const zonas = [
-        { name: 'Colombia (Medellín)', tz: 'America/Bogota' },
-        { name: 'España (Madrid)', tz: 'Europe/Madrid' },
-        { name: 'México (CDMX)', tz: 'America/Mexico_City' },
+        { name: 'كولومبيا (ميدلين)', tz: 'America/Bogota' },
+        { name: 'إسبانيا (مدريد)', tz: 'Europe/Madrid' },
+        { name: 'المكسيك (مكسيكو سيتي)', tz: 'America/Mexico_City' },
         { name: 'Argentina (Buenos Aires)', tz: 'America/Argentina/Buenos_Aires' },
         { name: 'EEUU (Miami)', tz: 'America/New_York' }
     ]
@@ -14,7 +14,7 @@ let handler = async (m) => {
     let texto = `💗 *الساعة الحالية في مناطق مختلفة* 🌸\n\n`
 
     zonas.forEach(z => {
-        const hora = now.toLocaleTimeString('es-ES', { 
+        const hora = now.toLocaleTimeString('ar-EG', { 
             timeZone: z.tz, 
             hour12: false 
         })

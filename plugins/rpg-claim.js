@@ -32,7 +32,7 @@ const handler = async (m, { conn, db }) => {
         imageUrl: spawn.imageUrl,
         rareza:   spawn.rareza,
         fuente:   spawn.fuente,
-        fecha:    new Date().toLocaleDateString('es-ES'),
+        fecha:    new Date().toLocaleDateString('ar-EG'),
         duplicado: esDuplicado
     }
 

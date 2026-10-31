@@ -54,7 +54,7 @@ let handler = async (m, { conn, args }) => {
             const participantes = info.size ?? info.participants?.length ?? 'مش متاح'
             const tipo = info.isCommunity ? '🏘️ Comunidad' : '👥 Grupo'
             const creacion = info.creation
-                ? new Date(info.creation * 1000).toLocaleDateString('es-ES')
+                ? new Date(info.creation * 1000).toLocaleDateString('ar-EG')
                 : 'مش متاح'
 
             try {

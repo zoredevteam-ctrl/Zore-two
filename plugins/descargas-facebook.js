@@ -152,12 +152,12 @@ let handler = async (m, { conn, args }) => {
     })
 
   } catch (e) {
-    let msg = '❌ Error\n\n'
+    let msg = '❌ خطأ\n\n'
 
     if (e.message.includes('HTTP')) {
       msg += '🌐 خطأ في الاتصال\n' + e.message
     } else if (e.message === 'NO_VIDEO_FOUND') {
-      msg += '❌ No se encontró el video\n'
+      msg += '❌ مالقيتش الفيديو\n'
       msg += '💡 يمكن يكون خاص أو ريلز أو محتاج تسجيل دخول'
     } else {
       msg += '⚠️ خطأ غير متوقع\n' + e.message

@@ -94,7 +94,7 @@ let handler = async (m, { conn, args }) => {
     })
 
   } catch (e) {
-    let msg = '❌ Error\n\n'
+    let msg = '❌ خطأ\n\n'
 
     if (e.message.includes('HTTP')) {
       msg += '🌐 خطأ في الاتصال\n' + e.message

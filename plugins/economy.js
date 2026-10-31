@@ -382,7 +382,7 @@ let handler = async (m, { conn, command, args, isOwner }) => {
         return send(conn, m,
             `╔══「 💗 Top Ricos 」══╗\n\n` +
             `${lista}\n\n` +
-            `  🌸 ¿مش شغال؟ يلا اشتغل، حبيبي~ 💔\n\n` +
+            `  🌸 مش شغال؟ يلا اشتغل يا حبيبي~ 💔\n\n` +
             `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`
         )
     }

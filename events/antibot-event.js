@@ -89,7 +89,7 @@ export const run = async (conn, update) => {
             }
 
             await conn.sendMessage(id, {
-                text: `🌸💗 *كياااه! بوت مكتشف ومطرود!* 💗🌸\n\nمش عايز أي روبوت مقلّد في جنتي الوردية!!\nبقبل بس حبايب humanos que me quieran de verdad... ¡tú no eres real!\n\n¡Fuera de aquí @${number}! Vuelve cuando seas una persona de carne y hueso, كياااه~ 🌷💗`,
+                text: `🌸💗 *كياااه! بوت مكتشف ومطرود!* 💗🌸\n\nمش عايز أي روبوت مقلّد في جنتي الوردية!!\nبقبل بس حبايب بشر يحبوني بجد... إنت مش حقيقي!\n\nبرّه من هنا @${number}! ارجع لما تبقى إنسان من لحم ودم، كياااه~ 🌷💗`,
                 mentions: [participant],
                 contextInfo
             })

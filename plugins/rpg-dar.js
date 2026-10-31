@@ -40,7 +40,7 @@ const handler = async (m, { conn, args, db }) => {
 
     // Dar al receptor
     if (!db.waifus[mention]) db.waifus[mention] = { coleccion: [], stamps: 0 }
-    db.waifus[mention].coleccion.push({ ...waifu, duplicado: false, fecha: new Date().toLocaleDateString('es-ES') })
+    db.waifus[mention].coleccion.push({ ...waifu, duplicado: false, fecha: new Date().toLocaleDateString('ar-EG') })
 
     try {
         const { database } = await import('../lib/database.js')

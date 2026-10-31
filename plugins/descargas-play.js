@@ -61,7 +61,7 @@ const handler = async (msg, { conn, args, usedPrefix, command }) => {
   } catch (e) {
     await conn.sendMessage(
       msg.chat,
-      { text: `❌ Error:\n${e.message}`, edit: key },
+      { text: `❌ خطأ:\n${e.message}`, edit: key },
       { quoted: msg }
     )
   }

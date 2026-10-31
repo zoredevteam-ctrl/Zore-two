@@ -10,7 +10,7 @@ const handler = async (m, { conn, args, prefix }) => {
     const sender = m.sender.split('@')[0];
     const pushName = m.pushName || 'بدون اسم';
     const chat = m.isGroup ? m.chat : '💬 Chat Privado';
-    const time = new Date().toLocaleString('es-ES', { timeZone: 'America/Bogota' });
+    const time = new Date().toLocaleString('ar-EG', { timeZone: 'America/Bogota' });
 
     const reportMsg =
         `「 🚨 *خطأ مُبلّغ عنه* 🚨 」\n\n` +
