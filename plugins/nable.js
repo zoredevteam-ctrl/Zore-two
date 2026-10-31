@@ -41,7 +41,7 @@ const handler = async (m, { args, prefix }) => {
     m.reply(`「 ${state ? '✅' : '❌'} 」 ${features[feature]} ${state ? 'activado' : 'desactivado'}.`)
 }
 
-handler.command = ['nable', 'feature', 'función']
+handler.command = ['nable', 'feature', 'función', 'ميزة']
 handler.help = ['nable <ميزة> on/off']
 handler.tags = ['grupo']
 handler.group = true

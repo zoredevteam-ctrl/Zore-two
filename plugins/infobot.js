@@ -17,7 +17,7 @@ let handler = async (m, { conn }) => {
                      `✨ *اتعمل بواسطة:* 𝖍𝖆𝖎𝖙𝖍𝖆𝖒\n` +
                      `✨ *Repo GitHub:* https://github.com/dwhhhg8-code/Zore-two\n` +
                      `✨ *Canal oficial:* https://whatsapp.com/channel/0029Vb6p68rF6smrH4Jeay3Y\n\n` +
-                     `¡أنا الويفو المفضلة بتاعتك جاهزة أساعدك حبيبي\~! 💕\n` +
+                     `أنا الويفو المفضلة بتاعتك جاهزة أساعدك حبيبي\~! 💕\n` +
                      `عايز تعمل إيه النهاردة؟ 🌸`
 
     await m.reply(infoText)

@@ -28,6 +28,6 @@ let handler = async (m) => {
 
 handler.help = ['horario', 'hora']
 handler.tags = ['tools', 'main']
-handler.command = ['horario', 'hora', 'time', 'times']
+handler.command = ['horario', 'hora', 'time', 'times', 'الساعة']
 
 export default handler

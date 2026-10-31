@@ -31,7 +31,7 @@ let handler = async (m, { conn, args, command }) => {
         frase = 'هههه كسبتك يا حبيبي! المرة الجاية هسيبك تكسب\~ 🍬'
     }
 
-    const caption = `✨ *¡Flash Bot MD ضد ${m.pushName || 'Darling'}!* ✨\n\n` +
+    const caption = `✨ *Flash Bot MD ضد ${m.pushName || 'Darling'}!* ✨\n\n` +
                    `انت اخترت: *${usuario.toUpperCase()}*\n` +
                    `Flash Bot MD اختار: *${bot.toUpperCase()}*\n\n` +
                    `*${resultado}*\n` +

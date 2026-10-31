@@ -310,7 +310,7 @@ async function startSubBot({ number, m, conn, plugins, useQR, useCode }) {
                     await m.react('✅')
                     notify(
                         `╔══「 💗 Flash Bot MD · Sub-Bot 」══╗\n\n` +
-                        `꒰ ✅ ꒱ ¡بوت فرعي *+${number}* اتوصل~! 💗\n` +
+                        `꒰ ✅ ꒱ بوت فرعي *+${number}* اتوصل~! 💗\n` +
                         `꒰ 📊 ꒱ Activos: *${global.conns.length}/${MAX_SUBBOTS}*\n\n` +
                         `꒰ 🌸 ꒱ أهلاً بيك في عيلة Flash Bot MD~! 💕\n\n` +
                         `╚══「 💕 © 𝖍𝖆𝖎𝖙𝖍𝖆𝖒 」══╝`

@@ -46,7 +46,7 @@ let handler = async (m, { conn, args }) => {
         })
 
         await m.react('✅')
-        await m.reply(`✨ ¡الفيديو اتبعت للقناة بنجاح:\n*${metadata.name}*!`)
+        await m.reply(`✨ الفيديو اتبعت للقناة بنجاح:\n*${metadata.name}*!`)
 
     } catch (e) {
         console.error(e)

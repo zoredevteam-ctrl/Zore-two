@@ -3,7 +3,7 @@
 
 import { database } from '../lib/database.js'
 
-// Guarda temporalmente la lista de inactivos por grupo para confirmar expulsión
+// تخزين مؤقت لقائمة غير النشطين في الجروب لتأكيد الطرد
 const pendingKick = new Map()
 
 let handler = async (m, { conn, isAdmin, isOwner, db }) => {
@@ -128,7 +128,7 @@ handler.before = async (m, { conn, isAdmin, isOwner, isBotAdmin }) => {
 
     const txt = m.text.trim().toLowerCase()
 
-    if (txt === 'si' || txt === 'sí') {
+    if (txt === 'si' || txt === 'sí' || txt === 'نعم' || txt === 'أيوه') {
         if (!isBotAdmin) {
             await m.reply('❌ مش قادر أطرد، لازم أكون أدمن الجروب.')
             pendingKick.delete(m.chat)
@@ -154,7 +154,7 @@ handler.before = async (m, { conn, isAdmin, isOwner, isBotAdmin }) => {
         return m.reply(`✅ *الطرد خلص*\n\n✦ Expulsados: ${expulsados}\n✦ Fallidos: ${fallidos}`)
     }
 
-    if (txt === 'no') {
+    if (txt === 'no' || txt === 'لا') {
         pendingKick.delete(m.chat)
         await m.react('❌')
         return m.reply('❌ الطرد اتلغى.')

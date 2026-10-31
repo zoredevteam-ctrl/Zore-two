@@ -9,7 +9,7 @@ let handler = async (m, { conn }) => {
 
 handler.help = ['link']
 handler.tags = ['grupo']
-handler.command = ['link', 'enlace']
+handler.command = ['link', 'enlace', 'لينك']
 handler.group = true
 
 export default handler

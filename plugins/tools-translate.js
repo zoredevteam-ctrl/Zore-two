@@ -10,9 +10,9 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
     await m.react('🌎')
 
     try {
-        // 2. Traducir (por defecto al español 'es')
+        // الترجمة (الافتراضي للعربية 'ar')
         // El sistema detecta el idioma de origen automáticamente
-        const result = await translate(text, { to: 'es', autoCorrect: true })
+        const result = await translate(text, { to: 'ar', autoCorrect: true })
 
         const response = `✨ *الترجمة خلصت يا حبيبي!* 🌸\n\n` +
                          `📝 *Texto original:* \n${text}\n\n` +
