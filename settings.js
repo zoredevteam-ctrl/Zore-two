@@ -31,8 +31,8 @@ global.prems      = []
 global.botNumber  = ''
 
 // ─── INFO BOT ───────────────────────────────────────────────────────────────
-global.libreria   = 'flash-baileys'
-global.baileys    = 'V 2.0.0'
+global.libreria   = 'bails'
+global.baileys    = 'V 1.0.0'
 global.vs         = '1.0.0'
 global.botVersion = '1.0.0'
 global.nameqr     = '⚡ Flash Bot MD ✰'
